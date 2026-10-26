@@ -1,0 +1,214 @@
+{
+    "id": 13,
+    "date": "2020-08-18T10:54:08",
+    "date_gmt": "2020-08-18T10:54:08",
+    "guid": {
+        "rendered": "http:\/\/smt.vladimir-alexandrov.com\/?page_id=13"
+    },
+    "modified": "2023-10-03T14:33:24",
+    "modified_gmt": "2023-10-03T14:33:24",
+    "slug": "home",
+    "status": "publish",
+    "type": "page",
+    "link": "https:\/\/somtamlabs.com\/en\/",
+    "title": {
+        "rendered": "Home"
+    },
+    "content": {
+        "rendered": "",
+        "protected": false
+    },
+    "excerpt": {
+        "rendered": "",
+        "protected": false
+    },
+    "author": 1,
+    "featured_media": 449,
+    "parent": 0,
+    "menu_order": 0,
+    "comment_status": "closed",
+    "ping_status": "closed",
+    "template": "front-page.php",
+    "meta": {
+        "inline_featured_image": false,
+        "footnotes": ""
+    },
+    "acf": [],
+    "yoast_head": "<!-- This site is optimized with the Yoast SEO plugin v21.4 - https:\/\/yoast.com\/wordpress\/plugins\/seo\/ -->\n<title>Home - SomTamLabs<\/title>\n<meta name=\"description\" content=\"We develop mobile applications and IT project to create new experiences at competitive prices\" \/>\n<meta name=\"robots\" content=\"index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1\" \/>\n<link rel=\"canonical\" href=\"https:\/\/somtamlabs.com\/en\/\" \/>\n<meta property=\"og:locale\" content=\"fr_FR\" \/>\n<meta property=\"og:type\" content=\"article\" \/>\n<meta property=\"og:title\" content=\"(Fruity) Web development agency\" \/>\n<meta property=\"og:description\" content=\"We develop IT projects to create new experiences at competitive prices.\" \/>\n<meta property=\"og:url\" content=\"https:\/\/somtamlabs.com\/en\/\" \/>\n<meta property=\"og:site_name\" content=\"SomTamLabs\" \/>\n<meta property=\"article:modified_time\" content=\"2023-10-03T14:33:24+00:00\" \/>\n<meta property=\"og:image\" content=\"https:\/\/somtamlabs.com\/wp-content\/uploads\/2020\/09\/Logo-STL.png\" \/>\n\t<meta property=\"og:image:width\" content=\"500\" \/>\n\t<meta property=\"og:image:height\" content=\"500\" \/>\n\t<meta property=\"og:image:type\" content=\"image\/png\" \/>\n<meta name=\"twitter:card\" content=\"summary_large_image\" \/>\n<meta name=\"twitter:title\" content=\"SomTamLabs Web Agency\" \/>\n<meta name=\"twitter:description\" content=\"We develop IT projects to create new experiences at competitive prices.\" \/>\n<meta name=\"twitter:image\" content=\"https:\/\/somtamlabs.com\/wp-content\/uploads\/2020\/09\/Logo-STL.png\" \/>\n<script type=\"application\/ld+json\" class=\"yoast-schema-graph\">{\"@context\":\"https:\/\/schema.org\",\"@graph\":[{\"@type\":\"WebPage\",\"@id\":\"https:\/\/somtamlabs.com\/en\/\",\"url\":\"https:\/\/somtamlabs.com\/en\/\",\"name\":\"Home - SomTamLabs\",\"isPartOf\":{\"@id\":\"https:\/\/somtamlabs.com\/#website\"},\"datePublished\":\"2020-08-18T10:54:08+00:00\",\"dateModified\":\"2023-10-03T14:33:24+00:00\",\"description\":\"We develop mobile applications and IT project to create new experiences at competitive prices\",\"breadcrumb\":{\"@id\":\"https:\/\/somtamlabs.com\/en\/#breadcrumb\"},\"inLanguage\":\"fr-FR\",\"potentialAction\":[{\"@type\":\"ReadAction\",\"target\":[\"https:\/\/somtamlabs.com\/en\/\"]}]},{\"@type\":\"BreadcrumbList\",\"@id\":\"https:\/\/somtamlabs.com\/en\/#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https:\/\/somtamlabs.com\/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Home\"}]},{\"@type\":\"WebSite\",\"@id\":\"https:\/\/somtamlabs.com\/#website\",\"url\":\"https:\/\/somtamlabs.com\/\",\"name\":\"SomTamLabs\",\"description\":\"Web Agency\",\"publisher\":{\"@id\":\"https:\/\/somtamlabs.com\/#organization\"},\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":{\"@type\":\"EntryPoint\",\"urlTemplate\":\"https:\/\/somtamlabs.com\/?s={search_term_string}\"},\"query-input\":\"required name=search_term_string\"}],\"inLanguage\":\"fr-FR\"},{\"@type\":\"Organization\",\"@id\":\"https:\/\/somtamlabs.com\/#organization\",\"name\":\"Somtamlabs\",\"url\":\"https:\/\/somtamlabs.com\/\",\"logo\":{\"@type\":\"ImageObject\",\"inLanguage\":\"fr-FR\",\"@id\":\"https:\/\/somtamlabs.com\/#\/schema\/logo\/image\/\",\"url\":\"https:\/\/somtamlabs.com\/wp-content\/uploads\/2020\/09\/carte-de-visite-STL-verso.jpg\",\"contentUrl\":\"https:\/\/somtamlabs.com\/wp-content\/uploads\/2020\/09\/carte-de-visite-STL-verso.jpg\",\"width\":1323,\"height\":1323,\"caption\":\"Somtamlabs\"},\"image\":{\"@id\":\"https:\/\/somtamlabs.com\/#\/schema\/logo\/image\/\"}}]}<\/script>\n<!-- \/ Yoast SEO plugin. -->",
+    "yoast_head_json": {
+        "title": "Home - SomTamLabs",
+        "description": "We develop mobile applications and IT project to create new experiences at competitive prices",
+        "robots": {
+            "index": "index",
+            "follow": "follow",
+            "max-snippet": "max-snippet:-1",
+            "max-image-preview": "max-image-preview:large",
+            "max-video-preview": "max-video-preview:-1"
+        },
+        "canonical": "https:\/\/somtamlabs.com\/en\/",
+        "og_locale": "fr_FR",
+        "og_type": "article",
+        "og_title": "(Fruity) Web development agency",
+        "og_description": "We develop IT projects to create new experiences at competitive prices.",
+        "og_url": "https:\/\/somtamlabs.com\/en\/",
+        "og_site_name": "SomTamLabs",
+        "article_modified_time": "2023-10-03T14:33:24+00:00",
+        "og_image": [
+            {
+                "width": 500,
+                "height": 500,
+                "url": "https:\/\/somtamlabs.com\/wp-content\/uploads\/2020\/09\/Logo-STL.png",
+                "type": "image\/png"
+            }
+        ],
+        "twitter_card": "summary_large_image",
+        "twitter_title": "SomTamLabs Web Agency",
+        "twitter_description": "We develop IT projects to create new experiences at competitive prices.",
+        "twitter_image": "https:\/\/somtamlabs.com\/wp-content\/uploads\/2020\/09\/Logo-STL.png",
+        "schema": {
+            "@context": "https:\/\/schema.org",
+            "@graph": [
+                {
+                    "@type": "WebPage",
+                    "@id": "https:\/\/somtamlabs.com\/en\/",
+                    "url": "https:\/\/somtamlabs.com\/en\/",
+                    "name": "Home - SomTamLabs",
+                    "isPartOf": {
+                        "@id": "https:\/\/somtamlabs.com\/#website"
+                    },
+                    "datePublished": "2020-08-18T10:54:08+00:00",
+                    "dateModified": "2023-10-03T14:33:24+00:00",
+                    "description": "We develop mobile applications and IT project to create new experiences at competitive prices",
+                    "breadcrumb": {
+                        "@id": "https:\/\/somtamlabs.com\/en\/#breadcrumb"
+                    },
+                    "inLanguage": "fr-FR",
+                    "potentialAction": [
+                        {
+                            "@type": "ReadAction",
+                            "target": [
+                                "https:\/\/somtamlabs.com\/en\/"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "@type": "BreadcrumbList",
+                    "@id": "https:\/\/somtamlabs.com\/en\/#breadcrumb",
+                    "itemListElement": [
+                        {
+                            "@type": "ListItem",
+                            "position": 1,
+                            "name": "Home",
+                            "item": "https:\/\/somtamlabs.com\/"
+                        },
+                        {
+                            "@type": "ListItem",
+                            "position": 2,
+                            "name": "Home"
+                        }
+                    ]
+                },
+                {
+                    "@type": "WebSite",
+                    "@id": "https:\/\/somtamlabs.com\/#website",
+                    "url": "https:\/\/somtamlabs.com\/",
+                    "name": "SomTamLabs",
+                    "description": "Web Agency",
+                    "publisher": {
+                        "@id": "https:\/\/somtamlabs.com\/#organization"
+                    },
+                    "potentialAction": [
+                        {
+                            "@type": "SearchAction",
+                            "target": {
+                                "@type": "EntryPoint",
+                                "urlTemplate": "https:\/\/somtamlabs.com\/?s={search_term_string}"
+                            },
+                            "query-input": "required name=search_term_string"
+                        }
+                    ],
+                    "inLanguage": "fr-FR"
+                },
+                {
+                    "@type": "Organization",
+                    "@id": "https:\/\/somtamlabs.com\/#organization",
+                    "name": "Somtamlabs",
+                    "url": "https:\/\/somtamlabs.com\/",
+                    "logo": {
+                        "@type": "ImageObject",
+                        "inLanguage": "fr-FR",
+                        "@id": "https:\/\/somtamlabs.com\/#\/schema\/logo\/image\/",
+                        "url": "https:\/\/somtamlabs.com\/wp-content\/uploads\/2020\/09\/carte-de-visite-STL-verso.jpg",
+                        "contentUrl": "https:\/\/somtamlabs.com\/wp-content\/uploads\/2020\/09\/carte-de-visite-STL-verso.jpg",
+                        "width": 1323,
+                        "height": 1323,
+                        "caption": "Somtamlabs"
+                    },
+                    "image": {
+                        "@id": "https:\/\/somtamlabs.com\/#\/schema\/logo\/image\/"
+                    }
+                }
+            ]
+        }
+    },
+    "_links": {
+        "self": [
+            {
+                "href": "https:\/\/somtamlabs.com\/wp-json\/wp\/v2\/pages\/13"
+            }
+        ],
+        "collection": [
+            {
+                "href": "https:\/\/somtamlabs.com\/wp-json\/wp\/v2\/pages"
+            }
+        ],
+        "about": [
+            {
+                "href": "https:\/\/somtamlabs.com\/wp-json\/wp\/v2\/types\/page"
+            }
+        ],
+        "author": [
+            {
+                "embeddable": true,
+                "href": "https:\/\/somtamlabs.com\/wp-json\/wp\/v2\/users\/1"
+            }
+        ],
+        "replies": [
+            {
+                "embeddable": true,
+                "href": "https:\/\/somtamlabs.com\/wp-json\/wp\/v2\/comments?post=13"
+            }
+        ],
+        "version-history": [
+            {
+                "count": 138,
+                "href": "https:\/\/somtamlabs.com\/wp-json\/wp\/v2\/pages\/13\/revisions"
+            }
+        ],
+        "predecessor-version": [
+            {
+                "id": 1911,
+                "href": "https:\/\/somtamlabs.com\/wp-json\/wp\/v2\/pages\/13\/revisions\/1911"
+            }
+        ],
+        "wp:featuredmedia": [
+            {
+                "embeddable": true,
+                "href": "https:\/\/somtamlabs.com\/wp-json\/wp\/v2\/media\/449"
+            }
+        ],
+        "wp:attachment": [
+            {
+                "href": "https:\/\/somtamlabs.com\/wp-json\/wp\/v2\/media?parent=13"
+            }
+        ],
+        "curies": [
+            {
+                "name": "wp",
+                "href": "https:\/\/api.w.org\/{rel}",
+                "templated": true
+            }
+        ]
+    }
+}

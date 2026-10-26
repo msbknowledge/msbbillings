@@ -1,0 +1,114 @@
+<?php
+
+if (!defined('BASEPATH'))
+    exit('No direct script access allowed');
+
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ * Description of home
+ *
+ * @author Kallol
+ */
+class Complain extends MY_Controller {
+
+    //put your code here
+
+    public function __construct() {
+        parent::__construct();
+
+        //$this->page_config['use_status_columns'] = 'student_status';
+        $this->targetModel = 'complain_model';
+        $this->moduleMeta = array('complain' => 'Complain');
+
+        $this->load->model($this->targetModel);
+        $this->load->model('users_model');
+        $this->load->model('students_model');
+        #$school_student=$this->db->query('select * from students')->result_array();
+        # $internet_student=$this->db->query('select * from internet_students')->result_array();
+        #pr(array_merge($school_student,$internet_student));
+
+
+        $this->page_config['use_dropdown_columns'] = 'complain_service,complain_type,complain_status,complain_assign_to';
+        $this->page_config['use_dropdown_columns_options']['complain_assign_to'] = $this->users_model->get_list_for_dropdown('user_login');
+        $this->page_config['use_dropdown_columns_options']['complain_service'] = array('school' => 'school', 'internet' => 'Internet');
+        $this->page_config['use_dropdown_columns_options']['complain_type'] = array(
+            'New school connection'=>'New school connection',
+            'Co-axcel cutting'=>'Co-axcel cutting', 
+            'Fiber cutting'=>'Fiber cutting',
+            'No signal'=> 'No signal',
+            'Picture freezing'=>'Picture freezing',
+            'Stb problem'=>'Stb problem'
+            );
+        $this->page_config['use_dropdown_columns_options']['complain_status'] = array('new'=>'New', 'assign'=>'Assigned', 'resolved'=>'Resolved');
+
+
+        $this->page_config['tablePrimaryKey'] = $this->complain_model->get_primary_key(); 
+        /*         * page_config* */
+        $this->page_config['title'] = 'Complain,complain_status,complain_from_student'; //search title bar
+        $this->page_config['searchFields'] = 'complain_assign_to'; //search box,
+        $this->page_config['list_columns'] = 'complain_from_student,complain_service,complain_status,complain_assign_to';
+        /*         * end page_config* */
+    }
+   
+
+    /**
+     * add detail
+     */
+    // public function add_detail() {
+    //     $postedData = $this->input->post();
+    //     $config = $this->auto_fieldtype_detect(NULL);
+    //     $this->page_config = array_merge($config, $this->page_config);
+    //     if (isset($postedData['load_add_entry'])) {
+    //         $entryData = $this->{$this->targetModel}->get_field_list();
+    //         echo $this->generate_form_view($entryData[0], $this->page_config, 'add_edit_tpl');
+    //     } else {
+    //         if ($postedData) {
+    //             /** status* */
+    //             $config = $this->auto_fieldtype_detect(NULL);
+    //             if (isset($config['use_status_columns'])) {
+    //                 foreach ($config['use_status_columns'] as $statusColumn) {
+    //                     $postedData[$statusColumn] = isset($postedData[$statusColumn]) ? 1 : 0;
+    //                 }
+    //             }
+    //             /*                 * multi chooser */
+    //             if (isset($this->page_config['use_dropdown_columns_options']['multi'])) {
+    //                 foreach ($this->page_config['use_dropdown_columns_options']['multi'] as $multiChooser => $multi) {
+    //                     if (isset($postedData[$multiChooser]))
+    //                         $postedData[$multiChooser] = is_array($postedData[$multiChooser]) ? json_encode($postedData[$multiChooser]) : json_encode(array());
+    //                     else
+    //                         $postedData[$multiChooser] = '["0"]';
+    //                 }
+    //             }
+    //             $lastInsertedID = $this->{$this->targetModel}->insert_data($postedData);
+
+    //             echo (json_encode(array('status' => 'success', 'message' => 'Data Added Successfully')));
+    //            // translateIt
+    //         }
+    //     }
+    // }
+
+    public function student_search() {
+        if ($this->uri->segment(4) == 'school')
+            $results = $this->students_model->get_list_for_dropdown(null, array('student_status' => 1), null, 10, null, array('student_name' => $this->input->get('term')));
+        if ($this->uri->segment(4) == 'internet')
+            $results = $this->internet_students_model->get_list_for_dropdown(null, array('student_status' => 1), null, 10, null, array('student_name' => $this->input->get('term')));
+
+        $output = null;
+        $counter = 0;
+
+        foreach ($results as $result) {
+            $output[$counter]['id'] = $result['student_ID'];
+            $output[$counter]['label'] = $result['student_name'] . '(' . $result['student_code'] . ')';
+            $output[$counter]['value'] = $result['student_name'];
+            $counter++;
+        }
+        echo json_encode($output);
+    }
+
+}
+
+?>

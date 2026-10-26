@@ -1,0 +1,29 @@
+{
+    "widget": "false",
+    "menu": [
+        {
+            "menu_ID": "Menu",
+            "menu_name": "Menu",
+            "menu_parent_id": "",
+            "menu_link": "",
+            "menu_hint": "Manage Your Product",
+            "menu_icon_class": "icon icon-black icon-document",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        }, {
+            "menu_ID": "barcode",
+            "menu_name": "Barcode",
+            "menu_parent_id": "Menu",
+            "menu_link": "barcode/",
+            "menu_hint": "Manage Barcode",
+            "menu_icon_class": "icon icon-black icon-document",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        }
+      
+
+
+    ]
+}

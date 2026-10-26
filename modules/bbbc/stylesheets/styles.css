@@ -1,0 +1,464 @@
+/*__________________________________________________Universal
+Universal
+*/
+
+body {
+	background-color: #F0F0F0;
+	background-image:url('../images/bg.png');
+	background-repeat:repeat;
+	font-size: 100%;
+	color: #000;
+	font-family: Arial, Helvetica, sans-serif;
+	}
+	
+.left {
+	float: left;
+	}
+	
+.right {
+	float: right;
+	}
+	
+.clear {
+	clear: both;
+	}
+	
+input, textarea {
+	margin: 0;
+	padding: 0;
+	border: none;
+	outline: none;
+	background: transparent;
+	font-family: Arial, Helvetica, sans-serif;
+	}
+	
+p, input {
+	font-size: 1em;
+	padding: 2px 0;
+	}
+
+textarea {
+	display: block;
+	background: #E3FAFA;
+	}
+	
+input {
+	background: #E3FAFA;
+	}
+	
+input:hover, textarea:hover {
+	background: #FFFFCC;
+	}
+	
+input:focus, textarea:focus {
+	border: 1px solid #666;
+	}
+
+.price:hover {
+	background: #FFF;
+	}
+
+.price:focus {
+	border: none;
+	}
+
+.button {
+	display: inline;
+	padding: 4px 8px; 
+	background: url(../images/button-bg.png) repeat-x; 
+	color: #666;
+    border: 1px solid #ccc; 
+    font: bold .95em Helvetica; 
+    text-decoration: none;
+    }
+    
+.button:hover { 
+	 color: #333;
+	 border: 1px solid #666;
+	 background: url(../images/button-bg.png) repeat-x; 
+	}
+	
+.button:active {
+	background: url(../images/button-bg.png) repeat-x; 
+	background-position: bottom left;
+	}
+	
+/*__________________________________________________Head
+Head
+*/
+
+#head {
+	margin: 0 auto;
+	padding-top: 10px;
+	margin-bottom: 20px;
+	width: 864px;
+	}
+	
+h1 {
+	padding-bottom: 10px;
+	color: #EEE;
+	font-weight: normal;
+	font-size: 2em;
+	}
+
+#about-head {
+	margin-bottom: 4px;
+	}
+	
+h3 {
+	color: #333;
+	font-size: 1.4em;
+	display: inline;
+	}
+	
+#about, #how-to {
+	padding: 5px;
+	background: #EEE;
+	color: #333;
+	border: 1px solid #666;
+	}
+	
+#about p, #how-to p {
+	padding-bottom: 8px;
+	}
+
+strong {
+	font-weight: bold;
+	}	
+
+/*__________________________________________________Banner Ad
+Banner AD
+*/
+
+#banner-ad {
+	margin-bottom: 20px;
+}
+
+/*__________________________________________________Actions
+Actions
+*/
+
+#actions {
+	margin: 0 auto;
+	padding-top: 10px;
+	margin-bottom: -20px;
+	width: 864px;
+	}
+
+/*__________________________________________________Main
+Main
+*/
+
+#main {
+	margin: 30px auto;
+	padding: 32px;
+	width: 800px;
+	height: 1040px;
+	background: #FFF;
+	border: 1px solid #808080;
+	}
+.main {
+	margin: 30px auto;
+	padding: 32px;
+	width: 800px;
+	height: 1040px;
+	background: #FFF;
+	border: 1px solid #808080;
+        page-break-after: always;
+	}
+	
+/*__________________________________________________Invoice
+Invoice
+*/
+
+#title {
+	font-weight: bold;
+	text-align: center;
+	padding-bottom: 16px;
+	}
+	
+#title h1 {
+	padding: 0;
+	margin: 0;
+	font-size: 1.25em;
+	color: #000;
+	}
+	
+#title h2 {
+	font-size: 1em;
+	color: #000;
+	}
+
+
+#invHeader {
+	padding-bottom: 16px;
+	margin-bottom: 16px;
+	border-bottom: 1px solid #CCC;
+	}
+	
+#headLeft, #signatureLeft {
+	float: left;
+	width: 392px;
+	border-bottom: 1px solid #CCC;
+	}
+
+#headLeft p, #headRight p, #signatureLeft p, #signatureRight p {
+	font-weight: bold;
+	font-size: .85em;
+	}
+
+#legal {
+	padding: 4px;
+	margin-bottom: 4px;
+	border: 1px solid #CCC;
+	font-size: .70em;
+	}
+
+#legal ul {
+	list-style-type: circle;
+	}
+	
+#legal ul li {
+	padding: 4px 0;
+	margin-left: 2em;
+	}
+	
+#signature p {
+	padding-left: 4px;
+	}
+	
+#headLeft div {
+	padding: 4px;
+	border-top: 1px solid #CCC;
+	border-left: 1px solid #CCC;
+	border-right: 1px solid #CCC;
+	}
+	
+#signatureLeft div {
+	padding: 1px 4px;
+	border-top: 1px solid #CCC;
+	border-left: 1px solid #CCC;
+	border-right: 1px solid #CCC;
+	}
+
+#signatureRight div {
+	padding: 1px 4px;
+	}
+		
+#signatureRightRight {
+	border-left: none !important;
+	}
+	
+#headLeft textarea {
+	font-size: 1.2em;
+	text-align: left;
+	width: 100%;
+	height: 96px;
+	}
+	
+#headRight {
+	margin-left: 12px;
+	float: left;
+	width: 392px;
+	border: 1px solid #CCC;
+	}
+	
+#signatureRight {
+	float: left;
+	width: 402px;
+	border-bottom: 1px solid #CCC;
+	}
+	
+#headRightRight div, #headRightLeft div {
+	padding: 0 4px;
+	}
+	
+#headRight p {
+	padding-left: 4px;
+	}
+
+#headLeft input, #headRight input, #signatureLeft input, #signatureRight input {
+	margin-bottom: 8px;
+	width: 100%;
+	display: block;
+	}
+	
+#headRightLeft, #headRightRight {
+	padding-top: 32px;
+	padding-bottom: 60px;
+	float: left;
+	width: 192px;
+	}
+	
+#signatureRightLeft, #signatureRightRight {
+	float: left;
+	width: 192px;
+	}
+	
+#headRight textarea {
+	font-size: 1em;
+	text-align: left;
+	width: 100%;
+	height: 72px;
+	}
+
+#headRightBottom {
+	padding: 4px;
+	border-top: 1px solid #CCC;
+	width: 374px;
+	}
+	
+#headRightBottom textarea {
+	font-size: 1.2em;
+	text-align: left;
+	width: 100%;
+	height: 96px;
+	}
+	
+table {
+	width: 800px;
+	}
+	
+table { border-collapse: collapse; }
+table td, table th { padding: 5px; }
+
+table th {
+	text-align: left;
+	font-weight: bold;
+	border-bottom: 1px solid #CCC;
+	}
+	
+table th input {
+	font-weight: bold;
+	display: inline;
+	width: 32px;
+	}
+	
+table tr td input {
+	width: 100%;
+	}
+	
+table tr td textarea {
+	margin-top: -16px;
+	width: 100%;
+	height: 24px;
+	font-size: 16px;
+	}
+
+.item-name {
+	width: 432px;
+	}
+
+
+.hsNo {
+	width: 80px;
+}
+
+.NC {
+	width: 80px;
+	}
+	
+.mfr {
+	width: 80px;
+	}
+
+.pref {
+	width: 80px;
+	}
+
+.country {
+	width: 80px;
+	}
+	
+.countryInpt {
+	width: 80px;
+	}
+
+.delete-wpr input {
+	display: inline;
+	width: 432px;
+	}
+	
+.delete {
+	text-decoration: none;
+	font-weight: bold;
+	color: red;
+	padding-right: 3px;
+	margin-right: 3px;
+	margin-left: -19px;
+	border-right: 1px solid #000;
+	}
+
+#addrow {
+	text-decoration: none;
+	color: green;
+	}
+.total-line,  .total-weight, .total-qty, .total-value {
+	font-weight: bold;
+	}
+	
+.sub-total {
+	background: #DDD;
+	}
+	
+#signature {
+	margin-top: 32px;
+	}
+/**default*/
+
+.main h1 {
+	text-transform: uppercase;
+	color: #CCCCCC;
+	text-align: right;
+	font-size: 24px;
+	font-weight: normal;
+	padding-bottom: 5px;
+	margin-top: 0px;
+	margin-bottom: 15px;
+	border-bottom: 1px solid #CDDDDD;
+}
+.main .store {
+	width: 100%;
+	margin-bottom: 20px;
+}
+.main .div2 {
+	float: left;
+	display: inline-block;
+}
+.main .div3 {
+	float: right;
+	display: inline-block;
+	padding: 5px;
+}
+.main .heading td {
+	background: #E7EFEF;
+}
+.main .address,.main .product {
+	border-collapse: collapse;
+}
+.main .address {
+	width: 100%;
+	margin-bottom: 20px;
+	border-top: 1px solid #CDDDDD;
+	border-right: 1px solid #CDDDDD;
+}
+.main .address th,.main.address td {
+	border-left: 1px solid #CDDDDD;
+	border-bottom: 1px solid #CDDDDD;
+	padding: 5px;
+	vertical-align: text-bottom;
+}
+.main .address td {
+	width: 50%;
+}
+.main .product {
+	width: 100%;
+	margin-bottom: 20px;
+	border-top: 1px solid #CDDDDD;
+	border-right: 1px solid #CDDDDD;
+}
+.main .product td {
+	border-left: 1px solid #CDDDDD;
+	border-bottom: 1px solid #CDDDDD;
+	padding: 5px;
+}

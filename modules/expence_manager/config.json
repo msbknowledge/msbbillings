@@ -1,0 +1,58 @@
+{
+    "widget": "false",
+    "menu": [
+        {
+            "menu_ID": "report",
+            "menu_name": "Report",
+            "menu_parent_id": "",
+            "menu_link": "",
+            "menu_hint": "Show your Entire Reports",
+            "menu_icon_class": "icon icon-black icon-calendar",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+
+        {
+            "menu_ID": "transaction report",
+            "menu_name": "Transaction Report",
+            "menu_parent_id": "report",
+            "menu_link": "transaction/transaction_report",
+            "menu_hint": "Show your Report",
+            "menu_icon_class": "icon icon-black icon-calendar",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+      
+        {
+            "menu_ID": "entry",
+            "menu_name": "Entry",
+            "menu_parent_id": "",
+            "menu_link": "",
+            "menu_icon_class": "icon icon-black icon-edit",
+            "menu_hint": "Master Entry Panel",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+        {
+            "menu_ID": "expence manager",
+            "menu_name": "Expence Manager",
+            "menu_parent_id": "entry",
+            "menu_link": "transaction",
+            "menu_hint": "transactio details",
+            "menu_icon_class": "icon icon-black icon-edit",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        }
+       
+       
+       
+
+       
+
+
+    ]
+}

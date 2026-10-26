@@ -1,0 +1,92 @@
+{
+    "widget": "false",
+    "menu": [
+        {
+            "menu_ID": "blogs",
+            "menu_name": " Blogs",
+            "menu_parent_id": "",
+            "menu_link": "",
+            "menu_hint": "Manage Your Blogs",
+            "menu_icon_class": "icon icon-black icon-document",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+        {
+            "menu_ID": 11310,
+            "menu_name": "Blogs",
+            "menu_parent_id": "blogs",
+            "menu_link": "blog/",
+            "menu_hint": "Blogs List",
+            "menu_icon_class": "icon icon-black icon-document",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+        {
+            "menu_ID": 11311,
+            "menu_name": "Blogs Category",
+            "menu_parent_id": "blogs",
+            "menu_link": "blog_category/",
+            "menu_hint": "Blog Category List",
+            "menu_icon_class": "icon icon-black icon-document",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+         {
+            "menu_ID": 11312,
+            "menu_name": "Blog Sub Category",
+            "menu_parent_id": "blogs",
+            "menu_link": "blog_sub_category/",
+            "menu_hint": "Blog Sub Category List",
+            "menu_icon_class": "icon icon-black icon-document",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+        {
+            "menu_ID": 11313,
+            "menu_name": "Blog Comment",
+            "menu_parent_id": "blogs",
+            "menu_link": "blog_comment/",
+            "menu_hint": "Blog Comment List",
+            "menu_icon_class": "icon icon-black icon-document",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },{
+            "menu_ID": 11314,
+            "menu_name": "Blog Comment Hindi",
+            "menu_parent_id": "blogs",
+            "menu_link": "blog_comment_hindi/",
+            "menu_hint": "Blog Comment Hindi List",
+            "menu_icon_class": "icon icon-black icon-document",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },{
+            "menu_ID": 11315,
+            "menu_name": "Blog Reply Hindi",
+            "menu_parent_id": "blogs",
+            "menu_link": "reply_hindi_blogs/",
+            "menu_hint": "Blog Comment Hindi List",
+            "menu_icon_class": "icon icon-black icon-document",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },{
+            "menu_ID": 11316,
+            "menu_name": "Blog Reply English",
+            "menu_parent_id": "blogs",
+            "menu_link": "reply_english_blog/",
+            "menu_hint": "Blog Reply English",
+            "menu_icon_class": "icon icon-black icon-document",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        }
+        
+        
+    ]
+}

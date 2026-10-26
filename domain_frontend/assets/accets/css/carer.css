@@ -1,0 +1,237 @@
+.vediso-sec{ width: 100%; margin: 0px auto;}
+.vediso-sec iframe{ width: 100%; margin: 0px auto; }
+
+.why-vedio{ width: 100%; margin: 0px auto; }
+.why-vedio iframe{ width: 100%; margin: 0px auto; }
+
+
+
+
+
+ul.sixbox {
+    margin: 0px;
+    display: flex;
+    justify-content: space-between;
+    padding: 0px;
+    flex-wrap: wrap;
+}
+
+ul.sixbox li {
+    text-align: center;
+    list-style: none;
+    background: #fff;
+    padding: 15px 30px;
+    cursor: pointer;
+    border-radius: 6px;
+    flex: 0 0 16%;
+}
+
+ul.sixbox li h6 {
+    color: #0f7bd0;
+    font-size: 17px;
+    font-weight: 300;
+    width: 100px;
+    line-height: 24px;
+    width: 100%;
+    text-align: center;
+}
+.listjob p {
+    text-align: center;
+    color: #000;
+    font-size: 20px;
+}
+.careers .lead-query .bg {
+    padding: 70px 0 !important;
+}
+li.slist.active h6 {
+    color: #fff;
+}
+li.slist.active img {
+    -webkit-filter: brightness(0) invert(1);
+  filter: brightness(0) invert(1);
+}
+.sixbox li.active {
+    box-shadow: rgb(0 83 153 / 75%) 0px 10px 10px -10px;
+}
+.listjob p {
+    color: #fff;
+}
+
+ul.openlist {
+    margin: 0px;
+    display: flex;
+    justify-content: start;
+    padding: 0px;
+}
+.careers .lead-query h2 {
+    margin-top: 0;
+    color: #fff;
+    font-size: 48px;
+    margin-bottom: 50px;
+}
+ul.openlist li {
+    list-style: none;
+    margin-right: 30px;
+    flex-basis: 44%;
+}
+ul.openlist li:nth-child(3) {
+    flex-basis: 10%;
+    margin-right: 0px;
+}
+#Opening1 {
+    margin-top: 30px;
+}
+.careers .lead-query {
+    background: url(../images/office-pic1.1.jpg) no-repeat !important;
+    background-size: 100% !important;
+    border: none;
+    margin-top: 0;
+    padding: 0;
+}
+ul.showlists {
+    margin: 0px;
+    display: flex;
+    justify-content: space-between;
+    padding: 50px 0px;
+}
+ul.showlists li {
+    text-align: center;
+    list-style: none;
+    background: #fff;
+    flex-basis: 20%;
+}
+ul.showlists h6 {
+    background: #70b0a1;
+    width: 100%;
+    padding: 18px;
+    font-size: 17px;
+    margin: 1px;
+}
+ul.showlists p {
+    color: #5e5e5e;
+    font-size: 15px;
+    padding: 20px;
+    background: #f7f7f7;
+    border: 1px solid #fff;
+    margin-bottom: 0px;
+}
+a.showcnt {
+    display: block;
+    color: #449783;
+    font-size: 15px;
+    padding: 20px;
+    background: #f7f7f7;
+    border: 1px solid #fff;
+    margin-bottom: 0px;
+}
+
+@media screen and (max-width: 1199px) {
+ul.sixbox li {padding: 12px 11px;}
+.careers .lead-query {background-size: cover !important;}
+}
+
+@media screen and (max-width: 991px) {
+ul.sixbox li {margin: 2px 2px;flex: 1 0 200px;}
+ul.sixbox {flex-wrap: wrap;}
+ul.sixbox li h6 {width: 100%;}
+ul.showlists {flex-wrap: wrap;}
+ul.showlists li {flex-basis: 49.33%;margin-bottom: 10px;}
+}
+
+@media screen and (max-width:767px) {
+
+.vediso-sec{ width: 100%; margin: 0px auto;  position: relative; display: none;}
+.vediso-sec iframe{ position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%; }
+
+
+.why-vedio{ width:100%; margin: 0px auto; position: relative; display: none;}
+.why-vedio iframe{ position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%; }
+
+
+.listjob {
+    width: 100%;
+    overflow: hidden;
+    overflow: scroll;
+}
+
+
+.sec-part{ padding:30px 0px !important; }
+
+
+.headingsec h2 {
+    font: 36px/42px 'Roboto', sans-serif !important;    
+}
+
+.headingsec p {
+    font: 18px/34px 'Roboto', sans-serif !important;
+    padding: 10px 0px; text-align: center !important;
+}
+
+.headingsec h2{ text-align: center !important; }
+
+
+.carbebift ul li h3 {
+    font: 14px/30px 'Roboto', sans-serif !important;
+    margin: 5px 0px;
+}
+
+
+ul.sixbox li {
+    margin: 10px 12px !important;
+    flex: 1 0 200px;}
+
+
+.careers .lead-query .btn {
+margin: 40px 0px 20px !important;}
+
+
+ul.sixbox li{ margin: 10px 15px !important;}
+.careers .lead-query h2{ font-size: 36px !important;; margin-bottom: 20px !important; }
+
+.careers .lead-query .btn{ font-size: 14px !important; padding:0px 10px !important; border-radius: 8px !important; }
+.listjob p {
+    padding-top:20px !important;
+    font-size: 14px !important;
+}
+
+
+.carbebift ul{ display: block !important; text-align: center !important; margin: 0px auto !important; }
+
+.team-sec {
+    padding: 40px 0px !important;
+    position: relative;
+}
+
+.owl-carousel{ overflow: hidden !important; }
+
+
+
+}
+
+
+
+
+@media screen and (max-width: 640px) {
+ul.openlist {flex-wrap: wrap;}
+ul.openlist li {flex-basis: 100%; margin-right:0px;}
+ul.showlists li {flex-basis: 100%;}
+ul.openlist li:nth-child(3) {margin: 12px auto 0px;}
+.careers .lead-query h2 {font-size: 34px;}
+.careers .lead-query .bg {padding: 40px 0 !important;}
+
+.listjob {
+    width: 100%;
+    overflow: hidden;
+    overflow: scroll;
+}
+
+
+}

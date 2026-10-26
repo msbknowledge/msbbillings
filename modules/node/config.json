@@ -1,0 +1,144 @@
+{
+    "widget": "false",
+    "menu": [
+        {
+            "menu_ID": "billing",
+            "menu_name": " Billing",
+            "menu_parent_id": "",
+            "menu_link": "",
+            "menu_hint": "Manage Your Billing",
+            "menu_icon_class": "icon icon-black icon-document",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+        {
+            "menu_ID": 11310,
+            "menu_name": "Invoices",
+            "menu_parent_id": "billing",
+            "menu_link": "invoice/",
+            "menu_hint": "Invoice List",
+            "menu_icon_class": "icon icon-black icon-document",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+        {
+            "menu_ID": 11313,
+            "menu_name": "Group Billing",
+            "menu_parent_id": "billing",
+            "menu_link": "customer/generate_bill_all/",
+            "menu_hint": "Generate bill  for all Cable customer",
+            "menu_icon_class": "icon icon-black icon-document",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+
+        {
+            "menu_ID": 11312,
+            "menu_name": "Collections",
+            "menu_parent_id": "billing",
+            "menu_hint": "Collection",
+            "menu_link": "collection",
+            "menu_icon_class": "icon icon-black icon-document",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+
+        {
+            "menu_ID": "report",
+            "menu_name": " Report",
+            "menu_parent_id": "",
+            "menu_link": "",
+            "menu_hint": "Show your Entire Reports",
+            "menu_icon_class": "icon icon-black icon-calendar",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+
+        {
+            "menu_ID": 11511,
+            "menu_name": "Invoice report",
+            "menu_parent_id": "report",
+            "menu_link": "customer/billing_report",
+            "menu_hint": "Show your Billed Report",
+            "menu_icon_class": "icon icon-black icon-calendar",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+
+        {
+            "menu_ID": 11512,
+            "menu_name": "Collection report",
+            "menu_parent_id": "report",
+            "menu_link": "customer/collection_report",
+            "menu_hint": "Show your Collection Report",
+            "menu_icon_class": "icon icon-black icon-calendar",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+        {
+            "menu_ID": 11513,
+            "menu_name": "Customer report",
+            "menu_parent_id": "report",
+            "menu_link": "customer/customer_wise_report",
+            "menu_hint": "Show your Customer Report",
+            "menu_icon_class": "icon icon-black icon-calendar",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+         {
+            "menu_ID": "help",
+            "menu_name": "Help",
+            "menu_parent_id": "",
+            "menu_link": "",
+            "menu_icon_class": "icon icon-black icon-edit",
+            "menu_hint": "Master Entry Panel",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+        {
+            "menu_ID": "Help",
+            "menu_name": "Help Panel",
+            "menu_parent_id": "help",
+            "menu_link": "helps",
+            "menu_hint": "help panel details",
+            "menu_icon_class": "icon icon-black icon-edit",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+
+        {
+            "menu_ID": "entry",
+            "menu_name": " Entry",
+            "menu_parent_id": "",
+            "menu_link": "",
+            "menu_icon_class": "icon icon-black icon-edit",
+            "menu_hint": "Master Entry Panel",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+       
+        {
+            "menu_ID": 11611,
+            "menu_name": "Customer",
+            "menu_parent_id": "entry",
+            "menu_link": "customer",
+            "menu_hint": "customer details",
+            "menu_icon_class": "icon icon-black icon-edit",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        }
+
+    ]
+}

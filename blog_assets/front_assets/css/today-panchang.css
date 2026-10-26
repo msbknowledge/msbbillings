@@ -1,0 +1,135 @@
+@charset "utf-8";
+/* CSS Document */
+.today-pan20 {margin-bottom: 10px;}
+.color--white {color: #fff;}
+hr {margin-top: 10px;margin-bottom: 10px;}
+.hedText {background: #f12a43;color: #fff;padding: 10px 5px;margin: 0;border-radius: 5px 5px 0 0;text-transform: uppercase;font-size: 15px;}
+.midpart .col-lg-4, col-lg-8{ padding: 0 5px;}
+
+table>tbody>tr>td, table>tbody>tr>th, table>tfoot>tr>td, table>tfoot>tr>th, table>thead>tr>td, table>thead>tr>th {border: 1px solid #ccc;font-size: 13px;padding:5px;vertical-align: middle;}
+td.panchangTableLabelTd {border-right: 1px solid #eee;text-align: right;background: rgba(251,251,251,.09);font-family: GothamRBold,sans-serif;cursor: pointer;position: relative;font-size: 1em;}
+.panchangBox>ul>li>.row>div[class^=col-md]:hover {background: #f7f7f7;cursor: pointer;}
+.panchangBox>ul>li>.row>div[class^=col-md] {padding: 10px 6px;}
+span.toolInfoIcon {position: absolute;bottom: 5px;right: 5px;font-size: 12px;font-weight: 700;display: none;color: #051706;}
+.smallTitleFont {font-family: GothamRBold,sans-serif;font-size: 13px;}
+.today-panchang .lead {margin-top: 10px;}
+
+.panchang input[type], select, textarea {font-size: 14px;line-height: 26px;font-weight: 400;vertical-align: baseline;background: #fff!important;height: 47px;padding: 6px 12px 7px;color: #34495e;border: 2px solid #bdc3c7;border-radius: 6px!important;box-shadow: none;margin-bottom: 0!important;-webkit-transition: border .25s linear,color .25s linear,background-color .25s linear;transition: border .25s linear,color .25s linear,background-color .25s linear;width: 100%;}
+.panchangColouredHeader {background: #f12a43;text-transform: uppercase;color: #fff;padding: 10px 5px;margin: -10px -10px 0;font-size: 14px;}
+.imagebg {position: relative;}
+.analysis {width: 100%;float: left;padding-bottom: 20px;text-align: justify;}
+.boxed.boxed--border {border: 1px solid #444;background: #e1d5ff;padding: 10px;}
+.boxed {border-radius: 6px;}
+
+.lead {font-weight: 600;color: #0e15ea;font-size: 14px;margin-top: 15px;line-height: 15px;display: inline-block;word-break: break-word;}
+.mt10 {margin-top: 10px;}
+.today-panchang .lead {margin-top: 10px;}
+.boxed {border-radius: 6px;}
+.p10 {padding: 10px!important;}
+
+.unmarg--bottom{color: #fff;font-size: 18px!important;font-weight: 400;text-transform: initial;text-shadow: 1px 1px 2px #222;}
+
+.boxed ul {padding-left: 0!important;}
+.other-yoga {margin-top: 30px;}
+.today-panchang ul li {padding-bottom: 0;}
+.btn--primary:visited, .panchang .btn--primary {background: #2f80ed;color: #fff;border: 0!important;-webkit-transition: all .3s ease-out;-moz-transition: all .3s ease-out;-o-transition: all .3s ease-out;-ms-transition: all .3s ease-out;transition: all .3s ease-out;z-index: 1;font-size: 14px;padding: 5px 20px;text-transform: capitalize;}
+.kundli-report button {border: none;outline: 0;display: inline-block;padding: 8px;color: #fff;background-color: #000;text-align: center;cursor: pointer;font-size: 15px;width: 100%;}
+.block {display: block;}
+.panchang .post-item .post-thumb {overflow: hidden;width: 50%;}
+.panchang .post-item .post-content {padding: 6px 10px;line-height: 20px;overflow: auto;height: 106px;}
+.panchang .post-item .post-content h5{font-size: 14px;margin: 0;padding: 0;}
+.panchang .post-item  ::-webkit-scrollbar { width: 5px; height: 8px;}
+.panchang .post-item{ margin-bottom:20px;}
+
+.panchang p a{ color:#0033FF; font-size:12px;}
+.panchang .title{color:#f71531;font-weight: 600;line-height: 20px;}
+
+.asp-muhurtbox {border: 5px solid #fff;box-shadow: 0 0 1px #999;background: #fbf7f3;min-height: 190px;margin: 0px 20px;}
+.textbg h3 {color: #FF0000;}
+.textbg strong {font-weight: 300;}
+
+.as-fst-title-h1 {font-size: 24px;color: #644010;font-weight: bold;text-align: center;margin: 0;padding: 10px 0 10px 0;}
+.as-fst-title-h2-1 {font-size: 60px;color: #ff0000;text-align: center;margin: 40px auto 40px;padding: 0;}
+.as-fst-title-h3 {font-size: 20px;line-height: 35px;padding: 0;margin: 0;color: #644010;text-align: center;}
+.asp-datebox {border: 5px solid #fff;height: 330px;background: #faf0e6;box-shadow: 0 0 1px #999;}
+.asp-imgbox img {border: 5px solid #fff;height: 330px;box-shadow: 0 0 1px #999;width: 100%;}
+
+
+.arbtnP {background: #f12a43;padding: 7px 10px;font-size: 16px;margin-left: 0;border-radius: 50px 0 0 50px;position: absolute;left: 0px;word-break: break-all;color: #fff;}
+.arbtnN {background: #f12a43;padding: 7px 10px;font-size: 16px;margin-right: 0;border-radius: 0 50px 50px 0;position: absolute;word-break: break-all;color: #fff;}
+
+.goddess-shail h3 {font-size: 18px!important;}
+.goddess-shail .testimonial-slider-btn-group .testimonial-slider-prev { left: 7px;}
+
+.goddess-shail .testimonial-section {padding-bottom: 0;}
+
+
+.textbg .carousel-inner>.item>img, .carousel-inner>.item>a>img {display: block;width: 100%;max-width: 100%;height: 220px;}
+.textbg .carousel-caption {right: 8%; left: 8%; padding-bottom: 30px; margin: 0 auto;}
+
+.textbg .carousel-control.left{ background:none; margin-top:16%; width: 50px;}
+.textbg .carousel-control.right{ background:none; margin-top:16%; width: 50px;}
+.textbg .carousel-inner .item{ background:#eee!important}
+.textbg .right i{ font-size:24px;opacity: 1; color:#000;}
+.textbg	.left i{ font-size:24px;opacity: 1; color:#000;}  
+.textbg	strong { font-weight: 300;} 
+.textbg h3{ color:#FF0000;text-shadow: 0 1px 2px rgb(0 0 0 / 60%);}
+.textbg .as-fst-title-h4 { text-shadow: none;}
+
+::-webkit-scrollbar { width: 12px;}
+/* Track */
+::-webkit-scrollbar-track {-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); -webkit-border-radius: 10px;border-radius: 10px;}
+/* Handle */
+::-webkit-scrollbar-thumb { -webkit-border-radius: 10px; border-radius: 10px; background: rgba(255,0,0,0.8); -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); }
+::-webkit-scrollbar-thumb:window-inactive {background: rgba(255,0,0,0.4);}
+
+.goddess-shail .testimonial-slider-btn-group .testimonial-slider-prev, .testimonial-slider-btn-group .testimonial-slider-next{width: auto!important;height: auto!important;top:50%;line-height: 24px;}
+.goddess-shail .testimonial-container .testimonial-body {padding: 20px 1%;background: #eee;}
+.goddess-shail .testimonial-slider-btn-group .testimonial-slider-next { right: 37px;}
+
+.navratri-first-day{ width:100%; float:left; padding:2% 0;}
+.navratri-first-day p, h5{ width:100%; float:left; font-size: 13px;}
+.navratri-first-day ul li{list-style: inside;padding-left: 20px;}
+
+
+#exTab3 .nav-pills > li > a {border-radius: 4px 4px 0 0;padding: 0px 15px;}
+#exTab3 .tab-content {color: #000;background-color: #fff;padding: 5px 15px;}
+.text-part ul li {margin: 0;padding: 0px !important;}
+#exTab3 .analysis h1 {font-size: 25px;margin-top: 5px;margin-bottom: 4px;}
+#exTab3 .active .liactive {background-color: #f12a43;color: #fff;padding: 0px 15px;} 
+
+/*#exTab3 .top-bar a:focus, a:hover {background-color:#f12a43;color: #fff;}*/
+
+
+
+@media screen and (max-width: 767px){
+.lunarDateBox{ width:100%; margin-bottom:20px;}
+.boxed.boxed--border{ margin-bottom:20px;}
+.panchangColouredHeader .block{ text-align:center;}
+
+.carousel-caption{ height:100vh!important;overflow: auto!important;}
+.carousel-caption .item{ height:100vh!important;overflow: auto!important;}
+.itamtextp{ height:100vh!important; overflow: auto!important;}
+.asp-imgbox img{ height:auto;}
+.textbg .carousel-caption{ position:relative;}
+
+.goddess-shail .testimonial-slider-btn-group .testimonial-slider-prev {left: 2px;}
+.goddess-shail .testimonial-slider-btn-group .testimonial-slider-next { right: 32px;}
+
+
+.calculator-php .calculator {width: 33%;}
+
+.daily-HoroscopesC .col-4{padding-right: 5px;padding-left: 5px;}
+.daily-HoroscopesC .team-front{padding: 10px 10px;}
+
+
+
+}
+
+@media screen and (max-width: 768px){
+
+}
+
+@media (min-width: 768px) and (max-width: 991px){
+
+}

@@ -1,0 +1,78 @@
+{
+    "widget": "false",
+    "menu": [
+       
+
+        {
+            "menu_ID": "report",
+            "menu_name": " Report",
+            "menu_parent_id": "",
+            "menu_link": "",
+            "menu_hint": "Show your Entire Reports",
+            "menu_icon_class": "icon icon-black icon-calendar",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+
+        {
+            "menu_ID": 11511,
+            "menu_name": "Daily Collection report",
+            "menu_parent_id": "report",
+            "menu_link": "report/collection_report",
+            "menu_hint": "Show your Daily collection Report",
+            "menu_icon_class": "icon icon-black icon-calendar",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+
+        {
+            "menu_ID": "entry",
+            "menu_name": " Entry",
+            "menu_parent_id": "",
+            "menu_link": "",
+            "menu_icon_class": "icon icon-black icon-edit",
+            "menu_hint": "Master Entry Panel",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+       
+        {
+            "menu_ID": 11611,
+            "menu_name": "Member",
+            "menu_parent_id": "entry",
+            "menu_link": "members",
+            "menu_hint": "members details",
+            "menu_icon_class": "icon icon-black icon-edit",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        }
+,
+       
+        {
+            "menu_ID": 11612,
+            "menu_name": "Portal User",
+            "menu_parent_id": "entry",
+            "menu_link": "users",
+            "menu_hint": "Portal user",
+            "menu_icon_class": "icon icon-black icon-edit",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },{
+            "menu_ID": 11613,
+            "menu_name": "Passbook transactions",
+            "menu_parent_id": "entry",
+            "menu_link": "transactions",
+            "menu_hint": "Passbook Entry",
+            "menu_icon_class": "icon icon-black icon-edit",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        }
+
+    ]
+}

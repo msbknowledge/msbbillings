@@ -1,0 +1,31 @@
+{
+    "widget": "false",
+    "menu": [
+       
+
+        {
+            "menu_ID": "report",
+            "menu_name": " Report",
+            "menu_parent_id": "",
+            "menu_link": "",
+            "menu_hint": "Show your Entire Reports",
+            "menu_icon_class": "icon icon-black icon-calendar",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+
+        {
+            "menu_ID": 11511,
+            "menu_name": "Payment",
+            "menu_parent_id": "report",
+            "menu_link": "payment",
+            "menu_hint": "Show your Day wise payment Report",
+            "menu_icon_class": "icon icon-black icon-calendar",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        }
+
+    ]
+}

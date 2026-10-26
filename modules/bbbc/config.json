@@ -1,0 +1,97 @@
+{
+    "widget": "false",
+    "menu": [
+        {
+            "menu_ID": 501,
+            "menu_name": "Billing Management",
+            "menu_parent_id": "",
+            "menu_link": "",
+            "menu_icon_class": "icon icon-black icon-document",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+		{
+            "menu_ID": 50101,
+            "menu_name": "Operators List",
+            "menu_parent_id": 501,
+            "menu_link": "lco",
+            "menu_icon_class": "icon icon-black icon-document",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        }
+        ,
+		{
+            "menu_ID": 50102,
+            "menu_name": "Manage Invoice",
+            "menu_parent_id": 501,
+            "menu_link": "invoice",
+            "menu_icon_class": "icon icon-black icon-document",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+		{
+            "menu_ID": 50103,
+            "menu_name": "Fast Billing",
+            "menu_parent_id": 501,
+            "menu_link": "invoice/fastbill_bbbc_new",
+            "menu_icon_class": "icon icon-black icon-document",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+        {
+            "menu_ID": 50104,
+            "menu_name": "Credit Note",
+            "menu_parent_id": 501,
+            "menu_link": "credit_note",
+            "menu_icon_class": "icon icon-black icon-document",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+		{
+            "menu_ID": 50105,
+            "menu_name": "Fast Cr Note",
+            "menu_parent_id": 501,
+            "menu_link": "credit_note/fastnote",
+            "menu_icon_class": "icon icon-black icon-document",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+		{
+            "menu_ID": 502,
+            "menu_name": "Stock",
+            "menu_parent_id": "",
+            "menu_link": "",
+            "menu_icon_class": "icon icon-black icon-calendar",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+		{
+            "menu_ID": 50201,
+            "menu_name": "Stock Issue",
+            "menu_parent_id": 502,
+            "menu_link": "stock_issue",
+            "menu_icon_class": "icon icon-black icon-calendar",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+        {
+            "menu_ID": 50203,
+            "menu_name": "Stock Return",
+            "menu_parent_id": 502,
+            "menu_link": "stock_return",
+            "menu_icon_class": "icon icon-black icon-calendar",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        }
+
+    ]
+}

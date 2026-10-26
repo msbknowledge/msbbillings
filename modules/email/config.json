@@ -1,0 +1,40 @@
+{
+    "widget": "false",
+    "menu": [
+        {
+            "menu_ID": "email",
+            "menu_name": "Email",
+            "menu_parent_id": "",
+            "menu_link": "",
+            "menu_hint": "Manage Your Email",
+            "menu_icon_class": "icon icon-black icon-document",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+        {
+            "menu_ID": "Email Template",
+            "menu_name": "Email Template",
+            "menu_parent_id": "email",
+            "menu_link": "email_templates/",
+            "menu_hint": "email_templates",
+            "menu_icon_class": "icon icon-black icon-document",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        }, {
+            "menu_ID": "Email Template Variable",
+            "menu_name": "Email Template Variable",
+            "menu_parent_id": "email",
+            "menu_link": "email_template_variables/",
+            "menu_hint": "Email Template Variable",
+            "menu_icon_class": "icon icon-black icon-document",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        }
+       
+
+
+    ]
+}

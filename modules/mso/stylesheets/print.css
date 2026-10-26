@@ -1,0 +1,34 @@
+body {
+	background-color: #FFF;
+	background-image: none;
+	}
+
+.delete, .button, #addrow, #head, #actions {
+	display: none;
+	}
+	
+#main {
+	border: none;
+	height: auto;
+	}
+	
+table tr td textarea {
+	margin-top: 0;
+	}
+	
+body {
+	margin-top: -50px;
+	}
+	
+textarea {
+	background: #FFF;
+	}
+	
+input {
+	background: #FFF;
+	}
+	
+.sub-total {
+	border-top: 1px dashed #CCC;
+	border-bottom: 1px dashed #CCC;
+	}

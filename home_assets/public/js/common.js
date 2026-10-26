@@ -1,0 +1,4 @@
+jQuery(function($){$(document).ready(function(){checkPostWorks()});function checkPostWorks(){const ctaMorePost=document.querySelector('#btn_more_portfolio');if(!ctaMorePost)return;const attrMaxPages=ctaMorePost.getAttribute('data-max-pages');if(!this_page)return;if(this_page==attrMaxPages){ctaMorePost.remove()}}
+$('#btn_more_portfolio').on('click',function(){let thisEl=$(this);thisEl.html('<span class="fas fa-redo fa-spin"></span> Loading...');let data={'action':'loadMorePortfolio','query':thisEl.attr('data-param-posts'),'page':this_page,'tpl':thisEl.attr('data-tpl')}
+$.ajax({url:window.wp_data.ajax_url,data:data,type:'POST',success:function(data){if(data){thisEl.html('<span class="fas fa-redo"></span> SEE MORE');thisEl.parents('.container').find('.our-works__portfolio').append(data);this_page++;if(this_page==thisEl.attr('data-max-pages')){thisEl.remove()}}else{thisEl.remove()}}})})})
+;

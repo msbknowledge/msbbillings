@@ -1,0 +1,214 @@
+{
+    "widget": "false",
+    "menu": [
+        {
+            "menu_ID": "billing",
+            "menu_name": " Billing",
+            "menu_parent_id": "",
+            "menu_link": "",
+            "menu_hint": "Manage Your Billing",
+            "menu_icon_class": "icon icon-black icon-document",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+        {
+            "menu_ID": 11310,
+            "menu_name": "Cable Invoices",
+            "menu_parent_id": "billing",
+            "menu_link": "invoice/",
+            "menu_hint": "Invoice List for Cable",
+            "menu_icon_class": "icon icon-black icon-document",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+        {
+            "menu_ID": 11313,
+            "menu_name": "Cable Group Billing",
+            "menu_parent_id": "billing",
+            "menu_link": "customer/generate_bill_all/",
+            "menu_hint": "Generate bill  for all Cable customer",
+            "menu_icon_class": "icon icon-black icon-document",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+
+        {
+            "menu_ID": 11312,
+            "menu_name": "Cable Collections",
+            "menu_parent_id": "billing",
+            "menu_hint": "Collection for Cable",
+            "menu_link": "collection",
+            "menu_icon_class": "icon icon-black icon-document",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+
+        {
+            "menu_ID": "report",
+            "menu_name": " Report",
+            "menu_parent_id": "",
+            "menu_link": "",
+            "menu_hint": "Show your Entire Reports",
+            "menu_icon_class": "icon icon-black icon-calendar",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+
+        {
+            "menu_ID": 11511,
+            "menu_name": "Cable Invoice report",
+            "menu_parent_id": "report",
+            "menu_link": "customer/billing_report",
+            "menu_hint": "Show your Billed Report",
+            "menu_icon_class": "icon icon-black icon-calendar",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+
+        {
+            "menu_ID": 11512,
+            "menu_name": "Cable Collection report",
+            "menu_parent_id": "report",
+            "menu_link": "customer/collection_report",
+            "menu_hint": "Show your Collection Report",
+            "menu_icon_class": "icon icon-black icon-calendar",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+        {
+            "menu_ID": 11514,
+            "menu_name": "Cable Not Collected report",
+            "menu_parent_id": "report",
+            "menu_link": "customer/not_collected_report",
+            "menu_hint": "Show your Customer Report",
+            "menu_icon_class": "icon icon-black icon-calendar",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        
+        },
+        {
+            "menu_ID": 11513,
+            "menu_name": "Cable Customer report",
+            "menu_parent_id": "report",
+            "menu_link": "customer/customer_wise_report",
+            "menu_hint": "Show your Customer Report",
+            "menu_icon_class": "icon icon-black icon-calendar",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+         {
+            "menu_ID": "help",
+            "menu_name": "Help",
+            "menu_parent_id": "",
+            "menu_link": "",
+            "menu_icon_class": "icon icon-black icon-edit",
+            "menu_hint": "Master Entry Panel",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+        {
+            "menu_ID": "Help",
+            "menu_name": "Help Panel",
+            "menu_parent_id": "help",
+            "menu_link": "help",
+            "menu_hint": "help panel details",
+            "menu_icon_class": "icon icon-black icon-edit",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+
+        {
+            "menu_ID": "entry",
+            "menu_name": " Entry",
+            "menu_parent_id": "",
+            "menu_link": "",
+            "menu_icon_class": "icon icon-black icon-edit",
+            "menu_hint": "Master Entry Panel",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+       
+        {
+            "menu_ID": 11611,
+            "menu_name": "Cable Customer",
+            "menu_parent_id": "entry",
+            "menu_link": "customer",
+            "menu_hint": "Cable customer details",
+            "menu_icon_class": "icon icon-black icon-edit",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+        {
+            "menu_ID": 11613,
+            "menu_name": "Cable Channels",
+            "menu_parent_id": "entry",
+            "menu_link": "channel",
+            "menu_hint": "Cable Channels Section",
+            "menu_icon_class": "icon icon-black icon-edit",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        }, {
+            "menu_ID": 11616,
+            "menu_name": "Cable Tax",
+            "menu_parent_id": "entry",
+            "menu_link": "tax",
+            "menu_hint": "Cable Tax Settings",
+            "menu_icon_class": "icon icon-black icon-edit",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+        {
+            "menu_ID": 11614,
+            "menu_name": "Cable Set Top Box",
+            "menu_parent_id": "entry",
+            "menu_link": "stb",
+            "menu_hint": "STB Section",
+            "menu_icon_class": "icon icon-black icon-edit",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+
+        {
+            "menu_ID": 11413,
+            "menu_name": "Cable Inventory Entry",
+            "menu_parent_id": "entry",
+            "menu_link": "inventory",
+            "menu_icon_class": "icon icon-black icon-edit",
+            "menu_hint": "Entry for Inventory ",
+
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+
+        {
+            "menu_ID": 11414,
+            "menu_name": "Complain",
+            "menu_parent_id": "entry",
+            "menu_link": "complain",
+            "menu_icon_class": "icon icon-black icon-edit",
+            "menu_hint": "Entry for Inventory ",
+
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        }
+
+    ]
+}

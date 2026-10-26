@@ -1,0 +1,155 @@
+{
+    "widget": "false",
+    "menu": [
+        {
+            "menu_ID": "billing",
+            "menu_name": "Billing",
+            "menu_parent_id": "",
+            "menu_link": "",
+            "menu_hint": "Manage Your Billing",
+            "menu_icon_class": "icon icon-black icon-document",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+        {
+            "menu_ID": "Internet Renewal",
+            "menu_name": "Internet Renewal",
+            "menu_parent_id": "billing",
+            "menu_link": "internet_renew/",
+            "menu_hint": "Subscription Expiry List for Internet",
+            "menu_icon_class": "icon icon-black icon-document",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        }, {
+            "menu_ID": "Internet Invoice",
+            "menu_name": "Internet Invoice",
+            "menu_parent_id": "billing",
+            "menu_link": "internet_invoice/",
+            "menu_hint": "Invoice List for Internet",
+            "menu_icon_class": "icon icon-black icon-document",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+
+        {
+            "menu_ID": "Internet Collection",
+            "menu_name": "Internet Collection",
+            "menu_parent_id": "billing",
+            "menu_hint": "collection list for Internet",
+            "menu_link": "internet_collection",
+            "menu_icon_class": "icon icon-black icon-document",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+        {
+            "menu_ID": "report",
+            "menu_name": "Report",
+            "menu_parent_id": "",
+            "menu_link": "",
+            "menu_hint": "Show your Entire Reports",
+            "menu_icon_class": "icon icon-black icon-calendar",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+
+        {
+            "menu_ID": "internet_Invoice report",
+            "menu_name": "Internet Invoice report",
+            "menu_parent_id": "report",
+            "menu_link": "internet_customer/billing_report",
+            "menu_hint": "Show your Billed Report",
+            "menu_icon_class": "icon icon-black icon-calendar",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+        {
+            "menu_ID": "internet_Collection report",
+            "menu_name": "Internet Collection report",
+            "menu_parent_id": "report",
+            "menu_link": "internet_customer/collection_report",
+            "menu_hint": "Show your Collection Report",
+            "menu_icon_class": "icon icon-black icon-calendar",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+        {
+            "menu_ID": "internet_not_ollection_report",
+            "menu_name": "Internet Not Collection report",
+            "menu_parent_id": "report",
+            "menu_link": "internet_customer/not_collected_report",
+            "menu_hint": "Show your Not Collection Report",
+            "menu_icon_class": "icon icon-black icon-calendar",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+        {
+            "menu_ID": "internet_Customer report",
+            "menu_name": "Internet Customer report",
+            "menu_parent_id": "report",
+            "menu_link": "internet_customer/customer_wise_report",
+            "menu_hint": "Show your Customer Report",
+            "menu_icon_class": "icon icon-black icon-calendar",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+        
+        {
+            "menu_ID": "entry",
+            "menu_name": "Entry",
+            "menu_parent_id": "",
+            "menu_link": "",
+            "menu_icon_class": "icon icon-black icon-edit",
+            "menu_hint": "Master Entry Panel",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+
+        {
+            "menu_ID": "Internet Packages",
+            "menu_name": "Internet Packages",
+            "menu_parent_id": "entry",
+            "menu_link": "internet_package",
+            "menu_hint": "Internet package details",
+            "menu_icon_class": "icon icon-black icon-edit",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+        {
+            "menu_ID": "Internet Customer",
+            "menu_name": "Internet Customer",
+            "menu_parent_id": "entry",
+            "menu_link": "internet_customer",
+            "menu_hint": "Internet customer details",
+            "menu_icon_class": "icon icon-black icon-edit",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        },
+
+        {
+            "menu_ID": "Internet Tax",
+            "menu_name": "Internet Tax",
+            "menu_parent_id": "entry",
+            "menu_link": "internet_tax",
+            "menu_hint": "Internet Tax Settings",
+            "menu_icon_class": "icon icon-black icon-edit",
+            "menu_user_type_id": 2,
+            "user_type_ID": 2,
+            "user_type_name": "admin"
+        }
+       
+
+
+    ]
+}

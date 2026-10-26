@@ -1,0 +1,317 @@
+{
+    "widget": "false",
+    "menu": [
+        {
+            "menu_ID": 113,
+            "menu_name": "Billing",
+            "menu_parent_id": "",
+            "menu_link": "",
+            "menu_hint": "Manage Your Billing",
+            "menu_icon_class": "icon icon-black icon-document"
+            
+        },
+        {
+            "menu_ID": 11310,
+            "menu_name": "Purchase",
+            "menu_parent_id": 113,
+            "menu_link": "purchase",
+            "menu_hint": "Purchase List",
+            "menu_icon_class": "icon icon-black icon-document"
+            
+        },
+        {
+            "menu_ID": 11311,
+            "menu_name": "Sale",
+            "menu_parent_id": 113,
+            "menu_link": "sale",
+            "menu_hint": "Sale List",
+            "menu_icon_class": "icon icon-black icon-document"
+            
+        },
+        {
+            "menu_ID": 11312,
+            "menu_name": "Payment",
+            "menu_parent_id": 113,
+            "menu_link": "payments",
+            "menu_hint": "Payments",
+            "menu_icon_class": "icon icon-black icon-document"
+            
+        },{
+            "menu_ID": 11322,
+            "menu_name": "Customer Payment",
+            "menu_parent_id": 113,
+            "menu_link": "customer_payments",
+            "menu_hint": "Customer Payments",
+            "menu_icon_class": "icon icon-black icon-document"
+            
+        },
+        {
+            "menu_ID": 11313,
+            "menu_name": "Expiry Return",
+            "menu_parent_id": 113,
+            "menu_link": "expiry_return",
+            "menu_hint": "Expiry Return",
+            "menu_icon_class": "icon icon-black icon-document"
+            
+        },
+         {
+            "menu_ID": 11314,
+            "menu_name": "Sale Return",
+            "menu_parent_id": 113,
+            "menu_link": "return_sale",
+            "menu_hint": "Return Sale",
+            "menu_icon_class": "icon icon-black icon-document"
+            
+        },
+        {
+            "menu_ID": 11315,
+            "menu_name": "Purchase Return",
+            "menu_parent_id": 113,
+            "menu_link": "return_purchase",
+            "menu_hint": "Return purchase",
+            "menu_icon_class": "icon icon-black icon-document"
+            
+        },
+        {
+            "menu_ID": 411,
+            "menu_name": "Report",
+            "menu_parent_id": "",
+            "menu_link": "",
+            "menu_hint": "Show your Entire Reports",
+            "menu_icon_class": "icon icon-black icon-calendar"
+            
+        },{
+            "menu_ID": 41180,
+            "menu_name": "Report Purchase",
+            "menu_parent_id": 411,
+            "menu_link": "return_purchase/purchases_report",
+            "menu_hint": "Show your purchase report",
+            "menu_icon_class": "icon icon-black icon-calendar"
+            
+        },
+        {
+            "menu_ID": 41181,
+            "menu_name": "Report Sale",
+            "menu_parent_id": 411,
+            "menu_link": "return_sale/sale_report",
+            "menu_hint": "Show your sale report",
+            "menu_icon_class": "icon icon-black icon-calendar"
+            
+        },
+        {
+            "menu_ID": 41182,
+            "menu_name": "Expiry Report",
+            "menu_parent_id": 411,
+            "menu_link": "expiry_return/expiry_report",
+            "menu_hint": "Show your expiry report",
+            "menu_icon_class": "icon icon-black icon-calendar"
+            
+        },
+        
+		{
+            "menu_ID": 41183,
+            "menu_name": "Purchase Report GSTIN Wise",
+            "menu_parent_id": 411,
+            "menu_link": "purchase/report_gstin_wise",
+            "menu_hint": "Show your Daywise Reports",
+            "menu_icon_class": "icon icon-black icon-calendar"
+            
+        }
+		,
+		{
+            "menu_ID": 41184,
+            "menu_name": "Sale Report GSTIN Wise",
+            "menu_parent_id": 411,
+            "menu_link": "sale/report_gstin_wise",
+            "menu_hint": "Show your Daywise Reports",
+            "menu_icon_class": "icon icon-black icon-calendar"
+            
+        },
+        {
+            "menu_ID": 411184,
+            "menu_name": "Purchase Report Daywise",
+            "menu_parent_id": 411,
+            "menu_link": "purchase/report_daily_wise",
+            "menu_hint": "Show your Daywise Reports",
+            "menu_icon_class": "icon icon-black icon-calendar"
+            
+        },
+        {
+            "menu_ID": 41185,
+            "menu_name": "Profit Sale Report",
+            "menu_parent_id": 411,
+            "menu_link": "profit_loss",
+            "menu_hint": "Show Profit loss Reports",
+            "menu_icon_class": "icon icon-black icon-calendar"
+            
+        },
+        {
+            "menu_ID": 41186,
+            "menu_name": "Sale Report Daywise",
+            "menu_parent_id": 411,
+            "menu_link": "sale/report_daily_wise",
+            "menu_hint": "Show your Daywise Reports",
+            "menu_icon_class": "icon icon-black icon-calendar"
+            
+        },
+        {
+            "menu_ID": 41187,
+            "menu_name": "Sale Product Report Daywise",
+            "menu_parent_id": 411,
+            "menu_link": "sale/daily_sale_product",
+            "menu_hint": "Show your Daywise Reports",
+            "menu_icon_class": "icon icon-black icon-calendar"
+            
+        },
+         {
+            "menu_ID": 41188,
+            "menu_name": "Purchase Product Report Daywise",
+            "menu_parent_id": 411,
+            "menu_link": "purchase/daily_purchase_product",
+            "menu_hint": "Show your Daywise Reports",
+            "menu_icon_class": "icon icon-black icon-calendar"
+            
+        },
+        {
+            "menu_ID": 4111,
+            "menu_name": "Shortage Report",
+            "menu_parent_id": 411,
+            "menu_link": "product_stock/shortage",
+            "menu_hint": "Show Shortage of product",
+            "menu_icon_class": "icon icon-black icon-calendar"
+            
+        },{
+            "menu_ID": 41111,
+            "menu_name": "Stock Report",
+            "menu_parent_id": 411,
+            "menu_link": "product_stock/stock",
+            "menu_hint": "Show stock of product",
+            "menu_icon_class": "icon icon-black icon-calendar"
+            
+        },
+        {
+            "menu_ID": 4112,
+            "menu_name": "Upcomming Expire Report",
+            "menu_parent_id": 411,
+            "menu_link": "product_stock/expiring",
+            "menu_hint": "Show Upcomming Expire of product",
+            "menu_icon_class": "icon icon-black icon-calendar"
+            
+        },
+        {
+            "menu_ID": 4113,
+            "menu_name": "Expired",
+            "menu_parent_id": 411,
+            "menu_link": "product_stock/expired",
+            "menu_hint": "Show Already Expired product",
+            "menu_icon_class": "icon icon-black icon-calendar"
+            
+        },
+         {
+            "menu_ID": 41132,
+            "menu_name": "Supplier Balence Sheet",
+            "menu_parent_id": 411,
+            "menu_link": "sale/supplier_product_details",
+            "menu_hint": "Show supplier product",
+            "menu_icon_class": "icon icon-black icon-calendar"
+            
+        },
+        {
+            "menu_ID": 41133,
+            "menu_name": "Due Report Sheet",
+            "menu_parent_id": 411,
+            "menu_link": "payments/due_report",
+            "menu_hint": "Due Balance",
+            "menu_icon_class": "icon icon-black icon-calendar"
+            
+        }, {
+            "menu_ID": 41134,
+            "menu_name": " Customer Due Report Sheet",
+            "menu_parent_id": 411,
+            "menu_link": "customer_payments/due_report",
+            "menu_hint": "Customer Due Balance",
+            "menu_icon_class": "icon icon-black icon-calendar"
+            
+        },{
+            "menu_ID": 41135,
+            "menu_name": " Customer Payment Report ",
+            "menu_parent_id": 411,
+            "menu_link": "sale/customer_payment_report",
+            "menu_hint": "Customer payment",
+            "menu_icon_class": "icon icon-black icon-calendar"
+            
+        },
+        {
+            "menu_ID": 116,
+            "menu_name": "Entry",
+            "menu_parent_id": "",
+            "menu_link": "",
+            "menu_icon_class": "icon icon-black icon-edit",
+            "menu_hint": "Entry panel"
+            
+        },
+        {
+            "menu_ID": 11610,
+            "menu_name": "Product",
+            "menu_parent_id": 116,
+            "menu_link": "product",
+            "menu_hint": "Product details",
+            "menu_icon_class": "icon icon-black icon-edit"
+            
+        },
+        {
+            "menu_ID": 11611,
+            "menu_name": "Product Category",
+            "menu_parent_id": 116,
+            "menu_link": "product_category",
+            "menu_hint": "Product Category details",
+            "menu_icon_class": "icon icon-black icon-edit"
+            
+        },
+        {
+            "menu_ID": 11612,
+            "menu_name": "Manufacturer",
+            "menu_parent_id": 116,
+            "menu_link": "manufacturer",
+            "menu_hint": "Product manufacturer details",
+            "menu_icon_class": "icon icon-black icon-edit"
+            
+        },
+        {
+            "menu_ID": 11613,
+            "menu_name": "Supplier",
+            "menu_parent_id": 116,
+            "menu_link": "supplier",
+            "menu_hint": "Product supplier details",
+            "menu_icon_class": "icon icon-black icon-edit"
+            
+        },
+        {
+            "menu_ID": 11616,
+            "menu_name": "Customer",
+            "menu_parent_id": 116,
+            "menu_link": "customer",
+            "menu_hint": "Customer details",
+            "menu_icon_class": "icon icon-black icon-edit"
+            
+        },
+        {
+            "menu_ID": 11617,
+            "menu_name": "Fast Stock Update",
+            "menu_parent_id": 116,
+            "menu_link": "product_stock/fast_update",
+            "menu_hint": "Fast Update Product details",
+            "menu_icon_class": "icon icon-black icon-edit"
+            
+        },
+        {
+            "menu_ID": 11618,
+            "menu_name": "Purchase Sale History",
+            "menu_parent_id": 116,
+            "menu_link": "product_stock/purchase_sale_history",
+            "menu_hint": "Purchase Sale History",
+            "menu_icon_class": "icon icon-black icon-edit"
+            
+        }
+    ]
+}

@@ -1,0 +1,138 @@
+{
+    "widget": "false",
+    "menu": [
+        {
+            "menu_ID": 113,
+            "menu_name": "Billing",
+            "menu_parent_id": "",
+            "menu_link": "",
+            "menu_hint": "Manage Your Billing",
+            "menu_icon_class": "icon icon-black icon-document"
+            
+        },
+        {
+            "menu_ID": 11311,
+            "menu_name": "Sale",
+            "menu_parent_id": 113,
+            "menu_link": "sale",
+            "menu_hint": "Sale List",
+            "menu_icon_class": "icon icon-black icon-document"
+            
+        },{
+            "menu_ID": 11322,
+            "menu_name": "Customer Payment",
+            "menu_parent_id": 113,
+            "menu_link": "customer_payments",
+            "menu_hint": "Customer Payments",
+            "menu_icon_class": "icon icon-black icon-document"
+            
+        },
+        {
+            "menu_ID": 411,
+            "menu_name": "Report",
+            "menu_parent_id": "",
+            "menu_link": "",
+            "menu_hint": "Show your Entire Reports",
+            "menu_icon_class": "icon icon-black icon-calendar"
+            
+        },
+        {
+            "menu_ID": 41181,
+            "menu_name": "Report Sale",
+            "menu_parent_id": 411,
+            "menu_link": "return_sale/sale_report",
+            "menu_hint": "Show your sale report",
+            "menu_icon_class": "icon icon-black icon-calendar"
+            
+        },
+        {
+            "menu_ID": 41182,
+            "menu_name": "Expiry Report",
+            "menu_parent_id": 411,
+            "menu_link": "expiry_return/expiry_report",
+            "menu_hint": "Show your expiry report",
+            "menu_icon_class": "icon icon-black icon-calendar"
+            
+        },
+        {
+            "menu_ID": 41186,
+            "menu_name": "Sale Report Daywise",
+            "menu_parent_id": 411,
+            "menu_link": "sale/report_daily_wise",
+            "menu_hint": "Show your Daywise Reports",
+            "menu_icon_class": "icon icon-black icon-calendar"
+            
+        },
+        {
+            "menu_ID": 41187,
+            "menu_name": "Sale Product Report Daywise",
+            "menu_parent_id": 411,
+            "menu_link": "sale/daily_sale_product",
+            "menu_hint": "Show your Daywise Reports",
+            "menu_icon_class": "icon icon-black icon-calendar"
+            
+        },
+         
+        {
+            "menu_ID": 41133,
+            "menu_name": "Due Report Sheet",
+            "menu_parent_id": 411,
+            "menu_link": "payments/due_report",
+            "menu_hint": "Due Balance",
+            "menu_icon_class": "icon icon-black icon-calendar"
+            
+        }, {
+            "menu_ID": 41134,
+            "menu_name": " Customer Due Report Sheet",
+            "menu_parent_id": 411,
+            "menu_link": "customer_payments/due_report",
+            "menu_hint": "Customer Due Balance",
+            "menu_icon_class": "icon icon-black icon-calendar"
+            
+        },{
+            "menu_ID": 41135,
+            "menu_name": " Customer Payment Report ",
+            "menu_parent_id": 411,
+            "menu_link": "sale/customer_payment_report",
+            "menu_hint": "Customer payment",
+            "menu_icon_class": "icon icon-black icon-calendar"
+            
+        },
+        {
+            "menu_ID": 116,
+            "menu_name": "Entry",
+            "menu_parent_id": "",
+            "menu_link": "",
+            "menu_icon_class": "icon icon-black icon-edit",
+            "menu_hint": "Entry panel"
+            
+        },
+        {
+            "menu_ID": 11610,
+            "menu_name": "Product",
+            "menu_parent_id": 116,
+            "menu_link": "product",
+            "menu_hint": "Product details",
+            "menu_icon_class": "icon icon-black icon-edit"
+            
+        },
+        {
+            "menu_ID": 11611,
+            "menu_name": "Product Category",
+            "menu_parent_id": 116,
+            "menu_link": "product_category",
+            "menu_hint": "Product Category details",
+            "menu_icon_class": "icon icon-black icon-edit"
+            
+        },
+        {
+            "menu_ID": 11616,
+            "menu_name": "Customer",
+            "menu_parent_id": 116,
+            "menu_link": "customer",
+            "menu_hint": "Customer details",
+            "menu_icon_class": "icon icon-black icon-edit"
+            
+        }
+    ]
+}
