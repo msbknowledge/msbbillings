@@ -268,6 +268,35 @@ class Sale extends MY_Controller
         $invoice = base64_decode($this->uri->segment(4));
         $type = ($this->uri->segment(5));
         $data = $this->{$this->targetModel}->get_list(array('sale_invoice' => $invoice));
+
+        // Enrich sold items with purchase intelligence (cost rate, supplier, invoice, margins)
+        if (!empty($data) && is_array($data)) {
+            foreach ($data as $k => $val) {
+                $purchase = null;
+                if (!empty($val['sale_medicine_id']) && !empty($val['sale_batch'])) {
+                    $purchase = $this->db->select('p.*, s.supplier_name, s.supplier_contact, s.supplier_address')
+                        ->from('purchases p')
+                        ->join('suppliers s', 's.supplier_ID = p.purchase_supplier', 'left')
+                        ->where('p.purchase_medicine_id', $val['sale_medicine_id'])
+                        ->where('p.purchase_batch', $val['sale_batch'])
+                        ->order_by('p.purchase_ID', 'DESC')
+                        ->limit(1)
+                        ->get()
+                        ->row_array();
+                }
+                if (!$purchase && !empty($val['sale_medicine_id'])) {
+                    $purchase = $this->db->select('p.*, s.supplier_name, s.supplier_contact, s.supplier_address')
+                        ->from('purchases p')
+                        ->join('suppliers s', 's.supplier_ID = p.purchase_supplier', 'left')
+                        ->where('p.purchase_medicine_id', $val['sale_medicine_id'])
+                        ->order_by('p.purchase_ID', 'DESC')
+                        ->limit(1)
+                        ->get()
+                        ->row_array();
+                }
+                $data[$k]['purchase'] = $purchase;
+            }
+        }
         /* $data = $this->{$this->targetModel}->get_list();*/
         // pr($data); 
         $fullDataArray = array();
