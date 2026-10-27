@@ -2,6 +2,9 @@
 $server_name = isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : 'localhost';
 $nodeSegment = explode('.', $server_name);
 $sub = $nodeSegment[0];
+if (isset($_GET['node']) && !empty($_GET['node'])) {
+    $sub = trim($_GET['node']);
+}
 $is_local = (
     $server_name === 'localhost' ||
     $server_name === '127.0.0.1' ||

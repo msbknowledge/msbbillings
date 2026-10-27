@@ -1,424 +1,271 @@
+<?php
+/**
+ * MsbBillings Modern Responsive Frontend Landing Page
+ * Ultra-Modern Design System v5.0
+ */
+$current_year = date('Y');
+$demo_whatsapp = "9189562423934";
+$support_phone = "+91 89562 423934";
+$support_email = "admin@msbbillings.in";
+$login_url = function_exists('console_url') ? console_url('user/login') : base_url('console/user/login');
+$forgot_url = function_exists('console_url') ? console_url('user/forgot_password') : base_url('console/user/forgot_password');
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#35aa47" />
-    <title>MsbBillings | Advanced Cloud POS & Automated Retail Invoicing Solution</title>
-    <meta name="description" content="MsbBillings is a next-generation Cloud Billing & Point of Sale (POS) software offering lightning-fast barcode checkout, GST invoicing, automated expiry & batch tracking, and real-time inventory management.">
-    <link rel="shortcut icon" href="<?= base_url('img/simplebillingsfav.png') ?>" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="theme-color" content="#10b981">
+    
+    <title>MsbBillings | Next-Gen Cloud POS, Invoicing & Retail Management Software</title>
+    <meta name="description" content="MsbBillings is a high-speed Cloud POS and automated billing platform featuring lightning-fast barcode billing, GST return filing, batch & expiry tracking, and multi-branch cloud sync.">
+    <meta name="keywords" content="Cloud POS, Billing Software, Retail Billing, Pharmacy POS, GST Invoicing, Barcode Scanner Billing, Thermal Printer Billing">
+    
+    <!-- Open Graph Meta -->
+    <meta property="og:title" content="MsbBillings | Next-Gen Cloud POS & Invoicing Software">
+    <meta property="og:description" content="Lightning-fast 3-second counter checkouts, GST invoicing, batch & expiry control, and multi-branch cloud inventory.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="<?= base_url() ?>">
+    <link rel="shortcut icon" href="<?= base_url('img/simplebillingsfav.png') ?>" type="image/png">
 
-    <!-- Google Fonts & Assets from local Smart School theme -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&display=swap">
-    <link rel="stylesheet" href="<?= base_url('assets/backend/themes/material_pink/css/bootstrap.min.css') ?>">
-    <link rel="stylesheet" href="<?= base_url('assets/backend/themes/material_pink/css/font-awesome.min.css') ?>">
-    <link rel="stylesheet" href="<?= base_url('assets/backend/themes/material_pink/css/owl.carousel.css') ?>">
-    <link rel="stylesheet" href="<?= base_url('assets/backend/themes/material_pink/css/style.css') ?>">
-    <link rel="stylesheet" href="<?= base_url('assets/backend/themes/front-main.css') ?>">
-    <link rel="stylesheet" href="<?= base_url('assets/css/front-style.css') ?>">
-    <link rel="stylesheet" href="<?= base_url('assets/css/smart-school-front.css') ?>">
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            color: #334155;
-            background: #ffffff;
-            overflow-x: hidden;
-        }
-        .text-theme {
-            color: #35aa47 !important;
-        }
-        .bg-theme {
-            background-color: #35aa47 !important;
-        }
-    </style>
+    <!-- Modern Stylesheet -->
+    <link rel="stylesheet" href="<?= base_url('assets/css/frontend-modern.css') ?>">
 </head>
 <body>
 
-    <!-- Top Section with News Marquee & Social Links (Smart School style) -->
-    <div id="alert" class="topsection">
-        <section class="newsarea">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="newstab">Latest Updates</div>
-                        <div class="newscontent">
-                            <marquee behavior="scroll" direction="left" onmouseover="this.stop();" onmouseout="this.start();">
-                                <ul>
-                                    <li>
-                                        <a href="<?= console_url('user/login') ?>">
-                                            <span class="datenews"><?= date('d F Y') ?></span>
-                                            New Release: High-Speed 3-Inch Thermal Receipt Auto-Cutter integration live!
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="<?= console_url('user/login') ?>">
-                                            <span class="datenews"><?= date('d F Y', strtotime('-3 days')) ?></span>
-                                            Automated GST Returns (GSTR-1 / GSTR-3B) Instant Export feature enabled.
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="<?= console_url('user/login') ?>">
-                                            <span class="datenews"><?= date('d F Y', strtotime('-7 days')) ?></span>
-                                            Intelligent Medicine Batch & Expiry Alert System for Pharmacies & Chemist stores.
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="<?= console_url('user/login') ?>">
-                                            <span class="datenews"><?= date('d F Y', strtotime('-12 days')) ?></span>
-                                            Multi-Branch Cloud Sync & Granular Cashier Shift Management launched.
-                                        </a>
-                                    </li>
-                                </ul>
-                            </marquee>
-                        </div>
-                    </div>
+    <!-- Top Announcement Bar -->
+    <div class="msb-topbar">
+        <div class="msb-container">
+            <div class="msb-topbar-inner">
+                <div class="msb-topbar-left">
+                    <span class="msb-badge-live">
+                        <span class="msb-pulse-dot"></span>
+                        v4.2 Live
+                    </span>
+                    <span class="msb-topbar-ticker">
+                        🚀 High-Speed 3-Inch Thermal Auto-Cutter & Automated GSTR-1 / GSTR-3B Export Enabled!
+                    </span>
                 </div>
-            </div>
-        </section>
-
-        <!-- Top Area Contact & Social Follow -->
-        <div class="toparea">
-            <div class="container">
-                <div class="row">
-                    <div class="col-sm-6 col-xs-12">
-                        <ul class="toplist">
-                            <li><a href="mailto:admin@msbbillings.in"><i class="fa fa-envelope-o"></i> admin@msbbillings.in</a></li>
-                            <li><a href="tel:+9189562423934"><i class="fa fa-phone"></i> +91 89562 423934</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-sm-6 col-xs-12">
-                        <ul class="topicon">
-                            <li>Follow Us:</li>
-                            <li><a href="https://wa.me/9189562423934" target="_blank" title="WhatsApp"><i class="fa fa-whatsapp"></i></a></li>
-                            <li><a href="#" target="_blank" title="Facebook"><i class="fa fa-facebook"></i></a></li>
-                            <li><a href="#" target="_blank" title="Twitter"><i class="fa fa-twitter"></i></a></li>
-                            <li><a href="#" target="_blank" title="LinkedIn"><i class="fa fa-linkedin"></i></a></li>
-                            <li><a href="#" target="_blank" title="YouTube"><i class="fa fa-youtube"></i></a></li>
-                        </ul>
-                    </div>
+                <div class="msb-topbar-right">
+                    <a href="tel:<?= str_replace(' ', '', $support_phone) ?>" class="msb-topbar-link">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                        <?= $support_phone ?>
+                    </a>
+                    <a href="mailto:<?= $support_email ?>" class="msb-topbar-link">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                        <?= $support_email ?>
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Main Header -->
-    <header>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-3 col-sm-4 col-xs-12">
-                    <a class="logo" href="<?= base_url() ?>">
-                        <img src="<?= base_url('msb/msbbillingslogo.png') ?>" alt="MsbBillings" style="max-height: 48px; width: auto;">
+    <!-- Sticky Header & Navigation -->
+    <header class="msb-header" id="msbHeader">
+        <div class="msb-container">
+            <div class="msb-header-inner">
+                <a href="<?= base_url() ?>" class="msb-logo">
+                    <img src="<?= base_url('msb/msbbillingslogo.png') ?>" alt="MsbBillings" class="msb-logo-img" onerror="this.style.display='none'; document.getElementById('msbLogoFallback').style.display='flex';">
+                    <div id="msbLogoFallback" class="msb-logo-mark" style="display: none;">M</div>
+                    <span>MsbBillings</span>
+                </a>
+
+                <!-- Desktop Navigation Menu -->
+                <nav class="msb-nav-desktop">
+                    <a href="#features" class="msb-nav-link">Capabilities</a>
+                    <a href="#solutions" class="msb-nav-link">Industry Verticals</a>
+                    <a href="#demo" class="msb-nav-link">POS Simulator</a>
+                    <a href="#hardware" class="msb-nav-link">Hardware Hub</a>
+                    <a href="#pricing" class="msb-nav-link">Pricing Plans</a>
+                    <a href="#reviews" class="msb-nav-link">Reviews</a>
+                    <a href="#faq" class="msb-nav-link">FAQ</a>
+                </nav>
+
+                <!-- Header Actions -->
+                <div class="msb-header-actions">
+                    <a href="https://wa.me/<?= $demo_whatsapp ?>?text=Hi%20MsbBillings%2C%20I%20want%20a%20free%20demo%20of%20your%20POS%20Software" target="_blank" class="msb-btn msb-btn-whatsapp hide-mobile">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.41a8.16 8.16 0 0 1 2.4 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.19 8.19 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24m4.52 11.5c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.03-1.25-.75-.67-1.26-1.5-1.41-1.75-.14-.25-.02-.39.11-.51.11-.11.25-.29.37-.44.13-.14.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.56-1.34-.76-1.84-.2-.49-.4-.42-.56-.43h-.47c-.17 0-.44.06-.67.31-.23.25-.89.87-.89 2.12s.91 2.46 1.04 2.63c.13.17 1.8 2.75 4.36 3.86.61.26 1.09.42 1.46.54.61.2 1.17.17 1.61.1.49-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.17-.48-.29z"/></svg>
+                        Free Demo
                     </a>
-                </div>
-                <div class="col-md-9 col-sm-8 col-xs-12">
-                    <ul class="header-extras">
-                        <li class="hidden-xs">
-                            <div class="he-icon"><i class="fa fa-phone"></i></div>
-                            <div class="he-text">Support Helpline<span>+91 89562 423934</span></div>
-                        </li>
-                        <li class="hidden-xs">
-                            <div class="he-icon"><i class="fa fa-clock-o"></i></div>
-                            <div class="he-text">Service Hours<span>Mon - Sat 09:00 - 20:00</span></div>
-                        </li>
-                        <li>
-                            <a class="complainbtn" href="<?= console_url('user/login') ?>">
-                                <i class="fa fa-user"></i> Admin / Staff Login
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <!-- Navigation Bar -->
-        <div class="navborder" style="margin-top: 15px;">
-            <div class="container">
-                <div class="row">
-                    <nav class="navbar navbar-default">
-                        <div class="navbar-header">
-                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-navbar" aria-expanded="false">
-                                <span class="sr-only">Toggle navigation</span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                            </button>
-                        </div>
-
-                        <div class="collapse navbar-collapse" id="main-navbar">
-                            <ul class="nav navbar-nav">
-                                <li class="active"><a href="<?= base_url() ?>"><i class="fa fa-home"></i> Home</a></li>
-                                <li><a href="#services">Capabilities</a></li>
-                                <li><a href="#solutions">POS Solutions</a></li>
-                                <li><a href="#about">About Software</a></li>
-                                <li><a href="#achievements">Performance</a></li>
-                                <li><a href="#testimonials">Reviews</a></li>
-                                <li><a href="<?= console_url('user/login') ?>" target="_blank"><i class="fa fa-sign-in"></i> Console Login</a></li>
-                                <li><a href="#contact">Contact Support</a></li>
-                            </ul>
-                            <ul class="nav navbar-nav navbar-right hidden-sm hidden-xs">
-                                <li>
-                                    <a href="https://wa.me/9189562423934" target="_blank" style="color: #35aa47; font-weight: 700;">
-                                        <i class="fa fa-whatsapp"></i> Chat with Expert
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </nav>
+                    <a href="<?= $login_url ?>" target="_blank" class="msb-btn msb-btn-login">
+                        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        Console Login
+                    </a>
+                    
+                    <!-- Mobile Hamburger Button -->
+                    <button class="msb-mobile-toggle" id="msbDrawerOpen" aria-label="Open Navigation">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                    </button>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- Carousel Slider (Smart School Banner Style) -->
-    <div id="bootstrap-touch-slider" class="carousel slide" data-ride="carousel" data-interval="6000">
-        <!-- Indicators -->
-        <ol class="carousel-indicators">
-            <li data-target="#bootstrap-touch-slider" data-slide-to="0" class="active"></li>
-            <li data-target="#bootstrap-touch-slider" data-slide-to="1"></li>
-            <li data-target="#bootstrap-touch-slider" data-slide-to="2"></li>
-        </ol>
-
-        <!-- Wrapper for slides -->
-        <div class="carousel-inner" role="listbox">
-            <div class="item active">
-                <img src="<?= base_url('assets/images/banner1.jpg') ?>" alt="Cloud POS Invoicing">
-                <div class="carousel-caption">
-                    <h2>Advanced Cloud POS & Billing Solution</h2>
-                    <p>Accelerate counter checkouts with zero latency, barcode scanner support, and instant thermal receipt printing.</p>
-                    <a href="<?= console_url('user/login') ?>" class="btn btn-lg btn-success" style="background:#35aa47; border-color:#35aa47; font-weight:600; padding:12px 30px; border-radius:6px;">
-                        Access Cloud Console
-                    </a>
-                </div>
-            </div>
-
-            <div class="item">
-                <img src="<?= base_url('assets/images/banner2.jpg') ?>" alt="Batch & Expiry Management">
-                <div class="carousel-caption">
-                    <h2>Intelligent Batch, Stock & Expiry Control</h2>
-                    <p>Designed for Retail, Pharmacy and Supermarkets. Complete real-time audit of inventory levels with automated low-stock warnings.</p>
-                    <a href="#solutions" class="btn btn-lg btn-primary" style="background:#0084B4; border-color:#0084B4; font-weight:600; padding:12px 30px; border-radius:6px;">
-                        Explore Solutions
-                    </a>
-                </div>
-            </div>
-
-            <div class="item">
-                <img src="<?= base_url('assets/images/banner3.jpg') ?>" alt="GST Filing & Financial Reports">
-                <div class="carousel-caption">
-                    <h2>Automated GST Invoicing & Ledgers</h2>
-                    <p>Stay tax-compliant effortlessly. Generate B2B/B2C GST invoices, customer ledgers, and one-click GSTR-1/GSTR-3B filings.</p>
-                    <a href="<?= console_url('user/login') ?>" class="btn btn-lg btn-warning" style="background:#f39c12; border-color:#f39c12; font-weight:600; padding:12px 30px; border-radius:6px;">
-                        Start Billing Today
-                    </a>
-                </div>
-            </div>
+    <!-- Mobile Drawer & Backdrop -->
+    <div class="msb-drawer-overlay" id="msbDrawerOverlay"></div>
+    <div class="msb-drawer" id="msbDrawer">
+        <div class="msb-drawer-header">
+            <span style="font-weight: 800; font-size: 18px; color: var(--slate-900);">Menu Navigation</span>
+            <button class="msb-drawer-close" id="msbDrawerClose" aria-label="Close Navigation">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
         </div>
-
-        <!-- Controls -->
-        <a class="left carousel-control" href="#bootstrap-touch-slider" role="button" data-slide="prev">
-            <span class="fa fa-angle-left" aria-hidden="true"></span>
-            <span class="sr-only">Previous</span>
-        </a>
-        <a class="right carousel-control" href="#bootstrap-touch-slider" role="button" data-slide="next">
-            <span class="fa fa-angle-right" aria-hidden="true"></span>
-            <span class="sr-only">Next</span>
-        </a>
+        <ul class="msb-drawer-nav">
+            <li><a href="#features" class="drawer-link">Core Capabilities</a></li>
+            <li><a href="#solutions" class="drawer-link">Industry Verticals</a></li>
+            <li><a href="#demo" class="drawer-link">POS Live Simulator</a></li>
+            <li><a href="#hardware" class="drawer-link">Hardware Compatibility</a></li>
+            <li><a href="#pricing" class="drawer-link">Pricing Plans</a></li>
+            <li><a href="#reviews" class="drawer-link">Customer Reviews</a></li>
+            <li><a href="#faq" class="drawer-link">Frequently Asked Questions</a></li>
+        </ul>
+        <div class="msb-drawer-actions">
+            <a href="<?= $login_url ?>" target="_blank" class="msb-btn msb-btn-login" style="width: 100%;">
+                <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                Console Login
+            </a>
+            <a href="https://wa.me/<?= $demo_whatsapp ?>" target="_blank" class="msb-btn msb-btn-whatsapp" style="width: 100%;">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2"/></svg>
+                WhatsApp Support
+            </a>
+        </div>
     </div>
 
-    <!-- 3 Core Services Highlight Section -->
-    <section class="services" id="services">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4 col-sm-6 service-box">
-                    <div class="service-box-content">
-                        <div class="service-box-icon"><i class="fa fa-bolt"></i></div>
-                        <h3><a href="<?= console_url('user/login') ?>">High-Speed POS Invoicing</a></h3>
-                        <p>Complete sales transactions in seconds. Full barcode scanning, keyboard-only shortcuts, thermal receipts, and multi-payment splitting.</p>
+    <!-- ==========================================================================
+       HERO SECTION
+       ========================================================================== -->
+    <section class="msb-hero">
+        <div class="msb-container">
+            <div class="msb-hero-grid">
+                <!-- Left Content Column -->
+                <div>
+                    <div class="msb-hero-badge">
+                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        Rated #1 Cloud POS & Automated Invoicing Suite
                     </div>
-                </div>
-
-                <div class="col-md-4 col-sm-6 service-box">
-                    <div class="service-box-content">
-                        <div class="service-box-icon" style="background: #e0f2fe; color: #0284c7;"><i class="fa fa-cubes"></i></div>
-                        <h3><a href="<?= console_url('user/login') ?>">Batch & Expiry Analytics</a></h3>
-                        <p>Track medicines and packaged goods by batch numbers, manufacture dates, and expiry. Automated visual warnings prevent selling expired stock.</p>
-                    </div>
-                </div>
-
-                <div class="col-md-4 col-sm-12 service-box">
-                    <div class="service-box-content">
-                        <div class="service-box-icon" style="background: #fef3c7; color: #d97706;"><i class="fa fa-file-text-o"></i></div>
-                        <h3><a href="<?= console_url('user/login') ?>">GST & Financial Reporting</a></h3>
-                        <p>One-click export for GSTR-1 & GSTR-3B returns. Instant profit & loss reports, day-end register closures, and customer debit/credit ledgers.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Overview Section -->
-    <section style="padding: 20px 0 60px;">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-8 col-md-offset-2 text-center">
-                    <h2 class="head-title">MsbBillings Enterprise Cloud Platform</h2>
-                    <p style="font-size: 16px; color: #64748b; line-height: 1.8;">
-                        Empowering retail businesses, pharmacies, departmental stores, and wholesalers with enterprise-grade cloud POS technology. Built for speed, multi-counter synchronization, and unbreakable financial precision.
+                    <h1 class="msb-hero-title">
+                        Ultra-Fast Cloud POS & Invoicing <span class="highlight">Built For Speed.</span>
+                    </h1>
+                    <p class="msb-hero-desc">
+                        Speed up counter checkout to under 3 seconds with zero-latency barcode scanning, automated GST returns, batch & expiry control, and real-time multi-counter cloud synchronization.
                     </p>
-                    <div class="divider"></div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- About Section with Accordion -->
-    <section class="bg-gray" id="about">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-8 col-md-offset-2 text-center">
-                    <h2 class="head-title">Why Businesses Choose MsbBillings</h2>
-                    <p style="color: #64748b;">Modernize your counter operations with seamless cloud connectivity and hardware interoperability.</p>
-                    <div class="divider"></div>
-                </div>
-            </div>
-
-            <div class="row" style="margin-top: 20px;">
-                <div class="col-md-6 col-sm-6">
-                    <div class="about_img">
-                        <img src="<?= base_url('assets/images/about.jpg') ?>" alt="POS Hardware & System" class="img-responsive">
+                    <div class="msb-hero-ctas">
+                        <a href="<?= $login_url ?>" target="_blank" class="msb-btn msb-btn-primary msb-btn-lg">
+                            Launch Cloud Console
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                        </a>
+                        <a href="#demo" class="msb-btn msb-btn-outline msb-btn-lg">
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                            Try POS Simulator
+                        </a>
+                    </div>
+                    <div class="msb-hero-trust">
+                        <div class="msb-trust-item">
+                            <h4>&lt; 3 Sec</h4>
+                            <p>Fast Barcode Checkout</p>
+                        </div>
+                        <div class="msb-trust-item">
+                            <h4>50,000+</h4>
+                            <p>Daily Cloud Invoices</p>
+                        </div>
+                        <div class="msb-trust-item">
+                            <h4>99.98%</h4>
+                            <p>Uptime & Auto-Backup</p>
+                        </div>
                     </div>
                 </div>
 
-                <div class="col-md-6 col-sm-6">
-                    <div class="about-right">
-                        <h3>Engineered for Retail Agility & Compliance</h3>
-                        <p style="color: #64748b; margin-bottom: 20px;">
-                            MsbBillings eliminates counter bottlenecks, tracks every item from supplier delivery to customer receipt, and keeps your taxation audits spotless.
-                        </p>
+                <!-- Right Visual: Interactive POS Counter Simulator -->
+                <div class="msb-pos-mockup" id="demo">
+                    <div class="msb-pos-bar">
+                        <div class="msb-pos-dots">
+                            <span></span><span></span><span></span>
+                        </div>
+                        <div style="font-weight: 600;">MsbBillings FastBill POS v4.2</div>
+                        <div style="color: #34d399; font-weight: 700;">🟢 Online Counter 1</div>
+                    </div>
 
-                        <!-- Accordion -->
-                        <div class="panel-group accrodion2" id="about-accordion">
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <h4 class="panel-title">
-                                        <a data-toggle="collapse" data-parent="#about-accordion" href="#collapse1">
-                                            <i class="fa fa-print text-theme" style="margin-right: 8px;"></i> Universal Thermal & A4 Printing
-                                        </a>
-                                    </h4>
-                                </div>
-                                <div id="collapse1" class="panel-collapse collapse in">
-                                    <div class="panel-body">
-                                        Connect standard USB, Ethernet, or Bluetooth 2-inch and 3-inch thermal printers with auto-cutter support. Customize receipts with your business logo, GSTIN, and custom terms.
-                                    </div>
-                                </div>
+                    <div class="msb-pos-screen">
+                        <div class="msb-pos-search-box">
+                            <div class="msb-pos-input">
+                                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                <span id="posSearchDisplay" style="color: #94a3b8;">Scan barcode or type item name...</span>
                             </div>
+                            <button class="msb-pos-scan-btn" id="btnSimulateScan">
+                                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="7" y1="8" x2="17" y2="8"></line><line x1="7" y1="12" x2="17" y2="12"></line><line x1="7" y1="16" x2="17" y2="16"></line></svg>
+                                + Scan
+                            </button>
+                        </div>
 
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <h4 class="panel-title">
-                                        <a data-toggle="collapse" data-parent="#about-accordion" href="#collapse2" class="collapsed">
-                                            <i class="fa fa-shield text-theme" style="margin-right: 8px;"></i> Granular User Roles & Shift Audits
-                                        </a>
-                                    </h4>
-                                </div>
-                                <div id="collapse2" class="panel-collapse collapse">
-                                    <div class="panel-body">
-                                        Protect profits with strict role-based authorization. Prevent unauthorized bill editing or discounts, enforce manager approvals for returns, and verify opening/closing cash drawers.
-                                    </div>
-                                </div>
+                        <table class="msb-pos-table">
+                            <thead>
+                                <tr>
+                                    <th>Item & Batch</th>
+                                    <th>Qty</th>
+                                    <th>Rate</th>
+                                    <th>GST</th>
+                                    <th style="text-align: right;">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="posCartBody">
+                                <tr>
+                                    <td>
+                                        <div style="font-weight: 700; color: #fff;">Amoxicillin 500mg Strip</div>
+                                        <div style="color: #94a3b8; font-size: 11px;">Batch: #AMX-892 &bull; Exp: 12/2027</div>
+                                    </td>
+                                    <td><span class="msb-pos-tag">2 PKT</span></td>
+                                    <td>₹110.00</td>
+                                    <td>12%</td>
+                                    <td style="text-align: right; font-weight: 700; color: #fff;">₹246.40</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div style="font-weight: 700; color: #fff;">Fortune Mustard Oil 1L</div>
+                                        <div style="color: #94a3b8; font-size: 11px;">Batch: #FMO-331 &bull; Exp: 09/2027</div>
+                                    </td>
+                                    <td><span class="msb-pos-tag">3 BOT</span></td>
+                                    <td>₹145.00</td>
+                                    <td>5%</td>
+                                    <td style="text-align: right; font-weight: 700; color: #fff;">₹456.75</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div style="font-weight: 700; color: #fff;">India Gate Basmati Rice 5kg</div>
+                                        <div style="color: #94a3b8; font-size: 11px;">Batch: #IGR-104 &bull; Exp: 11/2028</div>
+                                    </td>
+                                    <td><span class="msb-pos-tag">1 BAG</span></td>
+                                    <td>₹680.00</td>
+                                    <td>0%</td>
+                                    <td style="text-align: right; font-weight: 700; color: #fff;">₹680.00</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="msb-pos-footer">
+                            <div class="msb-pos-total">
+                                <span>Grand Total (3 Items)</span>
+                                <h3 id="posGrandTotal">₹1,383.15</h3>
                             </div>
-
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <h4 class="panel-title">
-                                        <a data-toggle="collapse" data-parent="#about-accordion" href="#collapse3" class="collapsed">
-                                            <i class="fa fa-cloud text-theme" style="margin-right: 8px;"></i> Multi-Branch Cloud Centralization
-                                        </a>
-                                    </h4>
-                                </div>
-                                <div id="collapse3" class="panel-collapse collapse">
-                                    <div class="panel-body">
-                                        Monitor sales across multiple store locations in real time from your laptop, smartphone, or tablet without needing dedicated on-site database servers.
-                                    </div>
-                                </div>
+                            <div class="msb-pos-pay-btns">
+                                <button class="msb-pos-pay-btn msb-pos-pay-cash" onclick="alertSimulatedPayment('Cash')">💵 Cash</button>
+                                <button class="msb-pos-pay-btn msb-pos-pay-upi" onclick="alertSimulatedPayment('UPI QR')">📱 UPI QR</button>
+                                <button class="msb-pos-pay-btn msb-pos-pay-print" onclick="simulateThermalPrint()">🖨️ Print Bill</button>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <!-- Industry Solutions / Products Grid -->
-    <section style="padding: 70px 0;" id="solutions">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-8 col-md-offset-2 text-center">
-                    <h2 class="head-title">Tailored Industry Solutions</h2>
-                    <p style="color: #64748b;">Turnkey configurations tailored for your specific commercial vertical.</p>
-                    <div class="divider"></div>
-                </div>
-            </div>
-
-            <div class="row" style="margin-top: 25px;">
-                <!-- Solution 1 -->
-                <div class="col-md-3 col-sm-6">
-                    <div class="courses-box">
-                        <div class="courses-box-img">
-                            <img src="<?= base_url('assets/images/banner1.jpg') ?>" alt="Retail POS">
-                        </div>
-                        <div class="course-inner">
-                            <span class="course-subject">Retail</span>
-                            <h4>Grocery & Supermarkets</h4>
-                            <p>Fast barcode scanning, weighing scale integration, loyalty points, and multi-counter checkout lanes.</p>
-                            <a href="<?= console_url('user/login') ?>" class="btn-read">Explore Solution</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Solution 2 -->
-                <div class="col-md-3 col-sm-6">
-                    <div class="courses-box">
-                        <div class="courses-box-img">
-                            <img src="<?= base_url('assets/images/banner2.jpg') ?>" alt="Pharmacy POS">
-                        </div>
-                        <div class="course-inner">
-                            <span class="course-subject" style="background:#e0f2fe; color:#0284c7;">Healthcare</span>
-                            <h4>Pharma & Chemist POS</h4>
-                            <p>Schedule H/H1 compliance, salt and generic substitute lookup, batch tracking, and expiry returns management.</p>
-                            <a href="<?= console_url('user/login') ?>" class="btn-read" style="background:#0284c7;">Explore Solution</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Solution 3 -->
-                <div class="col-md-3 col-sm-6">
-                    <div class="courses-box">
-                        <div class="courses-box-img">
-                            <img src="<?= base_url('assets/images/banner3.jpg') ?>" alt="Apparel POS">
-                        </div>
-                        <div class="course-inner">
-                            <span class="course-subject" style="background:#fef3c7; color:#d97706;">Fashion</span>
-                            <h4>Apparel & Footwear</h4>
-                            <p>Matrix variant tracking by Size, Color, and Brand. Customized barcode sticker generator with thermal tag printing.</p>
-                            <a href="<?= console_url('user/login') ?>" class="btn-read" style="background:#d97706;">Explore Solution</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Solution 4 -->
-                <div class="col-md-3 col-sm-6">
-                    <div class="courses-box">
-                        <div class="courses-box-img">
-                            <img src="<?= base_url('assets/images/achievement.jpg') ?>" alt="Wholesale Billing">
-                        </div>
-                        <div class="course-inner">
-                            <span class="course-subject" style="background:#fce7f3; color:#be185d;">Distribution</span>
-                            <h4>Wholesale & Distributors</h4>
-                            <p>Bulk volume pricing tiers, customer credit limits, outstanding balances, and multi-vehicle dispatch challans.</p>
-                            <a href="<?= console_url('user/login') ?>" class="btn-read" style="background:#be185d;">Explore Solution</a>
+                    <!-- Floating thermal receipt animation badge -->
+                    <div class="msb-floating-receipt" id="posReceiptBadge">
+                        <svg width="22" height="22" fill="none" stroke="#10b981" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                        <div>
+                            <div style="font-weight: 800; font-size: 12.5px; color: #0f172a;">Thermal Bill Printed</div>
+                            <div style="color: #64748b; font-size: 11px;">80mm Auto-Cutter &bull; 0.38s</div>
                         </div>
                     </div>
                 </div>
@@ -426,250 +273,967 @@
         </div>
     </section>
 
-    <!-- Performance Counter Section -->
-    <section class="countdown_bg" id="achievements">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-5 col-sm-12">
-                    <h2 class="counter-title">Proven Reliability At Enterprise Scale</h2>
-                    <div class="counter-text">
+    <!-- ==========================================================================
+       CORE CAPABILITIES SECTION
+       ========================================================================== -->
+    <section class="msb-section msb-section-alt" id="features">
+        <div class="msb-container">
+            <div class="msb-section-header">
+                <span class="msb-section-eyebrow">Enterprise POS Architecture</span>
+                <h2 class="msb-section-title">Engineered For Ultra-Fast Retail & Pharmacy Operations</h2>
+                <p class="msb-section-desc">
+                    Eliminate counter queues, prevent revenue leakage, and stay 100% tax compliant with our robust cloud platform.
+                </p>
+            </div>
+
+            <div class="msb-features-grid">
+                <!-- Feature 1 -->
+                <div class="msb-feature-card">
+                    <div class="msb-feature-icon">
+                        <svg width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                    </div>
+                    <h3>High-Speed Counter POS</h3>
+                    <p>Designed for rapid checkout with full keyboard navigation (F1-F12 shortcuts), 1D/2D barcode scanners, item search, and quick bill hold/resume.</p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="msb-feature-card">
+                    <div class="msb-feature-icon" style="background: #e0f2fe; color: #0284c7;">
+                        <svg width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                    </div>
+                    <h3>Batch & Expiry Control</h3>
+                    <p>Track perishable goods and medicines by batch numbers, manufacture dates, and expiry dates. Automatic visual warnings block sales of expired stock.</p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="msb-feature-card">
+                    <div class="msb-feature-icon" style="background: #fef3c7; color: #d97706;">
+                        <svg width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    </div>
+                    <h3>Automated GST & Reports</h3>
+                    <p>One-click export for GSTR-1 & GSTR-3B filings. Real-time profit and loss statements, customer debit/credit ledgers, and day-end register closures.</p>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="msb-feature-card">
+                    <div class="msb-feature-icon" style="background: #fce7f3; color: #be185d;">
+                        <svg width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                    </div>
+                    <h3>Universal Printer Support</h3>
+                    <p>Seamlessly integrates with 2-inch and 3-inch thermal printers (USB, Ethernet, Bluetooth), ESC/POS commands, cash drawers, and A4/A5 laser formats.</p>
+                </div>
+
+                <!-- Feature 5 -->
+                <div class="msb-feature-card">
+                    <div class="msb-feature-icon" style="background: #e0e7ff; color: #4338ca;">
+                        <svg width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    </div>
+                    <h3>Cashier Shift Audits</h3>
+                    <p>Prevent theft and unauthorized discounts with strict cashier permissions. Track opening/closing cash drawers and require manager pins for bill edits.</p>
+                </div>
+
+                <!-- Feature 6 -->
+                <div class="msb-feature-card">
+                    <div class="msb-feature-icon" style="background: #ffedd5; color: #c2410c;">
+                        <svg width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>
+                    </div>
+                    <h3>Multi-Branch Cloud Sync</h3>
+                    <p>Manage multiple counters, warehouses, and store locations from anywhere. Access real-time sales and stock levels from your mobile or tablet.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+       INDUSTRY VERTICAL SOLUTIONS
+       ========================================================================== -->
+    <section class="msb-section" id="solutions">
+        <div class="msb-container">
+            <div class="msb-section-header">
+                <span class="msb-section-eyebrow">Industry Configurations</span>
+                <h2 class="msb-section-title">Tailored Solutions For Every Business Model</h2>
+                <p class="msb-section-desc">
+                    Whether you manage a corner grocery store, a busy pharmacy, or a multi-city wholesale network, MsbBillings fits your workflow.
+                </p>
+            </div>
+
+            <div class="msb-solutions-grid">
+                <!-- Solution 1: Supermarkets & Groceries -->
+                <div class="msb-solution-card">
+                    <div class="msb-solution-header">
+                        <span class="msb-solution-pill pill-retail">Retail & Grocery</span>
+                        <h3>Supermarkets & Marts</h3>
+                        <p style="font-size: 14px; color: #64748b;">Fastest checkout counter with multi-tender splits and barcode scanning.</p>
+                    </div>
+                    <div class="msb-solution-body">
+                        <ul class="msb-solution-bullets">
+                            <li>
+                                <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                Electronic weighing scale USB/Serial sync
+                            </li>
+                            <li>
+                                <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                Multi-counter cashier lanes with shift balances
+                            </li>
+                            <li>
+                                <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                Customer loyalty points & promotional discounts
+                            </li>
+                            <li>
+                                <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                Low-stock reorder alerts & supplier purchase orders
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="msb-solution-footer">
+                        <a href="<?= $login_url ?>" class="msb-btn msb-btn-outline" style="width: 100%;">Explore Retail POS &rarr;</a>
+                    </div>
+                </div>
+
+                <!-- Solution 2: Pharmacy & Healthcare -->
+                <div class="msb-solution-card">
+                    <div class="msb-solution-header">
+                        <span class="msb-solution-pill pill-pharma">Healthcare</span>
+                        <h3>Pharmacy & Chemist</h3>
+                        <p style="font-size: 14px; color: #64748b;">Schedule H/H1 compliance with salt compositions and batch expiry warnings.</p>
+                    </div>
+                    <div class="msb-solution-body">
+                        <ul class="msb-solution-bullets">
+                            <li>
+                                <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                Salt & substitute generic drug instant search
+                            </li>
+                            <li>
+                                <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                Schedule H, H1 & narcotic drug register reports
+                            </li>
+                            <li>
+                                <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                Automated expiry returns & distributor credit debit notes
+                            </li>
+                            <li>
+                                <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                Doctor prescription records & patient history
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="msb-solution-footer">
+                        <a href="<?= $login_url ?>" class="msb-btn msb-btn-outline" style="width: 100%;">Explore Pharma POS &rarr;</a>
+                    </div>
+                </div>
+
+                <!-- Solution 3: Apparel & Footwear -->
+                <div class="msb-solution-card">
+                    <div class="msb-solution-header">
+                        <span class="msb-solution-pill pill-apparel">Fashion</span>
+                        <h3>Apparel & Garments</h3>
+                        <p style="font-size: 14px; color: #64748b;">Matrix inventory by Size, Color, Fit, and Brand with barcode sticker tags.</p>
+                    </div>
+                    <div class="msb-solution-body">
+                        <ul class="msb-solution-bullets">
+                            <li>
+                                <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                Built-in thermal barcode sticker designer & printing
+                            </li>
+                            <li>
+                                <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                Multi-variant matrix (e.g. Jeans Size 32, 34, 36)
+                            </li>
+                            <li>
+                                <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                Exchange & return policy automation with credit vouchers
+                            </li>
+                            <li>
+                                <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                Seasonal discount coupons & buy-1-get-1 schemes
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="msb-solution-footer">
+                        <a href="<?= $login_url ?>" class="msb-btn msb-btn-outline" style="width: 100%;">Explore Apparel POS &rarr;</a>
+                    </div>
+                </div>
+
+                <!-- Solution 4: Wholesale & Distribution -->
+                <div class="msb-solution-card">
+                    <div class="msb-solution-header">
+                        <span class="msb-solution-pill pill-wholesale">B2B Trade</span>
+                        <h3>Wholesale & FMCG</h3>
+                        <p style="font-size: 14px; color: #64748b;">Bulk volume rate slabs, customer credit limits, and dispatch challans.</p>
+                    </div>
+                    <div class="msb-solution-body">
+                        <ul class="msb-solution-bullets">
+                            <li>
+                                <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                Tiered pricing slabs (Retail vs Semi-Wholesale vs Bulk)
+                            </li>
+                            <li>
+                                <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                Customer credit limit enforcement & ledger statements
+                            </li>
+                            <li>
+                                <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                Delivery challans, packaging slips, and E-Way bill data
+                            </li>
+                            <li>
+                                <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                Salesman field order booking & commission calculations
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="msb-solution-footer">
+                        <a href="<?= $login_url ?>" class="msb-btn msb-btn-outline" style="width: 100%;">Explore Wholesale &rarr;</a>
+                    </div>
+                </div>
+
+                <!-- Solution 5: Cable TV & Digital DTH -->
+                <div class="msb-solution-card">
+                    <div class="msb-solution-header">
+                        <span class="msb-solution-pill pill-cable">Telecom & TRAI</span>
+                        <h3>Cable TV & DTH</h3>
+                        <p style="font-size: 14px; color: #64748b;">TRAI compliant digital cable subscriber billing, bouquets, and collection app.</p>
+                    </div>
+                    <div class="msb-solution-body">
+                        <ul class="msb-solution-bullets">
+                            <li>
+                                <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                TRAI tariff regulation bouquet & a-la-carte packages
+                            </li>
+                            <li>
+                                <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                Set-top-box (STB) & Smartcard VC tracking
+                            </li>
+                            <li>
+                                <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                Automated monthly SMS/WhatsApp bill notifications
+                            </li>
+                            <li>
+                                <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                Door-to-door collection agent mobile thermal printing
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="msb-solution-footer">
+                        <a href="<?= $login_url ?>" class="msb-btn msb-btn-outline" style="width: 100%;">Explore Cable TV &rarr;</a>
+                    </div>
+                </div>
+
+                <!-- Solution 6: Multi-Branch Cloud -->
+                <div class="msb-solution-card">
+                    <div class="msb-solution-header">
+                        <span class="msb-solution-pill pill-enterprise">Enterprise</span>
+                        <h3>Multi-Branch Chains</h3>
+                        <p style="font-size: 14px; color: #64748b;">Centralized stock transfer, branch analytics, and unified customer accounts.</p>
+                    </div>
+                    <div class="msb-solution-body">
+                        <ul class="msb-solution-bullets">
+                            <li>
+                                <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                Warehouse to outlet stock transfer challans (STN)
+                            </li>
+                            <li>
+                                <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                Live consolidated company revenue & sales reports
+                            </li>
+                            <li>
+                                <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                Centralized master product catalog & remote price updates
+                            </li>
+                            <li>
+                                <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                Enterprise bank-grade SSL and daily automatic backups
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="msb-solution-footer">
+                        <a href="<?= $login_url ?>" class="msb-btn msb-btn-outline" style="width: 100%;">Explore Enterprise &rarr;</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+       HARDWARE HUB & INTEROPERABILITY
+       ========================================================================== -->
+    <section class="msb-section msb-section-dark" id="hardware">
+        <div class="msb-container">
+            <div class="msb-section-header">
+                <span class="msb-section-eyebrow" style="color: #34d399;">Plug & Play Interoperability</span>
+                <h2 class="msb-section-title">Zero Hardware Lock-In. Works With Any Device.</h2>
+                <p class="msb-section-desc">
+                    Connect your existing POS equipment without expensive proprietary replacements. Compatible with all major hardware brands.
+                </p>
+            </div>
+
+            <div class="msb-hardware-grid">
+                <!-- Hardware 1 -->
+                <div class="msb-hw-card">
+                    <div class="msb-hw-icon">
+                        <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                    </div>
+                    <h4>Thermal Printers</h4>
+                    <p>58mm (2-inch) and 80mm (3-inch) USB, LAN, Bluetooth & WiFi thermal printers with auto-cutter support.</p>
+                </div>
+
+                <!-- Hardware 2 -->
+                <div class="msb-hw-card">
+                    <div class="msb-hw-icon">
+                        <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="7" y1="8" x2="17" y2="8"></line><line x1="7" y1="12" x2="17" y2="12"></line><line x1="7" y1="16" x2="17" y2="16"></line></svg>
+                    </div>
+                    <h4>Barcode & QR Scanners</h4>
+                    <p>1D Laser, 2D Image, QR, and wireless Bluetooth scanners. Plug & play with zero driver installation needed.</p>
+                </div>
+
+                <!-- Hardware 3 -->
+                <div class="msb-hw-card">
+                    <div class="msb-hw-icon">
+                        <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    </div>
+                    <h4>Weighing Scales</h4>
+                    <p>Direct RS-232 / USB weight scale capture for vegetables, fruits, sweets, grains, and bulk items.</p>
+                </div>
+
+                <!-- Hardware 4 -->
+                <div class="msb-hw-card">
+                    <div class="msb-hw-icon">
+                        <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                    </div>
+                    <h4>Tablets & Laptops</h4>
+                    <p>Runs seamlessly in Google Chrome, Edge, and Android tablets. Bill anywhere on the counter or warehouse floor.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+       TRANSPARENT PRICING PLANS
+       ========================================================================== -->
+    <section class="msb-section" id="pricing">
+        <div class="msb-container">
+            <div class="msb-section-header">
+                <span class="msb-section-eyebrow">Clear & Affordable</span>
+                <h2 class="msb-section-title">Simple Pricing For Growing Businesses</h2>
+                <p class="msb-section-desc">
+                    No hidden setup fees. Upgrade or downgrade anytime with seamless cloud data retention.
+                </p>
+            </div>
+
+            <!-- Billing Toggle -->
+            <div class="msb-pricing-toggle-wrap">
+                <span class="msb-toggle-label active" id="labelMonthly">Monthly Billing</span>
+                <label class="msb-switch">
+                    <input type="checkbox" id="pricingCycleToggle">
+                    <span class="msb-slider"></span>
+                </label>
+                <span class="msb-toggle-label" id="labelYearly">
+                    Annual Billing
+                    <span class="msb-discount-pill">Save 20%</span>
+                </span>
+            </div>
+
+            <div class="msb-pricing-grid">
+                <!-- Plan 1: Starter -->
+                <div class="msb-plan-card">
+                    <div class="msb-plan-name">Starter POS</div>
+                    <div class="msb-plan-subtitle">Ideal for small retail shops and single-counter stores.</div>
+                    <div class="msb-plan-price">
+                        <span class="msb-plan-currency">₹</span>
+                        <span class="msb-plan-amount" id="priceStarter">499</span>
+                        <span class="msb-plan-period" id="periodStarter">/ month</span>
+                    </div>
+                    <ul class="msb-plan-features">
+                        <li>
+                            <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            1 Counter Checkout License
+                        </li>
+                        <li>
+                            <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            Unlimited Sales Invoices
+                        </li>
+                        <li>
+                            <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            Thermal & A4 GST Invoicing
+                        </li>
+                        <li>
+                            <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            Inventory & Low Stock Alerts
+                        </li>
+                        <li>
+                            <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            Daily Sales & Expense Reports
+                        </li>
+                    </ul>
+                    <a href="https://wa.me/<?= $demo_whatsapp ?>?text=I%20want%20to%20subscribe%20to%20Starter%20POS%20Plan" target="_blank" class="msb-btn msb-btn-outline" style="width: 100%;">
+                        Get Started &rarr;
+                    </a>
+                </div>
+
+                <!-- Plan 2: Professional (Popular) -->
+                <div class="msb-plan-card popular">
+                    <div class="msb-popular-ribbon">Most Popular</div>
+                    <div class="msb-plan-name">Professional</div>
+                    <div class="msb-plan-subtitle">For busy pharmacies, supermarkets, and fashion stores.</div>
+                    <div class="msb-plan-price">
+                        <span class="msb-plan-currency">₹</span>
+                        <span class="msb-plan-amount" id="pricePro">999</span>
+                        <span class="msb-plan-period" id="periodPro">/ month</span>
+                    </div>
+                    <ul class="msb-plan-features">
+                        <li>
+                            <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            Up to 3 Active Counter Registers
+                        </li>
+                        <li>
+                            <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            Batch & Expiry Date Alert Engine
+                        </li>
+                        <li>
+                            <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            Automated GSTR-1 & GSTR-3B Export
+                        </li>
+                        <li>
+                            <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            Barcode Label Sticker Printing
+                        </li>
+                        <li>
+                            <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            Cashier Shifts & Anti-Theft Audit
+                        </li>
+                        <li>
+                            <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            WhatsApp E-Bill PDF Dispatch
+                        </li>
+                    </ul>
+                    <a href="https://wa.me/<?= $demo_whatsapp ?>?text=I%20want%20to%20subscribe%20to%20Professional%20POS%20Plan" target="_blank" class="msb-btn msb-btn-primary" style="width: 100%;">
+                        Start Free Trial &rarr;
+                    </a>
+                </div>
+
+                <!-- Plan 3: Enterprise -->
+                <div class="msb-plan-card">
+                    <div class="msb-plan-name">Enterprise Chain</div>
+                    <div class="msb-plan-subtitle">For multi-branch chains, warehouses, and wholesalers.</div>
+                    <div class="msb-plan-price">
+                        <span class="msb-plan-currency">₹</span>
+                        <span class="msb-plan-amount" id="priceEnterprise">1,999</span>
+                        <span class="msb-plan-period" id="periodEnterprise">/ month</span>
+                    </div>
+                    <ul class="msb-plan-features">
+                        <li>
+                            <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            Multi-Branch Outlets & Central Warehouse
+                        </li>
+                        <li>
+                            <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            Inter-Branch Stock Transfer (STN)
+                        </li>
+                        <li>
+                            <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            B2B Slabs & Wholesale Customer Credit Limits
+                        </li>
+                        <li>
+                            <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            Granular Role-Based Access Controls
+                        </li>
+                        <li>
+                            <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            Dedicated Account Manager & Priority 24/7 SLA
+                        </li>
+                    </ul>
+                    <a href="https://wa.me/<?= $demo_whatsapp ?>?text=I%20want%20to%20inquire%20about%20Enterprise%20Chain%20Plan" target="_blank" class="msb-btn msb-btn-outline" style="width: 100%;">
+                        Contact Sales &rarr;
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+       CUSTOMER REVIEWS & TESTIMONIALS
+       ========================================================================== -->
+    <section class="msb-section msb-section-alt" id="reviews">
+        <div class="msb-container">
+            <div class="msb-section-header">
+                <span class="msb-section-eyebrow">Real Results</span>
+                <h2 class="msb-section-title">Trusted By 2,500+ Retail Counters</h2>
+                <p class="msb-section-desc">
+                    Discover why pharmacy owners, grocery retailers, and distributors depend on MsbBillings daily.
+                </p>
+            </div>
+
+            <div class="msb-reviews-grid">
+                <!-- Review 1 -->
+                <div class="msb-review-card">
+                    <div class="msb-review-stars">
+                        ★★★★★
+                    </div>
+                    <p class="msb-review-quote">
+                        "The batch expiry warnings alone have saved our pharmacy more than ₹35,000 every single month in unsaleable medicines. The speed of billing during morning rush hour is unbelievable."
+                    </p>
+                    <div class="msb-review-author">
+                        <div class="msb-review-avatar">R</div>
+                        <div class="msb-review-info">
+                            <h5>Rajesh Mukherjee</h5>
+                            <span>City Medicos & Healthcare, Kolkata</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review 2 -->
+                <div class="msb-review-card">
+                    <div class="msb-review-stars">
+                        ★★★★★
+                    </div>
+                    <p class="msb-review-quote">
+                        "We run 4 billing counters in our supermarket. Even when all 4 scan barcodes simultaneously, there is zero delay. Thermal receipts cut instantly in 2 seconds flat!"
+                    </p>
+                    <div class="msb-review-author">
+                        <div class="msb-review-avatar" style="background: linear-gradient(135deg, #0284c7 0%, #4338ca 100%);">A</div>
+                        <div class="msb-review-info">
+                            <h5>Anil Agarwal</h5>
+                            <span>Modern Supermarket, Siliguri</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review 3 -->
+                <div class="msb-review-card">
+                    <div class="msb-review-stars">
+                        ★★★★★
+                    </div>
+                    <p class="msb-review-quote">
+                        "Our CA was thrilled with the automated GSTR-1 and GSTR-3B export. Everything matches our ledgers perfectly with zero accounting discrepancies at month end."
+                    </p>
+                    <div class="msb-review-author">
+                        <div class="msb-review-avatar" style="background: linear-gradient(135deg, #d97706 0%, #b45309 100%);">S</div>
+                        <div class="msb-review-info">
+                            <h5>Sunita Roy</h5>
+                            <span>Apex Retail Enterprises, Malda</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+       INTERACTIVE FAQ ACCORDION
+       ========================================================================== -->
+    <section class="msb-section" id="faq">
+        <div class="msb-container">
+            <div class="msb-section-header">
+                <span class="msb-section-eyebrow">Got Questions?</span>
+                <h2 class="msb-section-title">Frequently Asked Questions</h2>
+                <p class="msb-section-desc">
+                    Everything you need to know about setting up, hardware compatibility, and running MsbBillings.
+                </p>
+            </div>
+
+            <div class="msb-faq-wrap">
+                <!-- FAQ 1 -->
+                <div class="msb-faq-item active">
+                    <button class="msb-faq-trigger">
+                        <span>Will MsbBillings work with my existing thermal printer and barcode scanner?</span>
+                        <span class="msb-faq-icon">▼</span>
+                    </button>
+                    <div class="msb-faq-content" style="max-height: 200px;">
+                        <div class="msb-faq-content-inner">
+                            Yes! MsbBillings is completely hardware agnostic. It supports all standard 2-inch (58mm) and 3-inch (80mm) thermal printers connected via USB, LAN, Ethernet, or Bluetooth (TVS, Epson, Retsol, Pegasus, Everycom, etc.). Any 1D/2D barcode scanner works immediately without extra drivers.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ 2 -->
+                <div class="msb-faq-item">
+                    <button class="msb-faq-trigger">
+                        <span>How does the pharmacy batch and expiry alert engine work?</span>
+                        <span class="msb-faq-icon">▼</span>
+                    </button>
+                    <div class="msb-faq-content">
+                        <div class="msb-faq-content-inner">
+                            When entering purchases, each item is tagged with its batch code, manufacturing date, and expiry date. The software actively monitors upcoming expirations (e.g., 30, 60, or 90 days out) and warns cashiers before billing an expired or near-expiry medicine, allowing you to return it to the distributor on time.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ 3 -->
+                <div class="msb-faq-item">
+                    <button class="msb-faq-trigger">
+                        <span>Can I migrate my existing customer and product database from Excel?</span>
+                        <span class="msb-faq-icon">▼</span>
+                    </button>
+                    <div class="msb-faq-content">
+                        <div class="msb-faq-content-inner">
+                            Absolutely. MsbBillings features a built-in CSV/Excel Data Importer. You can upload thousands of products, opening stock counts, batch numbers, and customer balances in just a few minutes. Our support team can also assist with the initial migration.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ 4 -->
+                <div class="msb-faq-item">
+                    <button class="msb-faq-trigger">
+                        <span>Can I manage multiple branch stores and see central analytics?</span>
+                        <span class="msb-faq-icon">▼</span>
+                    </button>
+                    <div class="msb-faq-content">
+                        <div class="msb-faq-content-inner">
+                            Yes, our Enterprise tier lets you connect multiple branches and warehouses to one central cloud database. You can track real-time sales per outlet, transfer inventory between branches with transfer notes (STN), and access consolidated financial ledgers from your phone or laptop.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ 5 -->
+                <div class="msb-faq-item">
+                    <button class="msb-faq-trigger">
+                        <span>How is our business data secured and backed up?</span>
+                        <span class="msb-faq-icon">▼</span>
+                    </button>
+                    <div class="msb-faq-content">
+                        <div class="msb-faq-content-inner">
+                            All communications are encrypted using 256-bit SSL technology. Your database is automatically backed up every night to secure off-site cloud storage. Even if your shop computer crashes or is damaged, your records remain 100% safe and can be restored immediately.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+       DEMO BOOKING / INQUIRY BANNER
+       ========================================================================== -->
+    <section class="msb-section" style="padding-top: 0;">
+        <div class="msb-container">
+            <div class="msb-cta-card">
+                <div class="msb-cta-grid">
+                    <div>
+                        <h2>Ready To Modernize Your Counter Billing?</h2>
                         <p>
-                            Trusted by hundreds of businesses across India. Whether you are running a single neighborhood counter or managing a statewide distribution chain, MsbBillings scales seamlessly without slowdowns.
+                            Get in touch today for a free 1-on-1 walkthrough tailored to your store. Start issuing lightning-fast GST bills and managing inventory with complete peace of mind.
                         </p>
+                        <div style="margin-top: 24px; display: flex; gap: 16px; flex-wrap: wrap;">
+                            <div style="display: flex; align-items: center; gap: 8px; font-size: 14px;">
+                                <span style="color: #34d399;">✔</span> Free Setup & Hardware Help
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px; font-size: 14px;">
+                                <span style="color: #34d399;">✔</span> Free Excel Data Migration
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px; font-size: 14px;">
+                                <span style="color: #34d399;">✔</span> 24/7 Telephone & WhatsApp Support
+                            </div>
+                        </div>
                     </div>
-                    <div style="margin-top: 25px;">
-                        <a href="<?= console_url('user/login') ?>" class="btn btn-success btn-lg" style="background:#35aa47; border-color:#35aa47; font-weight:600;">
-                            Get Started Now &rarr;
+
+                    <form class="msb-cta-form" id="leadInquiryForm" onsubmit="handleInquirySubmit(event)">
+                        <input type="text" id="leadName" class="msb-form-input" placeholder="Your Name or Business Name" required>
+                        <input type="tel" id="leadPhone" class="msb-form-input" placeholder="Mobile / WhatsApp Number" required>
+                        <select id="leadType" class="msb-form-input" style="cursor: pointer;">
+                            <option value="Supermarket / Grocery">Supermarket / Grocery</option>
+                            <option value="Pharmacy / Chemist">Pharmacy / Chemist Store</option>
+                            <option value="Apparel & Footwear">Apparel & Footwear</option>
+                            <option value="Wholesale / Distribution">Wholesale / Distribution</option>
+                            <option value="Cable TV / ISP">Cable TV / ISP Provider</option>
+                            <option value="Other Retail">Other Retail Business</option>
+                        </select>
+                        <button type="submit" class="msb-btn msb-btn-primary" style="width: 100%; padding: 13px;">
+                            Request Free Demo & Callback
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+       MODERN FOOTER
+       ========================================================================== -->
+    <footer class="msb-footer">
+        <div class="msb-container">
+            <div class="msb-footer-grid">
+                <!-- Col 1: Brand Info -->
+                <div class="msb-footer-col">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+                        <div class="msb-logo-mark" style="width: 34px; height: 34px; font-size: 16px;">M</div>
+                        <span style="font-size: 20px; font-weight: 800; color: #fff;">MsbBillings</span>
+                    </div>
+                    <p style="font-size: 14px; line-height: 1.6; margin-bottom: 20px;">
+                        Enterprise-grade Cloud Billing, POS Invoicing, and Multi-Branch Inventory Control designed for high-speed retail counters across India.
+                    </p>
+                    <div style="display: flex; gap: 10px;">
+                        <a href="https://wa.me/<?= $demo_whatsapp ?>" target="_blank" style="width: 36px; height: 36px; border-radius: 50%; background: #1e293b; display: flex; align-items: center; justify-content: center; color: #25d366;">
+                            <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2"/></svg>
+                        </a>
+                        <a href="mailto:<?= $support_email ?>" style="width: 36px; height: 36px; border-radius: 50%; background: #1e293b; display: flex; align-items: center; justify-content: center; color: #38bdf8;">
+                            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
                         </a>
                     </div>
                 </div>
 
-                <div class="col-md-7 col-sm-12" style="margin-top: 15px;">
-                    <div class="row">
-                        <div class="col-sm-6 col-xs-6">
-                            <div class="counter-main">
-                                <i class="fa fa-file-text-o"></i>
-                                <div class="counter-value">50,000+</div>
-                                <span>Invoices Processed</span>
-                            </div>
-                        </div>
-
-                        <div class="col-sm-6 col-xs-6">
-                            <div class="counter-main">
-                                <i class="fa fa-shopping-cart"></i>
-                                <div class="counter-value">2,500+</div>
-                                <span>Retail Counters</span>
-                            </div>
-                        </div>
-
-                        <div class="col-sm-6 col-xs-6">
-                            <div class="counter-main">
-                                <i class="fa fa-server"></i>
-                                <div class="counter-value">99.98%</div>
-                                <span>Cloud Uptime</span>
-                            </div>
-                        </div>
-
-                        <div class="col-sm-6 col-xs-6">
-                            <div class="counter-main">
-                                <i class="fa fa-headphones"></i>
-                                <div class="counter-value">24 / 7</div>
-                                <span>Customer Support</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Testimonials Section -->
-    <section class="testimonial-section" id="testimonials">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-8 col-md-offset-2 text-center">
-                    <h2 class="head-title">What Our Clients Say</h2>
-                    <p style="color: #64748b;">Hear directly from retail owners and accountants running MsbBillings daily.</p>
-                    <div class="divider"></div>
-                </div>
-            </div>
-
-            <div class="row" style="margin-top: 20px;">
-                <div class="col-md-4 col-sm-6">
-                    <div class="testi-card">
-                        <div class="testi-stars">
-                            <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i>
-                        </div>
-                        <p class="testi-text">
-                            "MsbBillings transformed our pharmacy counter. The batch expiry warnings alone have saved us thousands of rupees in unsaleable stock every month."
-                        </p>
-                        <div class="testi-author">
-                            <div class="testi-avatar">R</div>
-                            <div class="testi-info">
-                                <h5>Rajesh Mukherjee</h5>
-                                <span>City Medicos, Kolkata</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-4 col-sm-6">
-                    <div class="testi-card">
-                        <div class="testi-stars">
-                            <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i>
-                        </div>
-                        <p class="testi-text">
-                            "Counter billing speed is incredible. Our cashier scans items with barcode and bills print on thermal in under 3 seconds. Rush hour lines have vanished!"
-                        </p>
-                        <div class="testi-author">
-                            <div class="testi-avatar" style="background:#0284c7;">A</div>
-                            <div class="testi-info">
-                                <h5>Anil Agarwal</h5>
-                                <span>Modern Supermarket, Siliguri</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-4 col-sm-12">
-                    <div class="testi-card">
-                        <div class="testi-stars">
-                            <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i>
-                        </div>
-                        <p class="testi-text">
-                            "Our CA loves the automatic GSTR-1 and ledger export. We reconcile sales and inventory at the end of every week with zero accounting discrepancies."
-                        </p>
-                        <div class="testi-author">
-                            <div class="testi-avatar" style="background:#d97706;">S</div>
-                            <div class="testi-info">
-                                <h5>Sunita Roy</h5>
-                                <span>Apex Enterprise, Malda</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer id="contact">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4 col-sm-6">
-                    <h3 class="fo-title">Quick Navigation</h3>
-                    <ul class="f1-list">
-                        <li><a href="<?= base_url() ?>"><i class="fa fa-angle-right"></i> Home Overview</a></li>
-                        <li><a href="#services"><i class="fa fa-angle-right"></i> Core Capabilities</a></li>
-                        <li><a href="#solutions"><i class="fa fa-angle-right"></i> POS Industry Solutions</a></li>
-                        <li><a href="#about"><i class="fa fa-angle-right"></i> Hardware Interoperability</a></li>
-                        <li><a href="<?= console_url('user/login') ?>" target="_blank"><i class="fa fa-angle-right"></i> Staff / Admin Console Login</a></li>
-                        <li><a href="<?= console_url('user/forgot_password') ?>" target="_blank"><i class="fa fa-angle-right"></i> Account Recovery</a></li>
+                <!-- Col 2: Navigation Links -->
+                <div class="msb-footer-col">
+                    <h4>Quick Links</h4>
+                    <ul class="msb-footer-links">
+                        <li><a href="#features">Core POS Features</a></li>
+                        <li><a href="#solutions">Retail & Pharmacy</a></li>
+                        <li><a href="#hardware">Supported Thermal Printers</a></li>
+                        <li><a href="#pricing">Transparent Pricing</a></li>
+                        <li><a href="#faq">Frequently Asked Questions</a></li>
+                        <li><a href="<?= $login_url ?>" target="_blank">Staff / Admin Console</a></li>
                     </ul>
                 </div>
 
-                <div class="col-md-4 col-sm-6">
-                    <h3 class="fo-title">Follow & Community</h3>
-                    <p style="font-size: 14px; line-height: 1.6; color: #94a3b8; margin-bottom: 16px;">
-                        Stay connected with the latest updates on GST amendments, thermal hardware setups, and retail billing tips.
-                    </p>
-                    <ul class="company-social">
-                        <li><a href="https://wa.me/9189562423934" target="_blank"><i class="fa fa-whatsapp"></i></a></li>
-                        <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                        <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                        <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
-                        <li><a href="#"><i class="fa fa-youtube"></i></a></li>
+                <!-- Col 3: Modules -->
+                <div class="msb-footer-col">
+                    <h4>Industry Modules</h4>
+                    <ul class="msb-footer-links">
+                        <li><a href="#solutions">Supermarket Checkout</a></li>
+                        <li><a href="#solutions">Chemist & Pharmacy POS</a></li>
+                        <li><a href="#solutions">Garment Barcode Tags</a></li>
+                        <li><a href="#solutions">Wholesale B2B Billing</a></li>
+                        <li><a href="#solutions">Digital Cable TV Billing</a></li>
+                        <li><a href="#solutions">ISP Broadband Subscriptions</a></li>
                     </ul>
                 </div>
 
-                <div class="col-md-4 col-sm-12">
-                    <h3 class="fo-title">Contact & Helpdesk</h3>
-                    <div class="contacts-item">
-                        <div class="cleft"><i class="fa fa-phone"></i></div>
-                        <div class="cright">
-                            <p style="font-weight: 600; color: #fff;">Direct Line</p>
-                            <a href="tel:+9189562423934">+91 89562 423934</a>
+                <!-- Col 4: Contact & Helpdesk -->
+                <div class="msb-footer-col">
+                    <h4>Helpdesk & Support</h4>
+                    <div class="msb-footer-contact-item">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                        <div>
+                            <div style="font-weight: 600; color: #fff;">Helpline Call</div>
+                            <a href="tel:<?= str_replace(' ', '', $support_phone) ?>"><?= $support_phone ?></a>
                         </div>
                     </div>
 
-                    <div class="contacts-item">
-                        <div class="cleft"><i class="fa fa-envelope"></i></div>
-                        <div class="cright">
-                            <p style="font-weight: 600; color: #fff;">Email Support</p>
-                            <a href="mailto:admin@msbbillings.in">admin@msbbillings.in</a>
+                    <div class="msb-footer-contact-item">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                        <div>
+                            <div style="font-weight: 600; color: #fff;">Direct Email</div>
+                            <a href="mailto:<?= $support_email ?>"><?= $support_email ?></a>
                         </div>
                     </div>
 
-                    <div class="contacts-item">
-                        <div class="cleft"><i class="fa fa-map-marker"></i></div>
-                        <div class="cright">
-                            <p style="font-weight: 600; color: #fff;">Head Office</p>
-                            <p>MsbBillings Technologies, West Bengal, India</p>
+                    <div class="msb-footer-contact-item">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        <div>
+                            <div style="font-weight: 600; color: #fff;">Head Office</div>
+                            <div>MsbBillings Technologies, West Bengal, India</div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="infoborderb"></div>
-        </div>
-
-        <div class="copy-right">
-            <div class="container">
-                <div class="row">
-                    <div class="col-sm-6 text-left col-xs-12">
-                        <p>© <?= date('Y') ?> MsbBillings. All Rights Reserved.</p>
-                    </div>
-                    <div class="col-sm-6 text-right col-xs-12">
-                        <p>Powered by <a href="https://msbbiling.in" target="_blank" style="color: #35aa47; text-decoration: none; font-weight: 600;">MsbBillings Cloud Engine</a></p>
-                    </div>
+            <!-- Footer Bottom -->
+            <div class="msb-footer-bottom">
+                <div>
+                    &copy; <?= $current_year ?> MsbBillings. All Rights Reserved.
+                </div>
+                <div style="display: flex; gap: 20px;">
+                    <a href="<?= $login_url ?>">Staff Sign In</a>
+                    <a href="<?= $forgot_url ?>">Account Recovery</a>
+                    <a href="#faq">Support</a>
                 </div>
             </div>
         </div>
     </footer>
 
-    <!-- Floating WhatsApp Button -->
-    <a href="https://wa.me/9189562423934?text=Hello%2C%20I%20would%20like%20more%20information%20about%20MsbBillings%20POS" class="bootom-whatsapp" target="_blank" title="Chat on WhatsApp">
-        <i class="fa fa-whatsapp"></i>
+    <!-- Floating WhatsApp Live Chat Button -->
+    <a href="https://wa.me/<?= $demo_whatsapp ?>?text=Hello%20MsbBillings%2C%20I%20would%20like%20more%20information%20about%20your%20POS%20Software" target="_blank" class="msb-floating-whatsapp" title="Chat on WhatsApp">
+        <svg width="30" height="30" fill="currentColor" viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.41a8.16 8.16 0 0 1 2.4 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.19 8.19 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24m4.52 11.5c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.03-1.25-.75-.67-1.26-1.5-1.41-1.75-.14-.25-.02-.39.11-.51.11-.11.25-.29.37-.44.13-.14.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.56-1.34-.76-1.84-.2-.49-.4-.42-.56-.43h-.47c-.17 0-.44.06-.67.31-.23.25-.89.87-.89 2.12s.91 2.46 1.04 2.63c.13.17 1.8 2.75 4.36 3.86.61.26 1.09.42 1.46.54.61.2 1.17.17 1.61.1.49-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.17-.48-.29z"/></svg>
     </a>
 
-    <!-- Scroll To Top Button -->
-    <a href="#" class="scrollToTop" id="scrollToTopBtn" title="Back to Top">
-        <i class="fa fa-angle-up"></i>
-    </a>
+    <!-- Scroll to Top Button -->
+    <button class="msb-scroll-top" id="msbScrollTop" title="Scroll To Top" aria-label="Scroll To Top">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
+    </button>
 
-    <!-- Javascript Libraries from local Smart School theme -->
-    <script src="<?= base_url('assets/backend/themes/material_pink/js/jquery.min.js') ?>"></script>
-    <script src="<?= base_url('assets/backend/themes/material_pink/js/bootstrap.min.js') ?>"></script>
-    <script src="<?= base_url('assets/backend/themes/material_pink/js/owl.carousel.min.js') ?>"></script>
-
+    <!-- ==========================================================================
+       INTERACTIVE JAVASCRIPT LOGIC
+       ========================================================================== -->
     <script>
-        $(document).ready(function() {
-            // Scroll to Top behavior
-            $(window).scroll(function() {
-                if ($(this).scrollTop() > 300) {
-                    $('#scrollToTopBtn').fadeIn();
+        // 1. Mobile Drawer Toggle
+        const drawerOpenBtn = document.getElementById('msbDrawerOpen');
+        const drawerCloseBtn = document.getElementById('msbDrawerClose');
+        const drawer = document.getElementById('msbDrawer');
+        const drawerOverlay = document.getElementById('msbDrawerOverlay');
+        const drawerLinks = document.querySelectorAll('.drawer-link');
+
+        function openDrawer() {
+            drawer.classList.add('active');
+            drawerOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeDrawer() {
+            drawer.classList.remove('active');
+            drawerOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        if (drawerOpenBtn) drawerOpenBtn.addEventListener('click', openDrawer);
+        if (drawerCloseBtn) drawerCloseBtn.addEventListener('click', closeDrawer);
+        if (drawerOverlay) drawerOverlay.addEventListener('click', closeDrawer);
+        drawerLinks.forEach(link => link.addEventListener('click', closeDrawer));
+
+        // 2. Sticky Header Shadow & Scroll to Top
+        const header = document.getElementById('msbHeader');
+        const scrollTopBtn = document.getElementById('msbScrollTop');
+
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            if (scrollY > 40) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+
+            if (scrollY > 350) {
+                scrollTopBtn.classList.add('visible');
+            } else {
+                scrollTopBtn.classList.remove('visible');
+            }
+        });
+
+        if (scrollTopBtn) {
+            scrollTopBtn.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+
+        // 3. Pricing Toggle Switch (Monthly / Yearly)
+        const pricingToggle = document.getElementById('pricingCycleToggle');
+        const labelMonthly = document.getElementById('labelMonthly');
+        const labelYearly = document.getElementById('labelYearly');
+        
+        const priceStarter = document.getElementById('priceStarter');
+        const periodStarter = document.getElementById('periodStarter');
+        const pricePro = document.getElementById('pricePro');
+        const periodPro = document.getElementById('periodPro');
+        const priceEnterprise = document.getElementById('priceEnterprise');
+        const periodEnterprise = document.getElementById('periodEnterprise');
+
+        if (pricingToggle) {
+            pricingToggle.addEventListener('change', () => {
+                const isYearly = pricingToggle.checked;
+                if (isYearly) {
+                    labelMonthly.classList.remove('active');
+                    labelYearly.classList.add('active');
+                    priceStarter.innerText = '399';
+                    periodStarter.innerText = '/ mo (billed yearly)';
+                    pricePro.innerText = '799';
+                    periodPro.innerText = '/ mo (billed yearly)';
+                    priceEnterprise.innerText = '1,599';
+                    periodEnterprise.innerText = '/ mo (billed yearly)';
                 } else {
-                    $('#scrollToTopBtn').fadeOut();
+                    labelYearly.classList.remove('active');
+                    labelMonthly.classList.add('active');
+                    priceStarter.innerText = '499';
+                    periodStarter.innerText = '/ month';
+                    pricePro.innerText = '999';
+                    periodPro.innerText = '/ month';
+                    priceEnterprise.innerText = '1,999';
+                    periodEnterprise.innerText = '/ month';
                 }
             });
+        }
 
-            $('#scrollToTopBtn').click(function(e) {
-                e.preventDefault();
-                $('html, body').animate({scrollTop: 0}, 600);
-                return false;
-            });
+        // 4. Interactive FAQ Accordion
+        const faqItems = document.querySelectorAll('.msb-faq-item');
+        faqItems.forEach(item => {
+            const trigger = item.querySelector('.msb-faq-trigger');
+            const content = item.querySelector('.msb-faq-content');
 
-            // Smooth scrolling for internal anchor links
-            $('a[href^="#"]').on('click', function(e) {
-                var target = $(this.getAttribute('href'));
-                if (target.length) {
-                    e.preventDefault();
-                    $('html, body').stop().animate({
-                        scrollTop: target.offset().top - 80
-                    }, 800);
+            trigger.addEventListener('click', () => {
+                const isActive = item.classList.contains('active');
+
+                // Close all other items
+                faqItems.forEach(otherItem => {
+                    otherItem.classList.remove('active');
+                    const otherContent = otherItem.querySelector('.msb-faq-content');
+                    if (otherContent) otherContent.style.maxHeight = null;
+                });
+
+                if (!isActive) {
+                    item.classList.add('active');
+                    content.style.maxHeight = content.scrollHeight + 'px';
                 }
             });
         });
+
+        // 5. POS Simulator Interactive Scan & Print Actions
+        const simulatedItems = [
+            { name: 'Dolo 650mg Strip', batch: 'DOL-719', exp: '03/2028', qty: '1 STR', rate: '₹34.00', total: 34.00 },
+            { name: 'Tata Tea Gold 500g', batch: 'TTG-420', exp: '10/2027', qty: '1 PKT', rate: '₹280.00', total: 280.00 },
+            { name: 'Colgate MaxFresh 150g', batch: 'CMF-118', exp: '05/2028', qty: '2 PCS', rate: '₹120.00', total: 240.00 }
+        ];
+        let simIndex = 0;
+        let currentGrandTotal = 1383.15;
+
+        const btnScan = document.getElementById('btnSimulateScan');
+        const posCartBody = document.getElementById('posCartBody');
+        const posGrandTotal = document.getElementById('posGrandTotal');
+        const posSearchDisplay = document.getElementById('posSearchDisplay');
+        const posReceiptBadge = document.getElementById('posReceiptBadge');
+
+        if (btnScan) {
+            btnScan.addEventListener('click', () => {
+                const item = simulatedItems[simIndex % simulatedItems.length];
+                simIndex++;
+
+                posSearchDisplay.innerText = 'Scanned: ' + item.name + ' [' + item.batch + ']';
+                posSearchDisplay.style.color = '#34d399';
+
+                const newRow = document.createElement('tr');
+                newRow.style.backgroundColor = 'rgba(16, 185, 129, 0.15)';
+                newRow.innerHTML = `
+                    <td>
+                        <div style="font-weight: 700; color: #fff;">${item.name}</div>
+                        <div style="color: #94a3b8; font-size: 11px;">Batch: #${item.batch} &bull; Exp: ${item.exp}</div>
+                    </td>
+                    <td><span class="msb-pos-tag">${item.qty}</span></td>
+                    <td>${item.rate}</td>
+                    <td>5%</td>
+                    <td style="text-align: right; font-weight: 700; color: #fff;">₹${item.total.toFixed(2)}</td>
+                `;
+                posCartBody.appendChild(newRow);
+
+                currentGrandTotal += item.total;
+                posGrandTotal.innerText = '₹' + currentGrandTotal.toFixed(2);
+
+                setTimeout(() => {
+                    newRow.style.backgroundColor = 'transparent';
+                    posSearchDisplay.innerText = 'Scan barcode or type item name...';
+                    posSearchDisplay.style.color = '#94a3b8';
+                }, 1200);
+            });
+        }
+
+        function simulateThermalPrint() {
+            if (posReceiptBadge) {
+                posReceiptBadge.style.display = 'flex';
+                posReceiptBadge.style.animation = 'none';
+                setTimeout(() => {
+                    posReceiptBadge.style.animation = 'floatAnim 3s ease-in-out infinite';
+                }, 10);
+            }
+            alert('🖨️ Thermal Command Sent: 3-Inch (80mm) receipt cut and sent to cash drawer!');
+        }
+
+        function alertSimulatedPayment(method) {
+            alert('💳 Simulated ' + method + ' payment received for ' + posGrandTotal.innerText + '.\nInvoice #' + Math.floor(100000 + Math.random() * 900000) + ' saved to cloud!');
+        }
+
+        // 6. Lead Inquiry Form to WhatsApp
+        function handleInquirySubmit(event) {
+            event.preventDefault();
+            const name = document.getElementById('leadName').value;
+            const phone = document.getElementById('leadPhone').value;
+            const type = document.getElementById('leadType').value;
+
+            const message = encodeURIComponent(`Hi MsbBillings, I want a demo.\nName: ${name}\nPhone: ${phone}\nBusiness Type: ${type}`);
+            window.open(`https://wa.me/<?= $demo_whatsapp ?>?text=${message}`, '_blank');
+        }
     </script>
 
 </body>
