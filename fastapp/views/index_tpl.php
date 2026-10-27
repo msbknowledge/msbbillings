@@ -109,7 +109,7 @@
             <div class="row">
                 <div class="col-md-3 col-sm-4 col-xs-12">
                     <a class="logo" href="<?= base_url() ?>">
-                        <img src="<?= base_url('assets/images/logo.png') ?>" alt="MsbBillings" onerror="this.onerror=null; this.src='<?= base_url('msb/msbbillingslogo.png') ?>';">
+                        <img src="<?= base_url('msb/msbbillingslogo.png') ?>" alt="MsbBillings" style="max-height: 48px; width: auto;">
                     </a>
                 </div>
                 <div class="col-md-9 col-sm-8 col-xs-12">

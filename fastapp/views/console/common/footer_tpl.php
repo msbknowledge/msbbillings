@@ -2,70 +2,6 @@
             </section><!-- /.content -->
         </div><!-- /.content-wrapper -->
 
-        <!-- Standard System Modals -->
-        <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Settings</h4>
-                    </div>
-                    <div class="modal-body">
-                        <p>Configure parameters...</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">OK</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="modal fade" id="subscription_modal" tabindex="-1" role="dialog">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Subscription</h4>
-                    </div>
-                    <div class="modal-body"><p></p></div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="modal fade" id="formModal" tabindex="-1" role="dialog">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Form Details</h4>
-                    </div>
-                    <div class="modal-body"><p></p></div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="modal fade" id="formAddEditModal" tabindex="-1" role="dialog">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Entry</h4>
-                    </div>
-                    <div class="modal-body"><p></p></div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- Smart School Main Footer -->
         <footer class="main-footer">
             <div class="pull-right hidden-xs">
@@ -76,13 +12,90 @@
     </div><!-- /.wrapper -->
 <?php endif; ?>
 
+<!-- Standard System Modals (Placed as direct children of body to avoid z-index/stacking context trapping) -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 class="modal-title" style="margin: 0; font-size: 18px; font-weight: 600;">Detail</h3>
+            </div>
+            <div class="modal-body">
+                <p style="margin: 0;">Please Wait...</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="$('#myModal').modal('hide')">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="subscription_modal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 class="modal-title" style="margin: 0; font-size: 18px; font-weight: 600;">Subscription</h3>
+            </div>
+            <div class="modal-body"><p style="margin: 0;"></p></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="formModal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 class="modal-title" style="margin: 0; font-size: 18px; font-weight: 600;">Form Details</h3>
+            </div>
+            <div class="modal-body"><p style="margin: 0;"></p></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary btn-save-modal">Save!</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="formAddEditModal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 class="modal-title" style="margin: 0; font-size: 18px; font-weight: 600;">Entry</h3>
+            </div>
+            <div class="modal-body">
+                <p style="margin: 0;">Please Wait...</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary btn-save-modal">Save!</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- External JavaScript Libraries from Smart School Assets -->
 <script src="<?= base_url('assets/backend/dist/js/jquery-ui.min.js'); ?>"></script>
 <script src="<?= base_url('assets/backend/plugins/datatables/jquery.dataTables.min.js'); ?>"></script>
 <script src="<?= base_url('assets/backend/plugins/datatables/dataTables.bootstrap.min.js'); ?>"></script>
 <script src="<?= base_url('assets/backend/dist/js/app.min.js'); ?>"></script>
 
-<!-- Smart School Sidebar & Interactive Collapse Engine -->
+<!-- Project Libraries & Console Core Utilities -->
+<script src="<?= base_url('js/jquery.cookie.js'); ?>"></script>
+<script src="<?= base_url('js/chosen.jquery.min.js'); ?>"></script>
+<script src="<?= base_url('js/jquery.uniform.min.js'); ?>"></script>
+<script src="<?= base_url('js/jquery.noty.js'); ?>"></script>
+<script src="<?= base_url('js/jquery.iphone.toggle.js'); ?>"></script>
+<script src="<?= base_url('js/jquery.datetimepicker.js'); ?>"></script>
+<script src="<?= base_url('js/fastapp.js'); ?>?v=<?= time() ?>"></script>
+
+<!-- Smart School Sidebar & Interactive Table / Modal Engine -->
 <script>
     // Global collapseSidebar function for Smart School
     window.collapseSidebar = function() {
@@ -130,6 +143,59 @@
         $(document).on('click', '.content-wrapper', function() {
             if ($(window).width() <= 767 && $('body').hasClass('sidebar-open')) {
                 $('body').removeClass('sidebar-open');
+            }
+        });
+
+        // Select All checkboxes delegation
+        $(document).on('click', '.btn_select_all', function(e) {
+            e.preventDefault();
+            var $form = $(this).closest('form');
+            if ($form.length === 0) {
+                $form = $('.choose_entry_form').length ? $('.choose_entry_form') : $(document);
+            }
+            var $boxes = $form.find('input.selectedItem, .selectedItem');
+            $boxes.prop('checked', true).attr('checked', 'checked');
+            $boxes.parent('span').addClass('checked');
+            if ($.fn.iCheck) {
+                $boxes.iCheck('check');
+            }
+            if ($.uniform && $.uniform.update) {
+                $.uniform.update($boxes);
+            }
+        });
+
+        // Deselect All checkboxes delegation
+        $(document).on('click', '.btn_deselect_all', function(e) {
+            e.preventDefault();
+            var $form = $(this).closest('form');
+            if ($form.length === 0) {
+                $form = $('.choose_entry_form').length ? $('.choose_entry_form') : $(document);
+            }
+            var $boxes = $form.find('input.selectedItem, .selectedItem');
+            $boxes.prop('checked', false).removeAttr('checked');
+            $boxes.parent('span').removeClass('checked');
+            if ($.fn.iCheck) {
+                $boxes.iCheck('uncheck');
+            }
+            if ($.uniform && $.uniform.update) {
+                $.uniform.update($boxes);
+            }
+        });
+
+        // Modal Save button handler for #formAddEditModal
+        $(document).on('click', '#formAddEditModal .modal-footer .btn-save-modal, #formAddEditModal .modal-footer .btn-primary', function(e) {
+            var modalTitle = ($('#formAddEditModal .modal-header h3').text() || $('#formAddEditModal .modal-header .modal-title').text() || '').toLowerCase();
+            if (modalTitle.indexOf('edit') !== -1 && typeof saveSingleOperation === 'function') {
+                e.preventDefault();
+                saveSingleOperation();
+            } else if (typeof addSingleOperation === 'function') {
+                e.preventDefault();
+                addSingleOperation();
+            } else {
+                var $form = $('#formAddEditModal form');
+                if ($form.length) {
+                    $form.submit();
+                }
             }
         });
     });

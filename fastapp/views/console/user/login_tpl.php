@@ -56,19 +56,26 @@
         }
         .form-group.has-feedback input.form-control {
             height: 50px;
-            border: 1.5px solid #dfdfdf;
-            border-radius: 4px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 6px;
             padding-left: 18px;
             padding-right: 45px;
             font-size: 15px;
-            background: transparent;
-            box-shadow: 0px 2px 15px rgba(0,0,0,0.06);
+            font-weight: 500;
+            color: #0f172a !important;
+            background: #ffffff !important;
+            box-shadow: 0px 2px 10px rgba(0,0,0,0.04);
             transition: all 0.25s ease;
         }
+        .form-group.has-feedback input.form-control::placeholder {
+            color: #94a3b8 !important;
+            opacity: 1 !important;
+        }
         .form-group.has-feedback input.form-control:focus {
-            background: #fff;
+            background: #ffffff !important;
+            color: #0f172a !important;
             border-color: #35aa47 !important;
-            box-shadow: 0 0 0 3px rgba(53, 170, 71, 0.15);
+            box-shadow: 0 0 0 3px rgba(53, 170, 71, 0.2);
         }
         .form-control-feedback {
             line-height: 50px;
@@ -228,9 +235,9 @@
                     <!-- Left Side: Login Form -->
                     <div class="col-lg-4 col-md-5 col-sm-12 nopadding" style="display: flex; align-items: center;">
                         <div class="loginbg">
-                            <div class="form-top-left logowidth text-left">
+                            <div class="form-top-left logowidth text-left" style="margin-bottom: 25px;">
                                 <a href="<?= base_url() ?>">
-                                    <img src="<?= base_url('assets/backend/images/s_logo.png') ?>" alt="MsbBillings" onerror="this.onerror=null; this.src='<?= base_url('msb/msbbillingslogo.png') ?>';">
+                                    <img src="<?= base_url('msb/msbbillingslogo.png') ?>" alt="MsbBillings" style="max-height: 48px; width: auto;">
                                 </a>
                             </div>
 

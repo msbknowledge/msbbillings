@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="<?= base_url('assets/backend/dist/themes/default/skins/_all-skins.min.css') ?>">
     <link rel="stylesheet" href="<?= base_url('assets/backend/dist/themes/default/ss-main.css') ?>">
     <link rel="stylesheet" href="<?= base_url('assets/backend/dist/css/custom_style.css') ?>">
-    <link rel="stylesheet" href="<?= base_url('assets/backend/theme.css') ?>">
+    <link rel="stylesheet" href="<?= base_url('assets/backend/theme.css') ?>?v=<?= time() ?>">
     <link rel="stylesheet" href="<?= base_url('assets/backend/dist/css/jquery.mCustomScrollbar.min.css') ?>">
     <link rel="stylesheet" href="<?= base_url('assets/backend/plugins/datatables/dataTables.bootstrap.css') ?>">
 
@@ -49,11 +49,284 @@
             font-size: 14px;
             font-weight: 500;
         }
+
+        /* Modal Smart School Styling & z-index guarantees */
+        .modal {
+            z-index: 1060 !important;
+        }
+        .modal-backdrop {
+            z-index: 1055 !important;
+            background-color: #0f172a !important;
+        }
+        .modal-backdrop.in {
+            opacity: 0.55 !important;
+        }
+        .modal-dialog {
+            margin: 30px auto;
+            z-index: 1061;
+        }
+        .modal-content {
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+            border: none;
+            overflow: hidden;
+        }
+        .modal-header {
+            background-color: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 15px 20px;
+        }
+        .modal-header .close {
+            font-size: 24px;
+            color: #64748b;
+            opacity: 0.8;
+            margin-top: -2px;
+        }
+        .modal-header .close:hover {
+            color: #0f172a;
+            opacity: 1;
+        }
+        .modal-title {
+            color: #1e293b;
+            font-size: 17px;
+            font-weight: 600;
+        }
+        .modal-body {
+            padding: 20px;
+            color: #334155;
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+        }
+        .modal-footer {
+            background-color: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            padding: 12px 20px;
+        }
+
+        /* Universal Form Inputs & Textareas Styling & Text Color */
+        input[type="text"],
+        input[type="password"],
+        input[type="email"],
+        input[type="number"],
+        input[type="tel"],
+        input[type="search"],
+        input[type="date"],
+        select,
+        textarea,
+        .form-control,
+        .search_box input,
+        .search_box select,
+        .dataTables_filter input,
+        .dataTables_length select,
+        .chosen-container-single .chosen-single,
+        .chosen-container .chosen-drop,
+        .chosen-container .chosen-search input {
+            color: #0f172a !important; /* Solid Slate-900, clear & dark readable text */
+            background-color: #ffffff !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 5px !important;
+            font-size: 13.5px !important;
+            font-weight: 500 !important;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+        }
+
+        input::placeholder,
+        textarea::placeholder,
+        .form-control::placeholder {
+            color: #94a3b8 !important;
+            opacity: 1 !important;
+            font-weight: 400 !important;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus,
+        .form-control:focus,
+        .chosen-container-active .chosen-single {
+            color: #0f172a !important;
+            background-color: #ffffff !important;
+            border-color: #35aa47 !important;
+            outline: none !important;
+            box-shadow: 0 0 0 3px rgba(53, 170, 71, 0.2) !important;
+        }
+
+        /* Input labels & control group headers */
+        .control-label,
+        label,
+        .form-group label {
+            color: #334155 !important;
+            font-weight: 600 !important;
+            font-size: 13px !important;
+            margin-bottom: 5px !important;
+        }
+
+        /* Action Buttons and Icons Styling for All Tables & Modules */
+        .table td .btn,
+        .table_view_wrapper .btn,
+        .box-content .btn {
+            border-radius: 4px !important;
+            font-size: 12.5px !important;
+            padding: 5px 10px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 5px !important;
+            transition: all 0.2s ease !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+            border: none !important;
+            text-decoration: none !important;
+        }
+
+        .table td .btn i,
+        .table_view_wrapper .btn i,
+        .box-content .btn i {
+            font-size: 13px !important;
+            vertical-align: middle;
+        }
+
+        .table td .btn-success,
+        .btn-action-view {
+            background-color: #10b981 !important;
+            color: #ffffff !important;
+        }
+        .table td .btn-success:hover,
+        .btn-action-view:hover {
+            background-color: #059669 !important;
+            color: #ffffff !important;
+        }
+
+        .table td .btn-info,
+        .btn-action-edit {
+            background-color: #0284c7 !important;
+            color: #ffffff !important;
+        }
+        .table td .btn-info:hover,
+        .btn-action-edit:hover {
+            background-color: #0369a1 !important;
+            color: #ffffff !important;
+        }
+
+        .table td .btn-warning,
+        .btn-action-billing {
+            background-color: #f59e0b !important;
+            color: #ffffff !important;
+        }
+        .table td .btn-warning:hover,
+        .btn-action-billing:hover {
+            background-color: #d97706 !important;
+            color: #ffffff !important;
+        }
+
+        .table td .btn-danger,
+        .btn-action-delete {
+            background-color: #ef4444 !important;
+            color: #ffffff !important;
+        }
+        .table td .btn-danger:hover,
+        .btn-action-delete:hover {
+            background-color: #dc2626 !important;
+            color: #ffffff !important;
+        }
+
+        .table td a[title*="Print"],
+        .table td a[title*="print"],
+        .btn-action-print {
+            background-color: #6366f1 !important;
+            color: #ffffff !important;
+        }
+        .table td a[title*="Print"]:hover,
+        .table td a[title*="print"]:hover,
+        .btn-action-print:hover {
+            background-color: #4f46e5 !important;
+            color: #ffffff !important;
+        }
+
+        /* FontAwesome Compatibility Map for Legacy Icon Classes */
+        .icon-zoom-in:before, .icon-eye-open:before {
+            content: "\f06e" !important; /* fa-eye */
+            font-family: FontAwesome !important;
+        }
+        .icon-edit:before, .icon-pencil:before {
+            content: "\f040" !important; /* fa-pencil */
+            font-family: FontAwesome !important;
+        }
+        .icon-trash:before {
+            content: "\f014" !important; /* fa-trash-o */
+            font-family: FontAwesome !important;
+        }
+        .icon-print:before {
+            content: "\f02f" !important; /* fa-print */
+            font-family: FontAwesome !important;
+        }
+        .icon-list-alt:before, .icon-list:before {
+            content: "\f1ec" !important; /* fa-calculator */
+            font-family: FontAwesome !important;
+        }
+        .icon-white, .icon-red {
+            color: inherit !important;
+        }
+        [class^="icon-"], [class*=" icon-"] {
+            display: inline-block;
+            font-family: FontAwesome !important;
+            font-style: normal;
+            font-weight: normal;
+            line-height: 1;
+            -webkit-font-smoothing: antialiased;
+        }
     </style>
 
     <!-- Core Scripts -->
     <script src="<?= base_url('assets/backend/custom/jquery.min.js') ?>"></script>
     <script src="<?= base_url('assets/backend/bootstrap/js/bootstrap.min.js') ?>"></script>
+
+    <!-- jQuery Backwards Compatibility Layer -->
+    <script>
+        (function($) {
+            if (!$) return;
+            // .live() compatibility shim
+            if (!$.fn.live) {
+                $.fn.live = function(types, data, fn) {
+                    if (!types) return this;
+                    if (typeof types === 'function') {
+                        return this.each(types);
+                    }
+                    var sel = this.selector;
+                    if (sel) {
+                        $(document).on(types, sel, data, fn);
+                    } else {
+                        $(this).on(types, data, fn);
+                    }
+                    return this;
+                };
+            }
+            // .die() compatibility shim
+            if (!$.fn.die) {
+                $.fn.die = function(types, fn) {
+                    if (!types) return this;
+                    var sel = this.selector;
+                    if (sel) {
+                        $(document).off(types, sel, fn);
+                    } else {
+                        $(this).off(types, fn);
+                    }
+                    return this;
+                };
+            }
+            // $.browser compatibility shim
+            if (!$.browser) {
+                var ua = navigator.userAgent.toLowerCase();
+                $.browser = {
+                    msie: /msie|trident/.test(ua),
+                    mozilla: /firefox/.test(ua),
+                    webkit: /webkit/.test(ua),
+                    opera: /opera/.test(ua),
+                    chrome: /chrome/.test(ua),
+                    safari: /safari/.test(ua) && !/chrome/.test(ua),
+                    version: (ua.match(/.+(?:rv|it|ra|ie)[\/: ]([\d.]+)/) || [0, '0'])[1]
+                };
+            }
+            window.docReady = window.docReady || function() {};
+        })(jQuery);
+    </script>
 
     <script>
         var console_url = '<?= console_url() ?>';
@@ -89,11 +362,11 @@
             <!-- Logo -->
             <a href="<?= console_url() ?>" class="logo">
                 <span class="logo-mini">
-                    <img src="<?= base_url('assets/backend/images/s_logo.png') ?>" style="height: 28px; width: auto;" alt="Logo" onerror="this.onerror=null; this.src='<?= base_url('msb/msbbillingslogo.png') ?>';">
+                    <img src="<?= base_url('msb/msbbillingslogo.png') ?>" style="height: 26px; width: auto; max-width: 42px;" alt="MsbBillings">
                 </span>
                 <span class="logo-lg">
-                    <img src="<?= base_url('assets/backend/images/s_logo.png') ?>" style="height: 28px; width: auto; margin-right: 8px;" alt="Logo" onerror="this.onerror=null; this.src='<?= base_url('msb/msbbillingslogo.png') ?>';">
-                    <span style="font-size: 16px; font-weight: 700; color: #fff; letter-spacing: -0.3px;">
+                    <img src="<?= base_url('msb/msbbillingslogo.png') ?>" style="height: 30px; width: auto; margin-right: 8px; vertical-align: middle;" alt="MsbBillings">
+                    <span style="font-size: 16px; font-weight: 700; color: #fff; letter-spacing: -0.3px; vertical-align: middle;">
                         <?= !empty($site_settings['site_setting_title']) ? $site_settings['site_setting_title'] : 'MsbBillings' ?>
                     </span>
                 </span>

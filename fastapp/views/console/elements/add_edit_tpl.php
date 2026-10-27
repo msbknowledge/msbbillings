@@ -279,20 +279,26 @@ function field_text($t_key = NULL, $table_meta, $table_td) {
 
    $(document).ready(function() {
         setTimeout(function() {
-            $('.iphone-togglex').iphoneStyle()
-            $('.file_uploader<?= $t_key ?>').uploadify({
-                'swf': '<?= cdn_url() ?>js/uploadify.swf',
-                'uploader': '<?= cdn_url() ?>uploader/',
-                'multi': <?= $table_meta['config']['multi_upload'] ?>,
-                'onUploadSuccess': function(file, data, response) {
-                    $('.file_uploaded_img').attr('src', '<?= $table_meta['config']['use_image_columns_path'][0] ?>' + $.trim(data));
-                    $('#file_uploader_field<?= $t_key ?>').val($.trim(data));
-                }
-                // Put your options here
-            });
+            if ($.fn.iphoneStyle) {
+                $('.iphone-togglex').iphoneStyle();
+            }
+            if ($.fn.uploadify) {
+                $('.file_uploader<?= $t_key ?>').uploadify({
+                    'swf': '<?= cdn_url() ?>js/uploadify.swf',
+                    'uploader': '<?= cdn_url() ?>uploader/',
+                    'multi': <?= $table_meta['config']['multi_upload'] ?>,
+                    'onUploadSuccess': function(file, data, response) {
+                        $('.file_uploaded_img').attr('src', '<?= $table_meta['config']['use_image_columns_path'][0] ?>' + $.trim(data));
+                        $('#file_uploader_field<?= $t_key ?>').val($.trim(data));
+                    }
+                    // Put your options here
+                });
+            }
         }, 200);
-    })
-    $('.cleditor').cleditor();
+    });
+    if ($.fn.cleditor) {
+        $('.cleditor').cleditor();
+    }
 <?php if (isset($this->page_config['autocomplete'])): ?>
         var autoComplete = $.parseJSON('<?= json_encode($this->page_config['autocomplete']); ?>');
         $.each(autoComplete, function (targetField, value) {

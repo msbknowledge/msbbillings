@@ -55,22 +55,22 @@
 
 
                                 <hr/> 
-                                <a href="#" class="btn btn_select_all" title="Select the Entry of current list." data-rel="tooltip">Select All</a>
-                                <a href="#" class="btn btn_deselect_all" title="Clear the Selected Iteams." data-rel="tooltip">Clear Selected</a>
-                                <a href="#" onclick="popupDeleteAll()" class="btn search_remove btn-danger" title="Select and Delete Entry." data-rel="tooltip">Delete Selected</a>
+                                <a href="#" class="btn btn-default btn_select_all" title="Select the Entry of current list." data-rel="tooltip"><i class="fa fa-check-square-o"></i> Select All</a>
+                                <a href="#" class="btn btn-default btn_deselect_all" title="Clear the Selected Items." data-rel="tooltip"><i class="fa fa-square-o"></i> Clear Selected</a>
+                                <a href="javascript:void(0);" onclick="popupDeleteAll(); return false;" class="btn search_remove btn-danger" title="Select and Delete Entry." data-rel="tooltip"><i class="fa fa-trash"></i> Delete Selected</a>
                                 <?php
                             }
                         }
                         ?>
                     <?php } ?>  
-                    <a href="/console/customer/import_customer"  style="float: left" onclick=" " class="btn btn-info" >import</a>
+                    <a href="<?= console_url('customer/import_customer') ?>" style="float: left" class="btn btn-info" ><i class="fa fa-upload"></i> Import</a>
                     <?php
                     
                     if (is_array($config['allowed_action'])) {
                         
                         if (in_array('add_detail', $config['allowed_action']) !== FALSE) {
                             ?>
-                            <a href="#"  style="float: right" onclick="popupAddNew()" class="btn btn-info" >Add</a>
+                            <a href="javascript:void(0);" style="float: right" onclick="popupAddNew(); return false;" class="btn btn-success" ><i class="fa fa-plus"></i> Add Customer</a>
                             <br/><hr/>
                             <?php
                         }
@@ -236,8 +236,8 @@
                                                 if (is_array($config['allowed_action'])) {
                                                     if (in_array('view_detail', $config['allowed_action']) !== FALSE) {
                                                         ?>
-                                                        <a class="btn btn-success" title="View" data-rel="tooltip" href="#" onclick="popupViewSingle(<?= $table_tr[$config['tablePrimaryKey']] ?>)">
-                                                            <i class="icon-zoom-in icon-white"></i>  
+                                                        <a class="btn btn-success" title="View" data-rel="tooltip" href="javascript:void(0);" onclick="popupViewSingle(<?= $table_tr[$config['tablePrimaryKey']] ?>); return false;">
+                                                            <i class="fa fa-eye"></i>  
                                                         </a>
                                                         <?php
                                                     }
@@ -245,8 +245,8 @@
                                                 if (is_array($config['allowed_action'])) {
                                                     if (in_array('billing', $config['allowed_action']) !== FALSE) {
                                                         ?>
-                                                        <a class="btn btn-warning" title="Billing Collection" data-rel="tooltip" href="/console/customer/fastbill/<?= $table_tr[$config['tablePrimaryKey']] ?>">
-                                                            <i class="icon-list-alt icon-white"></i>  
+                                                        <a class="btn btn-warning" title="Billing Collection" data-rel="tooltip" href="<?= console_url('customer/fastbill/' . $table_tr[$config['tablePrimaryKey']]) ?>">
+                                                            <i class="fa fa-calculator"></i>  
                                                         </a>
                                                         <?php
                                                     }
@@ -254,8 +254,8 @@
                                                 if (is_array($config['allowed_action'])) {
                                                     if (in_array('print_statement', $config['allowed_action']) !== FALSE) {
                                                         ?>
-                                                        <a class="btn"  title="Print Statement" data-rel="tooltip" href="/console/customer/print_statement/<?= $table_tr[$config['tablePrimaryKey']] ?>">
-                                                            <i class=" icon-print icon-red"></i>  
+                                                        <a class="btn btn-default" style="background-color: #6366f1; color: #fff;" title="Print Statement" data-rel="tooltip" href="<?= console_url('customer/print_statement/' . $table_tr[$config['tablePrimaryKey']]) ?>">
+                                                            <i class="fa fa-print"></i>  
                                                         </a>
                                                         <?php
                                                     }
@@ -264,8 +264,8 @@
                                                 if (is_array($config['allowed_action'])) {
                                                     if (in_array('edit_detail', $config['allowed_action']) !== FALSE) {
                                                         ?>
-                                                        <a class="btn btn-info" title="Edit" data-rel="tooltip" href="#" onclick="popupEditSingle(<?= $table_tr[$config['tablePrimaryKey']] ?>)">
-                                                            <i class="icon-edit icon-white"></i>  
+                                                        <a class="btn btn-info" title="Edit" data-rel="tooltip" href="javascript:void(0);" onclick="popupEditSingle(<?= $table_tr[$config['tablePrimaryKey']] ?>); return false;">
+                                                            <i class="fa fa-pencil"></i>  
                                                         </a>
                                                         <?php
                                                     }
@@ -274,8 +274,8 @@
                                                     if (in_array('delete', $config['allowed_action']) !== FALSE) {
                                                         ?>
 
-                                                        <a class="btn btn-danger" title="Delete" data-rel="tooltip" href="#" onclick="popupDeleteSingle(<?= $table_tr[$config['tablePrimaryKey']] ?>)">
-                                                            <i class="icon-trash icon-white"></i> 
+                                                        <a class="btn btn-danger" title="Delete" data-rel="tooltip" href="javascript:void(0);" onclick="popupDeleteSingle(<?= $table_tr[$config['tablePrimaryKey']] ?>); return false;">
+                                                            <i class="fa fa-trash-o"></i> 
 
                                                         </a>
                                                         <?php
