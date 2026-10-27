@@ -138,7 +138,7 @@ class User extends MY_Controller {
         } else {
             if ($this->current_user_session)
                 redirect(console_url());
-            $this->render();
+            $this->render(array(), null, FALSE, FALSE, FALSE);
         }
     }
 
@@ -280,7 +280,7 @@ class User extends MY_Controller {
                 echo json_encode(array('status' => 'error', 'message' => 'No User Found'));
             }
         } else {
-            $this->render();
+            $this->render(array(), null, FALSE, FALSE, FALSE);
         }
     }
 
