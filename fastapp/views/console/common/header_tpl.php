@@ -29,14 +29,28 @@
         /* Modern AdminLTE / Smart School adjustments */
         body {
             font-family: 'Roboto', sans-serif;
-            background-color: #f1f5f9;
+            background-color: #f1f5f9 !important;
+            color: #1e293b !important;
         }
-        .well {
-            background: #fff;
+        .content-wrapper,
+        .right-side,
+        .main-content {
+            background-color: #f1f5f9 !important;
+            color: #1e293b !important;
+        }
+        .well, .box, .card, .panel {
+            background: #fff !important;
+            color: #1e293b !important;
             border: 1px solid #e2e8f0;
             border-radius: 8px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
             padding: 20px;
+        }
+        .box-header .box-title {
+            color: #0f172a !important;
+        }
+        .box-header {
+            color: #1e293b !important;
         }
         .noty_bar {
             position: fixed;
@@ -70,6 +84,8 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.25);
             border: none;
             overflow: hidden;
+            background-color: #ffffff !important;
+            color: #1e293b !important;
         }
         .modal-header {
             background-color: #f8fafc;
@@ -93,7 +109,7 @@
         }
         .modal-body {
             padding: 20px;
-            color: #334155;
+            color: #334155 !important;
             max-height: calc(100vh - 200px);
             overflow-y: auto;
         }
@@ -103,14 +119,29 @@
             padding: 12px 20px;
         }
 
+        /* High-Contrast Tables across Console */
+        .table, .table-bordered, .table-striped {
+            color: #334155 !important;
+        }
+        .table th, .table-bordered th, table thead th {
+            color: #0f172a !important;
+            background-color: #f8fafc !important;
+            font-weight: 600 !important;
+        }
+        .table td, .table-bordered td, table tbody td {
+            color: #334155 !important;
+        }
+        .table-striped > tbody > tr:nth-of-type(odd) > td {
+            background-color: #f8fafc !important;
+            color: #334155 !important;
+        }
+        .table-striped > tbody > tr:nth-of-type(even) > td {
+            background-color: #ffffff !important;
+            color: #334155 !important;
+        }
+
         /* Universal Form Inputs & Textareas Styling & Text Color */
-        input[type="text"],
-        input[type="password"],
-        input[type="email"],
-        input[type="number"],
-        input[type="tel"],
-        input[type="search"],
-        input[type="date"],
+        input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="image"]),
         select,
         textarea,
         .form-control,
@@ -118,9 +149,17 @@
         .search_box select,
         .dataTables_filter input,
         .dataTables_length select,
-        .chosen-container-single .chosen-single,
-        .chosen-container .chosen-drop,
-        .chosen-container .chosen-search input {
+        .input-xlarge,
+        .input-large,
+        .input-medium,
+        .input-small,
+        .table input,
+        .table select,
+        .table textarea,
+        .rowline input,
+        .rowline select,
+        #tableData input,
+        #tableData select {
             color: #0f172a !important; /* Solid Slate-900, clear & dark readable text */
             background-color: #ffffff !important;
             border: 1px solid #cbd5e1 !important;
@@ -128,14 +167,38 @@
             font-size: 13.5px !important;
             font-weight: 500 !important;
             box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+            -webkit-text-fill-color: #0f172a !important;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="email"],
+        input[type="number"],
+        input[type="tel"],
+        input[type="search"],
+        input[type="date"],
+        input[type="time"],
+        input[type="datetime-local"],
+        input[type="month"],
+        input[type="url"],
+        input:not([type]) {
+            color: #0f172a !important;
+            background-color: #ffffff !important;
+            -webkit-text-fill-color: #0f172a !important;
+        }
+
+        select option {
+            background-color: #ffffff !important;
+            color: #0f172a !important;
         }
 
         input::placeholder,
         textarea::placeholder,
         .form-control::placeholder {
-            color: #94a3b8 !important;
+            color: #64748b !important;
             opacity: 1 !important;
             font-weight: 400 !important;
+            -webkit-text-fill-color: #64748b !important;
         }
 
         input:focus,
@@ -147,17 +210,110 @@
             background-color: #ffffff !important;
             border-color: #35aa47 !important;
             outline: none !important;
-            box-shadow: 0 0 0 3px rgba(53, 170, 71, 0.2) !important;
+            box-shadow: 0 0 0 3px rgba(53, 170, 71, 0.25) !important;
+            -webkit-text-fill-color: #0f172a !important;
+        }
+
+        /* Readonly & Disabled Inputs */
+        input[readonly],
+        input:disabled,
+        select:disabled,
+        textarea[readonly],
+        textarea:disabled,
+        .form-control[readonly],
+        .form-control:disabled {
+            background-color: #f8fafc !important;
+            color: #1e293b !important;
+            border-color: #cbd5e1 !important;
+            cursor: default;
+            opacity: 1 !important;
+            -webkit-text-fill-color: #1e293b !important;
+        }
+
+        /* Checkboxes & Radios */
+        input[type="checkbox"],
+        input[type="radio"] {
+            background-color: #ffffff !important;
+            accent-color: #35aa47 !important;
+            cursor: pointer;
+        }
+
+        /* Autocomplete Dropdown Styling */
+        .ui-autocomplete {
+            background: #ffffff !important;
+            background-color: #ffffff !important;
+            color: #0f172a !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 6px !important;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1) !important;
+            max-height: 280px;
+            overflow-y: auto;
+            z-index: 999999 !important;
+        }
+        .ui-autocomplete .ui-menu-item a {
+            color: #0f172a !important;
+            padding: 8px 14px !important;
+        }
+        .ui-autocomplete .ui-menu-item a:hover,
+        .ui-autocomplete .ui-menu-item a.ui-state-focus {
+            background-color: #35aa47 !important;
+            color: #ffffff !important;
         }
 
         /* Input labels & control group headers */
         .control-label,
         label,
         .form-group label {
-            color: #334155 !important;
+            color: #1e293b !important;
             font-weight: 600 !important;
             font-size: 13px !important;
             margin-bottom: 5px !important;
+        }
+        .help-block, .help-inline, .text-muted {
+            color: #64748b !important;
+        }
+
+        /* Universal High-Contrast Badges & Labels (.label) Fix */
+        .label {
+            display: inline-block !important;
+            padding: 4px 8px !important;
+            font-size: 11.5px !important;
+            font-weight: 700 !important;
+            line-height: 1.2 !important;
+            text-align: center !important;
+            white-space: nowrap !important;
+            vertical-align: middle !important;
+            border-radius: 4px !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.03em !important;
+            text-shadow: none !important;
+        }
+        .label:not([class*="label-"]),
+        span.label:not([class*="label-"]),
+        .label-default {
+            background-color: #334155 !important;
+            color: #ffffff !important;
+        }
+        .label-important,
+        .label-danger {
+            background-color: #ef4444 !important;
+            color: #ffffff !important;
+        }
+        .label-primary {
+            background-color: #2563eb !important;
+            color: #ffffff !important;
+        }
+        .label-success {
+            background-color: #10b981 !important;
+            color: #ffffff !important;
+        }
+        .label-info {
+            background-color: #0284c7 !important;
+            color: #ffffff !important;
+        }
+        .label-warning {
+            background-color: #f59e0b !important;
+            color: #ffffff !important;
         }
 
         /* Action Buttons and Icons Styling for All Tables & Modules */

@@ -12,9 +12,69 @@
         <style type="text/css">
             body {
                 padding-bottom: 40px;
+                color: #1e293b !important;
+                background-color: #f1f5f9;
             }
             .sidebar-nav {
                 padding: 9px 0;
+            }
+            /* Universal High-Contrast Form Inputs & Textareas */
+            input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="image"]),
+            select,
+            textarea,
+            .form-control,
+            .table input,
+            .table select,
+            .rowline input {
+                color: #0f172a !important;
+                background-color: #ffffff !important;
+                border: 1px solid #cbd5e1 !important;
+                border-radius: 4px !important;
+                font-size: 13px !important;
+                font-weight: 500 !important;
+                box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+                -webkit-text-fill-color: #0f172a !important;
+            }
+            input:focus, select:focus, textarea:focus {
+                color: #0f172a !important;
+                background-color: #ffffff !important;
+                border-color: #35aa47 !important;
+                outline: none !important;
+                box-shadow: 0 0 0 3px rgba(53, 170, 71, 0.25) !important;
+                -webkit-text-fill-color: #0f172a !important;
+            }
+            input[readonly], input:disabled, select:disabled, textarea:disabled {
+                background-color: #f8fafc !important;
+                color: #1e293b !important;
+                border-color: #cbd5e1 !important;
+                cursor: default;
+                -webkit-text-fill-color: #1e293b !important;
+            }
+            select option {
+                background-color: #ffffff !important;
+                color: #0f172a !important;
+            }
+            label, .control-label {
+                color: #1e293b !important;
+                font-weight: 600 !important;
+            }
+            .table td, .table th {
+                color: #334155 !important;
+            }
+            .ui-autocomplete {
+                background: #ffffff !important;
+                color: #0f172a !important;
+                border: 1px solid #cbd5e1 !important;
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1) !important;
+                z-index: 999999 !important;
+            }
+            .ui-autocomplete .ui-menu-item a {
+                color: #0f172a !important;
+            }
+            .ui-autocomplete .ui-menu-item a:hover,
+            .ui-autocomplete .ui-menu-item a.ui-state-focus {
+                background-color: #35aa47 !important;
+                color: #ffffff !important;
             }
         </style>
         <link href="<?= cdn_url(); ?>css/bootstrap-responsive.min.css" rel="stylesheet">

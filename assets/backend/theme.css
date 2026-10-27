@@ -11,12 +11,82 @@
     --bs-side-nav-bg: #0f172a;
     --bs-menu-color: #cbd5e1;
     --bs-menu-hover-bg: rgba(255, 255, 255, 0.08);
-    --bs-body-color: #ffffff;
-    --bs-card-border-light-gray: #334155;
+    --bs-body-color: #1e293b;
+    --bs-body-bg: #f1f5f9;
+    --bs-text-color: #1e293b;
+    --bs-card-border-light-gray: #e2e8f0;
     --rounded: 6px;
     --bs-table-striped-bg: #f8fafc;
     --bs-nav-link-hover-color: #ffffff;
     --bs-btn-hover-bg: #2d913c;
+}
+
+/* Base Body & Layout Typography High-Contrast Safeguards */
+body {
+    background-color: #f1f5f9 !important;
+    color: #1e293b !important;
+}
+.content-wrapper,
+.right-side,
+.main-content {
+    background-color: #f1f5f9 !important;
+    color: #1e293b !important;
+}
+.box,
+.box-body,
+.box-content,
+.well,
+.panel,
+.card {
+    background-color: #ffffff !important;
+    color: #1e293b !important;
+}
+.box-header .box-title {
+    color: #0f172a !important;
+}
+.box-header {
+    color: #1e293b !important;
+}
+p, span:not(.badge):not(.label):not(.btn), label, .control-label {
+    color: inherit;
+}
+label, .control-label, .form-group label {
+    color: #1e293b !important;
+    font-weight: 600 !important;
+    font-size: 13px !important;
+}
+.help-block, .help-inline, .text-muted {
+    color: #64748b !important;
+}
+
+/* High-Contrast Tables */
+.table,
+.table-bordered,
+.table-striped {
+    color: #334155 !important;
+}
+.table th,
+.table-bordered th,
+table thead th {
+    color: #0f172a !important;
+    background-color: #f8fafc !important;
+    font-weight: 600 !important;
+}
+.table td,
+.table-bordered td,
+table tbody td {
+    color: #334155 !important;
+}
+.table-striped > tbody > tr:nth-of-type(odd) > td {
+    background-color: #f8fafc !important;
+    color: #334155 !important;
+}
+.table-striped > tbody > tr:nth-of-type(even) > td {
+    background-color: #ffffff !important;
+    color: #334155 !important;
+}
+.table-hover > tbody > tr:hover > td {
+    background-color: #f1f5f9 !important;
 }
 
 /* Smart School AdminLTE Enhancements */
@@ -805,14 +875,10 @@
     color: #0f172a !important;
 }
 
-/* Global Form Input Text Color & Visibility Across All Modules */
-input[type="text"],
-input[type="password"],
-input[type="email"],
-input[type="number"],
-input[type="tel"],
-input[type="search"],
-input[type="date"],
+/* ========================================================
+   Universal Form Inputs & Textareas Contrast & Visibility
+   ======================================================== */
+input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="image"]),
 select,
 textarea,
 .form-control,
@@ -823,33 +889,301 @@ textarea,
 .input-xlarge,
 .input-large,
 .input-medium,
-.input-small {
-    color: #0f172a !important; /* Solid Slate-900, perfectly legible */
-    background-color: #ffffff !important;
+.input-small,
+.table input,
+.table select,
+.table textarea,
+.rowline input,
+.rowline select,
+#tableData input,
+#tableData select {
+    color: #0f172a !important; /* Solid Slate-900, always clear dark text */
+    background-color: #ffffff !important; /* Clean white background */
     border: 1px solid #cbd5e1 !important;
-    border-radius: 5px !important;
-    font-size: 13.5px !important;
+    border-radius: 4px !important;
+    font-size: 13px !important;
     font-weight: 500 !important;
     box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+    -webkit-text-fill-color: #0f172a !important;
 }
 
+/* Explicit text types to guarantee selector specificity */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+input[type="tel"],
+input[type="search"],
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"],
+input[type="month"],
+input[type="url"],
+input:not([type]) {
+    color: #0f172a !important;
+    background-color: #ffffff !important;
+    -webkit-text-fill-color: #0f172a !important;
+}
+
+/* Select element options */
+select option {
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+}
+
+/* Placeholder styling - clearly distinguishable with good contrast */
 input::placeholder,
 textarea::placeholder,
 .form-control::placeholder {
-    color: #94a3b8 !important;
+    color: #64748b !important;
     opacity: 1 !important;
     font-weight: 400 !important;
+    -webkit-text-fill-color: #64748b !important;
 }
 
+/* Focused input styling */
 input:focus,
 select:focus,
 textarea:focus,
-.form-control:focus {
+.form-control:focus,
+.chosen-container-active .chosen-single {
     color: #0f172a !important;
     background-color: #ffffff !important;
     border-color: #35aa47 !important;
     outline: none !important;
-    box-shadow: 0 0 0 3px rgba(53, 170, 71, 0.2) !important;
+    box-shadow: 0 0 0 3px rgba(53, 170, 71, 0.25) !important;
+    -webkit-text-fill-color: #0f172a !important;
+}
+
+/* Readonly and Disabled Inputs - Clear contrast, NEVER white on white */
+input[readonly],
+input:disabled,
+select:disabled,
+textarea[readonly],
+textarea:disabled,
+.form-control[readonly],
+.form-control:disabled {
+    background-color: #f8fafc !important;
+    color: #1e293b !important;
+    border-color: #cbd5e1 !important;
+    cursor: default;
+    opacity: 1 !important;
+    -webkit-text-fill-color: #1e293b !important;
+}
+
+/* Checkbox & Radio */
+input[type="checkbox"],
+input[type="radio"] {
+    background-color: #ffffff !important;
+    accent-color: #35aa47 !important;
+    cursor: pointer;
+}
+
+/* ========================================================
+   Dropdowns: jQuery UI Autocomplete, Chosen, and Select2
+   ======================================================== */
+.ui-autocomplete {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 6px !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+    max-height: 280px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 6px 0 !important;
+    z-index: 999999 !important;
+}
+.ui-autocomplete .ui-menu-item {
+    color: #0f172a !important;
+    background: #ffffff !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    list-style: none !important;
+}
+.ui-autocomplete .ui-menu-item a,
+.ui-autocomplete .ui-menu-item > div {
+    color: #0f172a !important;
+    display: block !important;
+    padding: 8px 14px !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    border-radius: 0 !important;
+    border: none !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+}
+.ui-autocomplete .ui-menu-item a:hover,
+.ui-autocomplete .ui-menu-item a.ui-state-focus,
+.ui-autocomplete .ui-menu-item a.ui-state-active,
+.ui-autocomplete .ui-state-hover,
+.ui-autocomplete .ui-state-focus {
+    background: #35aa47 !important;
+    background-color: #35aa47 !important;
+    color: #ffffff !important;
+    border: none !important;
+    margin: 0 !important;
+}
+.ui-autocomplete .ui-menu-item a:hover *,
+.ui-autocomplete .ui-menu-item a.ui-state-focus * {
+    color: #ffffff !important;
+}
+
+/* Chosen.js Dropdowns */
+.chosen-container {
+    font-size: 13px !important;
+}
+.chosen-container-single .chosen-single {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 4px !important;
+    box-shadow: none !important;
+    height: 32px !important;
+    line-height: 30px !important;
+}
+.chosen-container-single .chosen-single span {
+    color: #0f172a !important;
+}
+.chosen-container .chosen-drop {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+    border-radius: 0 0 6px 6px !important;
+}
+.chosen-container .chosen-results li {
+    color: #1e293b !important;
+    padding: 6px 10px !important;
+}
+.chosen-container .chosen-results li.highlighted {
+    background: #35aa47 !important;
+    color: #ffffff !important;
+}
+.chosen-container .chosen-results li.no-results {
+    background: #f8fafc !important;
+    color: #64748b !important;
+}
+.chosen-container .chosen-search input[type="text"] {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border: 1px solid #cbd5e1 !important;
+}
+
+/* Select2 Dropdowns */
+.select2-container .select2-choice {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    border: 1px solid #cbd5e1 !important;
+}
+.select2-drop {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border: 1px solid #cbd5e1 !important;
+}
+.select2-results li {
+    color: #1e293b !important;
+}
+.select2-results .select2-highlighted {
+    background: #35aa47 !important;
+    color: #ffffff !important;
+}
+.select2-search input {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border: 1px solid #cbd5e1 !important;
+}
+
+/* DataTables Controls & Paginate */
+.dataTables_wrapper {
+    color: #334155 !important;
+}
+.dataTables_length,
+.dataTables_filter,
+.dataTables_info,
+.dataTables_paginate {
+    color: #334155 !important;
+}
+.dataTables_filter input {
+    margin-left: 8px !important;
+    display: inline-block !important;
+    width: auto !important;
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    border: 1px solid #cbd5e1 !important;
+}
+.dataTables_length select {
+    display: inline-block !important;
+    width: auto !important;
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    border: 1px solid #cbd5e1 !important;
+}
+.pagination > li > a,
+.pagination > li > span {
+    color: #334155 !important;
+    background-color: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+}
+.pagination > .active > a,
+.pagination > .active > span {
+    background-color: #35aa47 !important;
+    border-color: #35aa47 !important;
+    color: #ffffff !important;
+}
+
+/* ========================================================
+   Universal High-Contrast Badges & Labels (.label) Fix
+   ======================================================== */
+.label {
+    display: inline-block !important;
+    padding: 4px 8px !important;
+    font-size: 11.5px !important;
+    font-weight: 700 !important;
+    line-height: 1.2 !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    vertical-align: middle !important;
+    border-radius: 4px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.03em !important;
+    text-shadow: none !important;
+}
+
+/* Plain .label without modifier or .label-default - NEVER invisible white-on-white */
+.label:not([class*="label-"]),
+span.label:not([class*="label-"]),
+.label-default {
+    background-color: #334155 !important; /* Solid Slate-700 background */
+    color: #ffffff !important; /* Crisp white on dark slate */
+}
+
+/* Legacy .label-important (Bootstrap 2) mapped to Danger Red */
+.label-important,
+.label-danger {
+    background-color: #ef4444 !important;
+    color: #ffffff !important;
+}
+
+.label-primary {
+    background-color: #2563eb !important;
+    color: #ffffff !important;
+}
+.label-success {
+    background-color: #10b981 !important;
+    color: #ffffff !important;
+}
+.label-info {
+    background-color: #0284c7 !important;
+    color: #ffffff !important;
+}
+.label-warning {
+    background-color: #f59e0b !important;
+    color: #ffffff !important;
 }
 
 /* Action Buttons & Badges in All Tables */
