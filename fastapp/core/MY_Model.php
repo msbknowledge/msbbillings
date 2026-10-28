@@ -11,17 +11,20 @@
  * @author kallol
  * @version 1.0.1.2
  */
-class MY_Model extends CI_Model {
+class MY_Model extends CI_Model
+{
 
     //put your code here
     protected $table_name, $joiningArray;
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
     }
 
-    public function check() {
-        
+    public function check()
+    {
+
         if ($this->config->item('check_and_allow_install')) {
             $existsTable = count($this->db->query("SHOW TABLES LIKE '" . $this->table_name . "';")->result_array());
             if (!$existsTable) {
@@ -30,7 +33,8 @@ class MY_Model extends CI_Model {
         }
     }
 
-    public function get_list($condition = NULL, $column = NULL, $limit = null, $start = 0, $likeCondition = NULL, $orderBy = NULL, $groupBy = null, $autoJoin = TRUE) {
+    public function get_list($condition = NULL, $column = NULL, $limit = null, $start = 0, $likeCondition = NULL, $orderBy = NULL, $groupBy = null, $autoJoin = TRUE)
+    {
         $pk = $this->get_primary_key();
         if ($column)
             $this->db->select($column);
@@ -58,7 +62,8 @@ class MY_Model extends CI_Model {
         return $query->result_array();
     }
 
-    public function count_total($condition = NULL, $likeCondition = NULL, $groupBy = NULL) {
+    public function count_total($condition = NULL, $likeCondition = NULL, $groupBy = NULL)
+    {
 
         $this->db->select('COUNT(*) AS total');
         if ($condition)
@@ -77,13 +82,14 @@ class MY_Model extends CI_Model {
 
         $data = $query->result_array();
         // $this->db->flush_cache();
-		if(!empty($groupBy))
-			return count($data);
-		else
-        return intval($data[0]['total']);
+        if (!empty($groupBy))
+            return count($data);
+        else
+            return intval($data[0]['total']);
     }
 
-    public function count_total_in($condition = NULL, $likeCondition = NULL,$groupBy = null) {
+    public function count_total_in($condition = NULL, $likeCondition = NULL, $groupBy = null)
+    {
 
         $this->db->select('COUNT(*) AS total');
         if ($condition) {
@@ -93,7 +99,7 @@ class MY_Model extends CI_Model {
         }
         if ($likeCondition)
             $this->db->like($likeCondition);
-		if ($groupBy)
+        if ($groupBy)
             $this->db->group_by($groupBy);
         if ($this->joiningArray)
             foreach ($this->joiningArray as $joinMeta) {
@@ -103,13 +109,15 @@ class MY_Model extends CI_Model {
         $query = $this->db->get($this->table_name);
         $data = $query->result_array();
         // $this->db->flush_cache();
-		
-		if(!empty($groupBy))
-			return count($data);
-		else
-        return intval($data[0]['total']);    }
 
-    public function insert_data($dataToInsert, $isMulti = FALSE) {
+        if (!empty($groupBy))
+            return count($data);
+        else
+            return intval($data[0]['total']);
+    }
+
+    public function insert_data($dataToInsert, $isMulti = FALSE)
+    {
         $this->db->cache_delete_all();
         if ($isMulti) {
             return $this->db->insert_batch($this->table_name, $dataToInsert);
@@ -119,7 +127,8 @@ class MY_Model extends CI_Model {
         }
     }
 
-    public function update_data($dataToUpdate, $condition = NULL, $isMulti = FALSE) {
+    public function update_data($dataToUpdate, $condition = NULL, $isMulti = FALSE)
+    {
         $this->db->cache_delete_all();
         if ($isMulti) {
             return $this->db->update_batch($this->table_name, $dataToUpdate, $condition);
@@ -128,7 +137,8 @@ class MY_Model extends CI_Model {
         }
     }
 
-    public function delete($param = NULL, $is_multi = FALSE) {
+    public function delete($param = NULL, $is_multi = FALSE)
+    {
         $this->db->cache_delete_all();
         if ($is_multi) {
             if ($param != NULL && is_array($param)) {
@@ -148,7 +158,8 @@ class MY_Model extends CI_Model {
         }
     }
 
-    public function get_list_for_tables($condition = NULL, $column = NULL, $limit = null, $start = NULL, $likeCondition = NULL, $orderBy = NULL, $groupBy = NULL) {
+    public function get_list_for_tables($condition = NULL, $column = NULL, $limit = null, $start = NULL, $likeCondition = NULL, $orderBy = NULL, $groupBy = NULL)
+    {
         if ($start == NULL) {
             $start = $this->getPaging();
         }
@@ -157,7 +168,8 @@ class MY_Model extends CI_Model {
         return $dataArry;
     }
 
-    public function get_list_for_tables_in($condition = NULL, $column = NULL, $limit = null, $start = NULL, $likeCondition = NULL, $orderBy = NULL) {
+    public function get_list_for_tables_in($condition = NULL, $column = NULL, $limit = null, $start = NULL, $likeCondition = NULL, $orderBy = NULL)
+    {
         if ($start == NULL) {
             $start = $this->getPaging();
         }
@@ -166,7 +178,8 @@ class MY_Model extends CI_Model {
         return $dataArry;
     }
 
-    public function get_list_for_dropdown($targetFieldName = null, $condition = NULL, $column = NULL, $limit = null, $start = NULL, $likeCondition = NULL, $orderBy = NULL, $groupBy = null) {
+    public function get_list_for_dropdown($targetFieldName = null, $condition = NULL, $column = NULL, $limit = null, $start = NULL, $likeCondition = NULL, $orderBy = NULL, $groupBy = null)
+    {
 
         $dataArray = $this->get_list($condition, $column, $limit, $start, $likeCondition, $orderBy, $groupBy);
         $returnArray = array();
@@ -174,28 +187,37 @@ class MY_Model extends CI_Model {
             if (!empty($targetFieldName))
                 $returnArray[$dataValue[$this->get_primary_key()]] = $dataValue[$targetFieldName];
             else {
-		if($targetFieldName===false){
-		                $returnArray[$dataValue[$this->get_primary_key()]] = $dataValue;
-		}else{
- $array_keys = array_keys( $dataValue);
-                $returnArray[$dataValue[$this->get_primary_key()]] = $dataValue[$array_keys[1]];
-		}
-               
+                if ($targetFieldName === false) {
+                    $returnArray[$dataValue[$this->get_primary_key()]] = $dataValue;
+                } else {
+                    $array_keys = array_keys($dataValue);
+                    $returnArray[$dataValue[$this->get_primary_key()]] = $dataValue[$array_keys[1]];
+                }
             }
         }
-        return $returnArray;
-        ;
+        return $returnArray;;
     }
 
-    protected function getPaging() {
+    protected function getPaging()
+    {
         $paging = $this->uri->segment(4) ? $this->uri->segment(4) : 0;
         return $paging;
     }
 
-    public function get_primary_key() {
+    public function get_primary_key()
+    {
+        $cacheDir = ROOTPATH . 'fastapp/cachefiles/' . NODE . '/';
+        $cacheFile = $cacheDir . 'pks_' . $this->table_name . '.txt';
+
+        // Create cache directory if it does not exist
+        if (!is_dir($cacheDir)) {
+            if (!mkdir($cacheDir, 0755, true) && !is_dir($cacheDir)) {
+                log_message('error', 'Unable to create cache directory: ' . $cacheDir);
+            }
+        }
         $result_array = null;
-        if (file_exists(ROOTPATH . 'fastapp/cachefiles/'.NODE.'/pks_' . $this->table_name . '.txt')) {
-            $result_array = json_decode(file_get_contents(ROOTPATH . 'fastapp/cachefiles/'.NODE.'/pks_' . $this->table_name . '.txt'), true);
+        if (file_exists(ROOTPATH . 'fastapp/cachefiles/' . NODE . '/pks_' . $this->table_name . '.txt')) {
+            $result_array = json_decode(file_get_contents(ROOTPATH . 'fastapp/cachefiles/' . NODE . '/pks_' . $this->table_name . '.txt'), true);
             return $result_array[0]['Column_name'];
         } else {
             $result_array = NULL;
@@ -205,7 +227,7 @@ class MY_Model extends CI_Model {
             } catch (Exception $exc) {
                 echo $exc->getTraceAsString();
             }
-            file_put_contents(ROOTPATH . 'fastapp/cachefiles/'.NODE.'/pks_' . $this->table_name . '.txt', json_encode($result_array));
+            file_put_contents(ROOTPATH . 'fastapp/cachefiles/' . NODE . '/pks_' . $this->table_name . '.txt', json_encode($result_array));
             return $result_array[0]['Column_name'];
         }
     }
@@ -213,9 +235,19 @@ class MY_Model extends CI_Model {
     /**
      * need some modification
      */
-    public function get_field_list($enablePK = TRUE) {
-        if (file_exists(ROOTPATH . 'fastapp/cachefiles/'.NODE.'/field_list_' . $this->table_name . '.txt')) {
-            $return_array = json_decode(file_get_contents(ROOTPATH . 'fastapp/cachefiles/'.NODE.'/field_list_' . $this->table_name . '.txt'), true);
+    public function get_field_list($enablePK = TRUE)
+    {
+        $cacheDir = ROOTPATH . 'fastapp/cachefiles/' . NODE . '/';
+        $cacheFile = $cacheDir . 'field_list_' . $this->table_name . '.txt';
+
+        // Create cache directory if it does not exist
+        if (!is_dir($cacheDir)) {
+            if (!mkdir($cacheDir, 0755, true) && !is_dir($cacheDir)) {
+                log_message('error', 'Unable to create cache directory: ' . $cacheDir);
+            }
+        }
+        if (file_exists(ROOTPATH . 'fastapp/cachefiles/' . NODE . '/field_list_' . $this->table_name . '.txt')) {
+            $return_array = json_decode(file_get_contents(ROOTPATH . 'fastapp/cachefiles/' . NODE . '/field_list_' . $this->table_name . '.txt'), true);
             return $return_array;
         } else {
             $record_set = $this->db->query('SHOW FIELDS FROM ' . $this->table_name);
@@ -227,12 +259,13 @@ class MY_Model extends CI_Model {
                 }
                 $return_array[0][$value['Field']] = $value; //this section need modification
             }
-            file_put_contents(ROOTPATH . 'fastapp/cachefiles/'.NODE.'/field_list_' . $this->table_name . '.txt', json_encode($return_array));
+            file_put_contents(ROOTPATH . 'fastapp/cachefiles/' . NODE . '/field_list_' . $this->table_name . '.txt', json_encode($return_array));
             return $return_array;
         }
     }
 
-    public function get_list_for_dropdown_in($targetFieldName = null, $condition = NULL, $column = NULL, $limit = null, $start = NULL, $likeCondition = NULL, $orderBy = NULL) {
+    public function get_list_for_dropdown_in($targetFieldName = null, $condition = NULL, $column = NULL, $limit = null, $start = NULL, $likeCondition = NULL, $orderBy = NULL)
+    {
 
         $dataArray = $this->get_list_in($condition, $column, $limit, $start, $likeCondition, $orderBy);
 
@@ -244,11 +277,11 @@ class MY_Model extends CI_Model {
                 $returnArray[$dataValue[$this->get_primary_key()]] = $dataValue;
             }
         }
-        return $returnArray;
-        ;
+        return $returnArray;;
     }
 
-    public function get_list_in($condition = NULL, $column = NULL, $limit = null, $start = 0, $likeCondition = NULL, $orderBy = NULL, $groupBy = null, $autoJoin = TRUE) {
+    public function get_list_in($condition = NULL, $column = NULL, $limit = null, $start = 0, $likeCondition = NULL, $orderBy = NULL, $groupBy = null, $autoJoin = TRUE)
+    {
         $pk = $this->get_primary_key();
         if ($column)
             $this->db->select($column);
@@ -279,16 +312,13 @@ class MY_Model extends CI_Model {
         return $query->result_array();
     }
 
-    public function updateOrder($previousElementId = NULL, $currentElementId = NULL, $nextElementId = NULL) {
+    public function updateOrder($previousElementId = NULL, $currentElementId = NULL, $nextElementId = NULL)
+    {
         $PK = $this->get_primary_key();
         if ($previousElementId) {
-            
         }
         $this->db->update($this->table_name, array($PK => '-99'), "$PK = $currentElementId");
         $this->db->update($this->table_name, $data, "$PK = $currentElementId");
         $this->db->update($this->table_name, $data, "id = 4");
     }
-
 }
-
-?>
