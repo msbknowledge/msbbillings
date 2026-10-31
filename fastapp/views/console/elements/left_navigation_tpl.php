@@ -1,100 +1,314 @@
 <?php
-if ($current_user_session):
-    // Organize flat $site_menu into hierarchical tree
-    $nav = array();
-    if (!empty($site_menu) && is_array($site_menu)) {
+defined('BASEPATH') or exit('No direct script access allowed');
 
-        foreach ($site_menu as $menu) {
+/*
+|--------------------------------------------------------------------------
+| Sidebar helpers: unlimited nested menu levels
+|--------------------------------------------------------------------------
+| Keep the function_exists() guards to prevent redeclaration errors.
+*/
 
-            // Ignore invalid menu records
-            if (!is_array($menu) || !isset($menu['menu_ID'])) {
+if (!function_exists('sidebar_build_tree')) {
+    function sidebar_build_tree($siteMenus, $parentId = '')
+    {
+        $tree = array();
+
+        if (!is_array($siteMenus)) {
+            return $tree;
+        }
+
+        foreach ($siteMenus as $menu) {
+            if (
+                !is_array($menu) ||
+                !isset($menu['menu_ID']) ||
+                !is_scalar($menu['menu_ID'])
+            ) {
                 continue;
             }
 
+            $menuId = trim((string) $menu['menu_ID']);
+
+            if ($menuId === '') {
+                continue;
+            }
+
+            $menuParentId = isset($menu['menu_parent_id'])
+                && is_scalar($menu['menu_parent_id'])
+                ? trim((string) $menu['menu_parent_id'])
+                : '';
+
+            if ($menuParentId !== (string) $parentId) {
+                continue;
+            }
+
+            $menu['_sidebar_id'] = $menuId;
+            $menu['child'] = sidebar_build_tree(
+                $siteMenus,
+                $menuId
+            );
+
+            $tree[] = $menu;
+        }
+
+        return $tree;
+    }
+}
+
+if (!function_exists('sidebar_is_active')) {
+    function sidebar_is_active(
+        $menu,
+        $currentSegment,
+        $currentUri
+    ) {
+        $link = isset($menu['menu_link']) &&
+            is_scalar($menu['menu_link'])
+            ? trim((string) $menu['menu_link'], '/')
+            : '';
+
+        if ($link !== '') {
+            $link = preg_replace('#^console/#', '', $link);
+
             if (
-                !isset($menu['menu_parent_id']) ||
-                empty($menu['menu_parent_id'])
+                $currentUri === 'console/' . $link ||
+                $currentSegment === $link
             ) {
-                $nav[$menu['menu_ID']] = $menu;
-                $nav[$menu['menu_ID']]['child'] = array();
-            } else {
+                return true;
+            }
+        }
 
-                $parent_id = $menu['menu_parent_id'];
-
-                if (isset($nav[$parent_id])) {
-                    $nav[$parent_id]['child'][$menu['menu_ID']] = $menu;
+        if (!empty($menu['child']) && is_array($menu['child'])) {
+            foreach ($menu['child'] as $child) {
+                if (
+                    sidebar_is_active(
+                        $child,
+                        $currentSegment,
+                        $currentUri
+                    )
+                ) {
+                    return true;
                 }
             }
         }
+
+        return false;
     }
-    $current_segment = $this->uri->segment(2);
+}
+
+if (!function_exists('sidebar_render_menus')) {
+    function sidebar_render_menus(
+        $menus,
+        $currentSegment,
+        $currentUri,
+        $level = 1
+    ) {
+        if (!is_array($menus) || empty($menus)) {
+            return;
+        }
+
+        foreach ($menus as $menu) {
+            if (!is_array($menu)) {
+                continue;
+            }
+
+            $name = isset($menu['menu_name'])
+                ? (string) $menu['menu_name']
+                : 'Menu';
+
+            $hint = isset($menu['menu_hint'])
+                ? (string) $menu['menu_hint']
+                : $name;
+
+            $icon = isset($menu['menu_icon_class']) &&
+                trim((string) $menu['menu_icon_class']) !== ''
+                ? (string) $menu['menu_icon_class']
+                : 'fa fa-circle-o';
+
+            $link = isset($menu['menu_link']) &&
+                is_scalar($menu['menu_link'])
+                ? trim((string) $menu['menu_link'])
+                : '';
+
+            $link = trim($link, '/');
+
+            // Do not make a clickable URL for a parent with no link.
+            $hasChildren = !empty($menu['child']) &&
+                is_array($menu['child']);
+
+            $isActive = sidebar_is_active(
+                $menu,
+                $currentSegment,
+                $currentUri
+            );
+
+            $safeName = html_escape($name);
+            $safeHint = html_escape($hint);
+            $safeIcon = html_escape($icon);
+
+            $classes = array();
+
+            if ($hasChildren) {
+                $classes[] = 'treeview';
+            }
+
+            if ($isActive) {
+                $classes[] = 'active';
+            }
+
+            $liClass = !empty($classes)
+                ? ' class="' . implode(' ', $classes) . '"'
+                : '';
+
+            echo '<li' . $liClass . '>';
+
+            if ($link !== '') {
+                $url = console_url($link);
+
+                echo '<a href="' . html_escape($url) . '"';
+                echo ' title="' . $safeHint . '">';
+            } else {
+                echo '<a href="javascript:void(0)"';
+                echo ' title="' . $safeHint . '">';
+            }
+
+            echo '<i class="' . $safeIcon . '"></i>';
+            echo '<span>' . $safeName . '</span>';
+
+            if ($hasChildren) {
+                echo '<i class="fa fa-angle-left pull-right"></i>';
+            }
+
+            echo '</a>';
+
+            if ($hasChildren) {
+                $display = $isActive
+                    ? 'display:block;'
+                    : 'display:none;';
+
+                echo '<ul class="treeview-menu" style="' .
+                    $display . '">';
+
+                sidebar_render_menus(
+                    $menu['child'],
+                    $currentSegment,
+                    $currentUri,
+                    $level + 1
+                );
+
+                echo '</ul>';
+            }
+
+            echo '</li>';
+        }
+    }
+}
+
+/*
+|--------------------------------------------------------------------------
+| Prepare sidebar data
+|--------------------------------------------------------------------------
+*/
+
+if (
+    !empty($current_user_session) &&
+    is_array($current_user_session)
+) {
+
+    $siteMenus = isset($site_menu) && is_array($site_menu)
+        ? $site_menu
+        : array();
+
+    // Build the complete hierarchy from the flat menu array.
+    $nav = sidebar_build_tree($siteMenus, '');
+
+    $currentSegment = (string) $this->uri->segment(2);
+    $currentUri = trim((string) $this->uri->uri_string(), '/');
+
+    $firstName = isset($current_user_session['user_firstname'])
+        ? $current_user_session['user_firstname']
+        : '';
+
+    $lastName = isset($current_user_session['user_lastname'])
+        ? $current_user_session['user_lastname']
+        : '';
+
+    $userImage = isset($current_user_session['user_image'])
+        ? trim((string) $current_user_session['user_image'])
+        : '';
+
+    $avatarUrl = base_url('assets/backend/dist/img/avatar.png');
+
+    if ($userImage !== '') {
+        $imageUrl = base_url(
+            'uploads/' . NODE . '/' . $userImage
+        );
+    } else {
+        $imageUrl = $avatarUrl;
+    }
 ?>
+
     <aside class="main-sidebar" id="alert2">
         <section class="sidebar" id="sibe-box">
-            <!-- Sidebar user panel -->
-            <div class="user-panel" style="padding: 14px 12px; border-bottom: 1px solid rgba(255,255,255,0.08);">
-                <div class="pull-left image" style="margin-right: 12px;">
-                    <img src="<?= !empty($current_user_session['user_image']) ? base_url('uploads/' . NODE . '/' . $current_user_session['user_image']) : base_url('assets/backend/dist/img/avatar.png') ?>" class="img-circle" style="width: 42px; height: 42px; object-fit: cover; border-radius: 50%; border: 2px solid #35aa47;" alt="User Image" onerror="this.onerror=null; this.src='<?= base_url('assets/backend/dist/img/avatar.png') ?>';">
+
+            <!-- User panel -->
+            <div class="user-panel"
+                style="padding:14px 12px;border-bottom:1px solid rgba(255,255,255,.08);">
+
+                <div class="pull-left image" style="margin-right:12px;">
+                    <img
+                        src="<?= html_escape($imageUrl); ?>"
+                        class="img-circle"
+                        style="width:42px;height:42px;object-fit:cover;border:2px solid #35aa47;"
+                        alt="User Image"
+                        onerror="this.onerror=null;this.src='<?= html_escape($avatarUrl); ?>';">
                 </div>
+
                 <div class="pull-left info">
-                    <p style="color: #fff; margin: 0; font-weight: 600; font-size: 14px;"><?= $current_user_session['user_firstname'] . ' ' . $current_user_session['user_lastname'] ?></p>
-                    <a href="#" style="font-size: 11px; color: #a0aec0; text-decoration: none;"><i class="fa fa-circle text-success" style="color: #22c55e; margin-right: 4px;"></i> Online</a>
+                    <p style="color:#fff;margin:0;font-weight:600;font-size:14px;">
+                        <?= html_escape(trim($firstName . ' ' . $lastName)); ?>
+                    </p>
+
+                    <a href="javascript:void(0)"
+                        style="font-size:11px;color:#a0aec0;text-decoration:none;">
+                        <i class="fa fa-circle text-success"
+                            style="color:#22c55e;margin-right:4px;"></i>
+                        Online
+                    </a>
                 </div>
             </div>
 
-            <!-- Sidebar Navigation Menu -->
+            <!-- Navigation -->
             <ul class="sidebar-menu">
-                <li class="header" style="color: #64748b; background: #020617; padding: 12px 18px 8px; font-size: 11px; font-weight: 700; letter-spacing: 0.8px;">MAIN NAVIGATION</li>
 
-                <li class="<?= (empty($current_segment) || $current_segment == 'dashboard') ? 'active' : '' ?>">
-                    <a href="<?= console_url('dashboard') ?>">
-                        <i class="fa fa-dashboard" style="color: #35aa47;"></i> <span>Dashboard</span>
+                <li class="header"
+                    style="color:#64748b;background:#020617;padding:12px 18px 8px;font-size:11px;font-weight:700;letter-spacing:.8px;">
+                    MAIN NAVIGATION
+                </li>
+
+                <!-- Dashboard -->
+                <li class="<?= (
+                                $currentUri === 'console' ||
+                                $currentUri === 'console/dashboard' ||
+                                $currentSegment === 'dashboard'
+                            ) ? 'active' : ''; ?>">
+                    <a href="<?= html_escape(console_url('dashboard')); ?>">
+                        <i class="fa fa-dashboard" style="color:#35aa47;"></i>
+                        <span>Dashboard</span>
                     </a>
                 </li>
 
-                <?php if (!empty($nav)): ?>
-                    <?php foreach ($nav as $key => $value): ?>
-                        <?php if (empty($value['child'])): ?>
-                            <?php
-                            $is_active = ($current_segment == $value['menu_link'] || $this->uri->uri_string() == 'console/' . $value['menu_link']);
-                            ?>
-                            <li class="<?= $is_active ? 'active' : '' ?>">
-                                <a href="<?= console_url($value['menu_link']) ?>" title="<?= isset($value['menu_hint']) ? $value['menu_hint'] : '' ?>">
-                                    <i class="<?= !empty($value['menu_icon_class']) ? $value['menu_icon_class'] : 'fa fa-circle-o' ?>"></i>
-                                    <span><?= $value['menu_name'] ?></span>
-                                </a>
-                            </li>
-                        <?php else: ?>
-                            <?php
-                            $is_parent_active = false;
-                            foreach ($value['child'] as $c) {
-                                if ($current_segment == $c['menu_link']) {
-                                    $is_parent_active = true;
-                                    break;
-                                }
-                            }
-                            ?>
-                            <li class="treeview <?= $is_parent_active ? 'active' : '' ?>">
-                                <a href="javascript:void(0)" title="<?= isset($value['menu_hint']) ? $value['menu_hint'] : '' ?>">
-                                    <i class="<?= !empty($value['menu_icon_class']) ? $value['menu_icon_class'] : 'fa fa-folder' ?>"></i>
-                                    <span><?= $value['menu_name'] ?></span>
-                                    <i class="fa fa-angle-left pull-right"></i>
-                                </a>
-                                <ul class="treeview-menu" style="<?= $is_parent_active ? 'display:block;' : 'display:none;' ?>">
-                                    <?php foreach ($value['child'] as $ckey => $cvalue): ?>
-                                        <li class="<?= ($current_segment == $cvalue['menu_link']) ? 'active' : '' ?>">
-                                            <a href="<?= console_url($cvalue['menu_link']) ?>" title="<?= isset($cvalue['menu_hint']) ? $cvalue['menu_hint'] : '' ?>">
-                                                <i class="<?= !empty($cvalue['menu_icon_class']) ? $cvalue['menu_icon_class'] : 'fa fa-angle-right' ?>"></i>
-                                                <?= $cvalue['menu_name'] ?>
-                                            </a>
-                                        </li>
-                                    <?php endforeach; ?>
-                                </ul>
-                            </li>
-                        <?php endif; ?>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                <!-- Unlimited nested menus -->
+                <?php
+                sidebar_render_menus(
+                    $nav,
+                    $currentSegment,
+                    $currentUri
+                );
+                ?>
+
             </ul>
         </section>
     </aside>
-<?php endif; ?>
+
+<?php
+}
+?>

@@ -272,6 +272,11 @@ class medicine_stock extends MY_Controller
         $medicine_id = $this->input->get("medicine_id");
         $medicine_batch = $this->input->get("term");
         $isdebug = !empty($this->input->get("debug"));
+        if (empty($medicine_id)) {
+            header('Content-Type: application/json');
+            echo json_encode(array());
+            return;
+        }
     $medicine =  $this->db->query("select distinct purchase_batch as batch,purchase_expire_month as expire_month,purchase_expire_year as expire_year,purchase_cgst_percent as cgst_percent,purchase_mrp as mrp,medicine_category,medicine_schedule from medicines join `purchases` on medicines.medicine_id=purchases.purchase_medicine_id where purchases.purchase_medicine_id=" . $medicine_id)->result_array();
 
         $purchased_batch =  $this->db->query("select distinct purchase_batch as batch,purchase_expire_month as expire_month,purchase_expire_year as expire_year,purchase_cgst_percent as cgst_percent,purchase_mrp as mrp from purchases where purchase_medicine_id=" . $medicine_id)->result_array();
@@ -284,18 +289,17 @@ class medicine_stock extends MY_Controller
 
         $sale_batch =  $this->db->query("select distinct sale_batch as batch,sale_expire_month as expire_month,sale_expire_year as expire_year,sale_cgst_percent as cgst_percent,sale_mrp as mrp from sales where sale_medicine_id=" . $medicine_id)->result_array();
 
-        //pr($sale_batch,1);
-       // pr($purchased_batch);
         $merged = array_merge($sale_batch, $purcased_return, $sold_return, $stock, $medicine);
    
-        $unique = null;
+        $unique = array();
         foreach ($merged as $mr) {
-            $unique[$mr['batch']] = $mr;
+            if (!empty($mr['batch'])) {
+                $unique[$mr['batch']] = $mr;
+            }
         }
         $batches = null;
- // pr($unique,1);
 
-        $responce = null;
+        $responce = array();
         foreach ($unique as $k => $v) {
             if (!(empty($medicine_batch)) && $v['batch'] != $medicine_batch) {
                 continue;

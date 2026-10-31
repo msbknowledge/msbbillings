@@ -1,0 +1,1 @@
+[{"Table":"medicine_categories","Non_unique":"0","Key_name":"PRIMARY","Seq_in_index":"1","Column_name":"medicine_category_id","Collation":"A","Cardinality":"23","Sub_part":null,"Packed":null,"Null":"","Index_type":"BTREE","Comment":"","Index_comment":""}]

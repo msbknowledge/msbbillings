@@ -1,70 +1,49 @@
 <?php
-require_once __DIR__ . '/node_db.php';
-if (isset($_GET['term'])) {
-    $return_arr = array();
+error_reporting(0);
+ini_set('display_errors', '0');
+header('Content-Type: application/json; charset=utf-8');
 
+require_once __DIR__ . '/node_db.php';
+
+$responce = array();
+
+if (isset($_GET['term']) && isset($_REQUEST['table']) && isset($_REQUEST['fieldToSearch'])) {
     try {
         $conn = new PDO("mysql:host=" . DB_SERVER . ";port=3306;dbname=" . DB_NAME, DB_USER, DB_PASSWORD);
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        $stmt = $conn->prepare('SELECT * FROM ' . $_REQUEST['table'] . ' WHERE ' . $_REQUEST['fieldToSearch'] . '  LIKE :term limit 0,20');
+        $table = preg_replace('/[^a-zA-Z0-9_]/', '', $_REQUEST['table']);
+        $fieldToSearch = preg_replace('/[^a-zA-Z0-9_]/', '', $_REQUEST['fieldToSearch']);
+
+        $stmt = $conn->prepare('SELECT * FROM ' . $table . ' WHERE ' . $fieldToSearch . ' LIKE :term LIMIT 0, 20');
         $stmt->execute(array('term' => '%' . $_GET['term'] . '%'));
 
-        while ($row = $stmt->fetch()) {
-            $row['doctor_name'] = $row['doctor_name'];
-			$row['sale_discount_percent'] = $row['medicine_discount'];
-			$row['sale_cgst_percent'] = (float)$row['medicine_gst']/2;
-            $responce[] = array('id' => '', 'label' => $row[$_REQUEST['fieldToSearch']], 'value' => $row[$_REQUEST['fieldToSearch']], 'complete' => $row);
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $row['doctor_name'] = isset($row['doctor_name']) ? $row['doctor_name'] : null;
+            $row['sale_discount_percent'] = isset($row['medicine_discount']) ? $row['medicine_discount'] : 0;
+            $row['sale_cgst_percent'] = isset($row['medicine_gst']) ? (float)$row['medicine_gst'] / 2 : 0;
+            $row['sale_sgst_percent'] = $row['sale_cgst_percent'];
 
+            $primaryId = isset($row['medicine_id']) ? $row['medicine_id'] : (isset($row['medicine_ID']) ? $row['medicine_ID'] : (isset($row['supplier_id']) ? $row['supplier_id'] : (isset($row['id']) ? $row['id'] : '')));
+            if ($primaryId && !isset($row['medicine_id'])) {
+                $row['medicine_id'] = $primaryId;
+            }
+
+            $label = isset($row[$fieldToSearch]) ? $row[$fieldToSearch] : '';
+            $value = isset($row[$fieldToSearch]) ? $row[$fieldToSearch] : '';
+
+            $responce[] = array(
+                'id' => $primaryId,
+                'label' => $label,
+                'value' => $value,
+                'complete' => $row
+            );
         }
     } catch (PDOException $e) {
-        echo 'ERROR: ' . $e->getMessage();
+        // Output empty response on database error
     }
-    
-	if($_REQUEST['table']=="medicines" && (!isset($_REQUEST['location']))&& (count($responce)<5) && (strlen(trim($_GET['term']))>2)){
-	/*	$data = json_decode(file_get_contents('search/'.str_ireplace(' ','-',strtoupper($_GET['term']))),true);	
-		if(empty($data)){
-		$data = json_decode(file_get_contents("https://www.medicea.in/rest/med/drug/all/".$_GET['term']),true);
-		file_put_contents('search/'.str_ireplace(' ','-',strtoupper($_GET['term'])),$data);
-		} */
-		foreach($data as $k=>$d){
-			$mapped['medicine_name'] = $d['name'];
-			$mapped['medicine_manufacturer'] = $d['companyName'];
-			$mapped['medicine_category'] = $d['type'];
-			$mapped['medicine_hsn'] = $d['hsnCode'];
-			$mapped['medicine_unit'] = @$d['packing'];
-			$mapped['purchase_unit'] = @$d['packing'];
-            $responce[] = array('id' => $id, 'label' => $mapped[$_REQUEST['fieldToSearch']].'*', 'value' => $mapped[$_REQUEST['fieldToSearch']], 'complete' => $mapped);
-		}
-	}
-	
-	 // Search for doctor names
-        // if ($_GET['table'] == 'doctors') {
-        //     $stmt = $conn->prepare('SELECT * FROM doctors WHERE doctor_name LIKE :term LIMIT 0,20');
-        //     $stmt->execute(array('term' => '%' . $_GET['term'] . '%'));
-
-        //     while ($row = $stmt->fetch()) {
-        //         // Fetch customers related to this doctor
-        //         $doctor_id = $row['doctor_ID'];
-        //         try {
-        //             $customer_stmt = $conn->prepare('SELECT * FROM customers WHERE customer_ID IN (SELECT sale_customer_id FROM sales WHERE sale_doctor_id = :doctor_id)');
-        //             $customer_stmt->execute(array('doctor_id' => $doctor_id));
-        //         } catch (PDOException $e) {
-        //             echo 'Error fetching customers: ' . $e->getMessage();
-        //         }
-
-        //         while ($customer = $customer_stmt->fetch()) {
-        //             $response[] = array(
-        //                 'doctor_name' => $row['doctor_name'],
-        //                 'customer_name' => $customer['customer_name'],
-        //                 'customer_address' => $customer['customer_address'],
-        //                 'customer_contact' => $customer['customer_contact'],
-        //                 'customer_gst' => $customer['customer_gst'],
-        //             );
-        //         }
-        //     }
-        // }
-    /* Toss back results as json encoded array. */
-    echo json_encode($responce);
 }
-?>
+
+echo json_encode($responce);
+exit;
+

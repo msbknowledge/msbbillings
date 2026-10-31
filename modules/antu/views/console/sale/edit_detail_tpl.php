@@ -5,40 +5,52 @@
 
     }
 
-    .rowline td {
-        text-align: center
+    table td, .table td, .rowline td, td {
+        text-align: center;
+        border: 1px solid #cbd5e1 !important;
+        padding: 0px !important;
+        font-size: 10px;
     }
 
-    .rowline input {
-        text-align: center
+    table input, .table input, .rowline input, td input {
+        text-align: center;
+        height: 22px !important;
+        line-height: 20px !important;
+        font-size: 11px !important;
+        padding: 0px 2px !important;
+        margin: 0px !important;
+        box-sizing: border-box;
+    }
+
+    table input::-webkit-outer-spin-button,
+    table input::-webkit-inner-spin-button,
+    .rowline input::-webkit-outer-spin-button,
+    .rowline input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    table input[type=number],
+    .rowline input[type=number] {
+        -moz-appearance: textfield;
     }
 
     th {
-        border: 1px solid black;
-        border-bottom: 1px solid black;
-    }
-
-    td {
-        border: 1px solid black;
+        background: linear-gradient(180deg, #f0f7ff 0%, #e0eefe 100%) !important;
+        color: #1e40af !important;
+        border: 1px solid #cbd5e1 !important;
+        border-bottom: 2px solid #93c5fd !important;
+        padding: 5px 3px !important;
+        font-size: 11px !important;
+        font-weight: 700 !important;
     }
 
     .rowline input:nth-child(2) {
         width: 210px;
     }
 
-    .rowline input {
-        padding: 0px;
-        margin: 0px;
-    }
-
-    select:nth-child(1) {
-        padding: 0px;
-        margin: 0px;
-
-    }
-
-    .rowline td {
-        font-size: 10px;
+    select:nth-child(1), select {
+        padding: 0px !important;
+        margin: 0px !important;
     }
 
     .ui-autocomplete-loading {
@@ -59,7 +71,7 @@
 
 <form method="post" action="">
     <input type="hidden" name="invoice_number" value="<?= $data[0]['sale_invoice'] ?>">
-    <table style=" border: none;background: lightcoral;">
+    <table style=" border: none;background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;">
         <tr>
 
             <th style=" border: none;">
@@ -82,7 +94,7 @@
         </tr>
     </table>
     <br />
-    <table style=" border: none;background: lightgrey;">
+    <table style=" border: none;background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;">
         <tr>
 
             <th style=" border: none;">
@@ -92,7 +104,7 @@
         </tr>
     </table>
     <br />
-    <table style=" text-align: center; border: none;background: lightblue;">
+    <table style=" text-align: center; border: none;background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;">
         <tr>
             <th style=" border: none; ">Invoice No:<input readonly="readonly" required="required" type="text" autocomplete="off" readonly="readonly" value="<?= $data[0]['sale_invoice'] ?>" name="sale_invoice" /></th>
             <th style=" border: none; ">DATE: <input type="text" required="required" autocomplete="off" name="sale_date" class="form-control" value="<?= date('d-M-Y', strtotime($data[0]['sale_date'])) ?>" /></th>
@@ -140,7 +152,7 @@
             <?php foreach ($data as $k => $value) { ?>
                 <tr class="rowline" style="text-align: center">
                     <td><span><?= $k + 1 ?></span>
-                        <a href="javascript:void(0)" onclick="removeRow(this);"> <i class=" icon-minus-sign" style="font-size:30px;color:red"></i> </a>
+                        <a href="javascript:void(0)" onclick="removeRow(this);"> <i class="fa fa-minus-circle" style="font-size:14px;color:#ef4444;vertical-align:middle;"></i> </a>
                     </td>
                     <td>
                         <input required="required" type="hidden" name="medicine_id[]" value="<?= $value['medicine_id'] ?>">
@@ -172,7 +184,7 @@
         </tbody>
     </table>
     <a href="javascript:void(0)" onclick="addmore()" class="addm">Add More</a>
-    <table style="border: 1px solid black;margin-top: 75px;">
+    <table style="border: 1px solid #cbd5e1 !important;margin-top: 75px;">
 
         <tr>
             <th>Items</th>
@@ -255,7 +267,7 @@
     function addmore() {
         rowcount++;
         var therow = " <tr class=\"rowline\">\r\n<td><span>" + rowcount + "<\/span>\n\
-<a href=\"javascript:void(0)\" onclick=\"removeRow(this);\"> <i class=\" icon-minus-sign\" style=\"font-size:30px;color:red\"></i> <\/a><\/td>\r\n   \n\
+<a href=\"javascript:void(0)\" onclick=\"removeRow(this);\"> <i class=\"fa fa-minus-circle\" style=\"font-size:14px;color:#ef4444;vertical-align:middle;\"></i> <\/a><\/td>\r\n   \n\
      <td><input required=\"required\" type=\"hidden\" name=\"medicine_id[]\"> <input required=\"required\" type=\"text\" name=\"medicine_name[]\"> Store:<input  readonly=\"readonly\"  type=\"text\" name=\"medicine_storage[]\" style=\"width:50px;\"><\/td>\r\n  \n\
       <td><input required=\"required\" readonly=\"readonly\"  type=\"text\" name=\"medicine_hsn[]\" style=\"width:40px;\"><\/td>\r\n      \n\
       <td><input required=\"required\" type=\"text\" name=\"sale_strip_quantity[]\" value=\"1\" onkeyup=\"calculate_the_sale(this)\" style=\"width:30px;\"><\/td>\r\n      \n\

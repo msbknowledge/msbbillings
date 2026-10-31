@@ -1,0 +1,1 @@
+[{"medicine_category_id":{"Field":"medicine_category_id","Type":"int(22)","Null":"NO","Key":"PRI","Default":null,"Extra":"auto_increment"},"medicine_category_name":{"Field":"medicine_category_name","Type":"varchar(100)","Null":"NO","Key":"","Default":null,"Extra":""}}]

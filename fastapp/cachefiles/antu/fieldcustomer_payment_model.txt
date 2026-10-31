@@ -1,0 +1,1 @@
+{"textarea_columns":["customer_payment_note"],"datetimepicker_columns":null,"datepicker_columns":["customer_payment_date"],"use_status_columns":null,"tablePrimaryKey":"customer_payment_ID","generalInput":["customer_payment_customer","customer_payment_paid_amount","customer_payment_invoice"]}

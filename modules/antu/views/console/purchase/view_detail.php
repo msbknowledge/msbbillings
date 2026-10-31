@@ -185,43 +185,43 @@ $amount_in_words = purchase_num_to_words($round_total);
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: 16px;
-    margin-bottom: 24px;
-    padding-bottom: 16px;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
     border-bottom: 1px solid #e2e8f0;
 }
 .pv-title-box h1 {
-    font-size: 24px;
+    font-size: 16px;
     font-weight: 800;
     color: #0f172a;
-    margin: 0 0 6px 0;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    letter-spacing: -0.02em;
-}
-.pv-title-box .pv-subtitle {
-    font-size: 13px;
-    color: #64748b;
+    margin: 0 0 3px 0;
     display: flex;
     align-items: center;
     gap: 8px;
+    letter-spacing: -0.01em;
+}
+.pv-title-box .pv-subtitle {
+    font-size: 11px;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 6px;
     flex-wrap: wrap;
 }
 .pv-actions {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     flex-wrap: wrap;
 }
 .pv-btn {
     display: inline-flex;
     align-items: center;
-    gap: 7px;
-    font-size: 13px;
+    gap: 5px;
+    font-size: 11px;
     font-weight: 600;
-    padding: 9px 16px;
-    border-radius: 8px;
+    padding: 4px 10px;
+    border-radius: 4px;
     border: 1px solid transparent;
     cursor: pointer;
     text-decoration: none !important;
@@ -259,11 +259,11 @@ $amount_in_words = purchase_num_to_words($round_total);
 .pv-badge {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
-    padding: 3px 8px;
-    font-size: 11px;
+    gap: 4px;
+    padding: 2px 6px;
+    font-size: 10px;
     font-weight: 700;
-    border-radius: 6px;
+    border-radius: 4px;
     text-transform: uppercase;
     letter-spacing: 0.04em;
 }
@@ -278,8 +278,8 @@ $amount_in_words = purchase_num_to_words($round_total);
 .pv-grid-4 {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    margin-bottom: 24px;
+    gap: 10px;
+    margin-bottom: 16px;
 }
 @media (max-width: 1024px) {
     .pv-grid-4 { grid-template-columns: repeat(2, 1fr); }
@@ -290,8 +290,8 @@ $amount_in_words = purchase_num_to_words($round_total);
 .pv-stat-card {
     background: #ffffff;
     border: 1px solid #e2e8f0;
-    border-radius: 10px;
-    padding: 16px;
+    border-radius: 6px;
+    padding: 10px 12px;
     position: relative;
     overflow: hidden;
 }
@@ -300,7 +300,7 @@ $amount_in_words = purchase_num_to_words($round_total);
     position: absolute;
     top: 0;
     left: 0;
-    width: 4px;
+    width: 3px;
     height: 100%;
 }
 .pv-stat-card.blue::before { background: #3b82f6; }
@@ -309,29 +309,29 @@ $amount_in_words = purchase_num_to_words($round_total);
 .pv-stat-card.amber::before { background: #f59e0b; }
 
 .pv-stat-label {
-    font-size: 12px;
-    font-weight: 600;
+    font-size: 10.5px;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.04em;
     color: #64748b;
-    margin-bottom: 6px;
+    margin-bottom: 3px;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 .pv-stat-value {
-    font-size: 19px;
+    font-size: 13.5px;
     font-weight: 800;
     color: #0f172a;
-    line-height: 1.2;
-    margin-bottom: 4px;
+    line-height: 1.25;
+    margin-bottom: 3px;
 }
 .pv-stat-sub {
-    font-size: 12px;
+    font-size: 10.5px;
     color: #64748b;
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 4px;
 }
 
 /* Modern Data Table */
@@ -343,26 +343,28 @@ $amount_in_words = purchase_num_to_words($round_total);
 .pv-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 13px;
+    font-size: 11px;
     text-align: left;
     background: #ffffff;
 }
 .pv-table th {
-    background: #f8fafc;
-    color: #475569;
-    font-size: 11px;
+    background: linear-gradient(180deg, #f0f7ff 0%, #e0eefe 100%) !important;
+    color: #1e40af !important;
+    font-size: 10.5px;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    padding: 12px 14px;
-    border-bottom: 2px solid #e2e8f0;
+    letter-spacing: 0.04em;
+    padding: 6px 8px;
+    border: 1px solid #cbd5e1;
+    border-bottom: 2px solid #93c5fd;
     white-space: nowrap;
 }
 .pv-table td {
-    padding: 12px 14px;
-    border-bottom: 1px solid #edf2f7;
+    padding: 5px 8px;
+    border: 1px solid #edf2f7;
     vertical-align: middle;
     color: #334155;
+    font-size: 11px;
 }
 .pv-table tr:hover td {
     background-color: #f8fafc;
@@ -379,27 +381,28 @@ $amount_in_words = purchase_num_to_words($round_total);
     font-weight: 700;
     border-top: 2px solid #cbd5e1;
     color: #0f172a;
+    padding: 6px 8px;
 }
 
 /* Medicine Title & Meta Tags */
 .pv-item-name {
     font-weight: 700;
     color: #0f172a;
-    font-size: 14px;
+    font-size: 11.5px;
     display: block;
-    margin-bottom: 3px;
+    margin-bottom: 2px;
 }
 .pv-item-meta {
-    font-size: 11px;
+    font-size: 10px;
     color: #64748b;
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 4px;
     align-items: center;
 }
 .pv-mono {
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 12px;
+    font-size: 10.5px;
     font-weight: 600;
 }
 
@@ -407,8 +410,8 @@ $amount_in_words = purchase_num_to_words($round_total);
 .pv-bottom-grid {
     display: grid;
     grid-template-columns: 1.4fr 1fr;
-    gap: 20px;
-    margin-top: 24px;
+    gap: 12px;
+    margin-top: 14px;
 }
 @media (max-width: 900px) {
     .pv-bottom-grid { grid-template-columns: 1fr; }
@@ -418,20 +421,20 @@ $amount_in_words = purchase_num_to_words($round_total);
 .pv-gst-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 12px;
-    margin-top: 10px;
+    font-size: 10.5px;
+    margin-top: 6px;
 }
 .pv-gst-table th {
     background: #f1f5f9;
     color: #475569;
-    padding: 8px 10px;
+    padding: 5px 8px;
     font-weight: 700;
     text-transform: uppercase;
-    font-size: 10px;
+    font-size: 9.5px;
     border-bottom: 1px solid #e2e8f0;
 }
 .pv-gst-table td {
-    padding: 8px 10px;
+    padding: 4px 8px;
     border-bottom: 1px solid #f1f5f9;
 }
 
@@ -439,15 +442,15 @@ $amount_in_words = purchase_num_to_words($round_total);
 .pv-summary-card {
     background: #ffffff;
     border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 20px;
+    border-radius: 8px;
+    padding: 12px 16px;
 }
 .pv-sum-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 0;
-    font-size: 13px;
+    padding: 4px 0;
+    font-size: 11px;
     color: #475569;
     border-bottom: 1px dashed #e2e8f0;
 }
@@ -459,23 +462,23 @@ $amount_in_words = purchase_num_to_words($round_total);
     font-weight: 700;
 }
 .pv-sum-total {
-    margin-top: 14px;
-    padding-top: 14px;
+    margin-top: 8px;
+    padding-top: 8px;
     border-top: 2px solid #0f172a;
     display: flex;
     justify-content: space-between;
     align-items: baseline;
 }
 .pv-sum-total .label {
-    font-size: 16px;
+    font-size: 12px;
     font-weight: 800;
     color: #0f172a;
 }
 .pv-sum-total .amount {
-    font-size: 26px;
+    font-size: 18px;
     font-weight: 900;
     color: #1e3a8a;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.01em;
 }
 
 /* Signatures & Notes */

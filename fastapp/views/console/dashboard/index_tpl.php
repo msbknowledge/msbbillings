@@ -498,8 +498,8 @@ if ($has_sales) {
 <div id="paynowModal" class="modal fade" role="dialog" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content" style="border-radius: 8px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
-            <div class="modal-header" style="background: #1e293b; color: #fff; padding: 14px 20px;">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="color: #fff; opacity: 0.8;">&times;</button>
+            <div class="modal-header" style="background: linear-gradient(180deg, #f0f7ff 0%, #e0eefe 100%); color: #1e40af; border-bottom: 2px solid #93c5fd; padding: 12px 18px;">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="color: #64748b; opacity: 0.8;">&times;</button>
                 <h4 class="modal-title" style="font-weight: 700; margin: 0; display: flex; align-items: center; gap: 8px;">
                     <i class="fa fa-credit-card text-success"></i> Instant Subscription Payment
                 </h4>

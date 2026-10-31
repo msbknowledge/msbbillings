@@ -7,12 +7,41 @@
     }
 
     th{
-        border: 1px solid black;
-        border-bottom: 1px solid black;
+        background: linear-gradient(180deg, #f0f7ff 0%, #e0eefe 100%) !important;
+        color: #1e40af !important;
+        border: 1px solid #cbd5e1 !important;
+        border-bottom: 2px solid #93c5fd !important;
+        padding: 5px 3px !important;
+        font-size: 11px !important;
+        font-weight: 700 !important;
     }
 
-    td{
-        border: 1px solid black;
+    table td, .table td, .rowline td, td {
+        border: 1px solid #cbd5e1 !important;
+        padding: 0px !important;
+        text-align: center;
+    }
+
+    table input, .table input, .rowline input, td input, select {
+        text-align: center;
+        height: 22px !important;
+        line-height: 20px !important;
+        font-size: 11px !important;
+        padding: 0px 2px !important;
+        margin: 0px !important;
+        box-sizing: border-box;
+    }
+
+    table input::-webkit-outer-spin-button,
+    table input::-webkit-inner-spin-button,
+    .rowline input::-webkit-outer-spin-button,
+    .rowline input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    table input[type=number],
+    .rowline input[type=number] {
+        -moz-appearance: textfield;
     }
 
     .ui-autocomplete-loading {
@@ -121,7 +150,7 @@
         </tbody>
     </table>
     <a href="javascript:void(0)" onclick="addmore()" onmouseover="hide_history()">Add More</a>
-    <table style="border: 1px solid black;margin-top: 75px;" onmouseover="hide_history()">
+    <table style="border: 1px solid #cbd5e1 !important;margin-top: 75px;" onmouseover="hide_history()">
 
         <tr>
             <th>Items</th>

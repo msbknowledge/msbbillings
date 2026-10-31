@@ -171,8 +171,8 @@ $amount_in_words = invoice_num_to_words(round($net_payable));
 }
 .btn-inv-primary { background: #10b981; color: #fff !important; }
 .btn-inv-primary:hover { background: #059669; color: #fff !important; }
-.btn-inv-dark { background: #0f172a; color: #fff !important; }
-.btn-inv-dark:hover { background: #1e293b; color: #fff !important; }
+.btn-inv-dark { background: #0284c7; color: #fff !important; }
+.btn-inv-dark:hover { background: #0369a1; color: #fff !important; }
 .btn-inv-whatsapp { background: #25d366; color: #fff !important; }
 .btn-inv-whatsapp:hover { background: #1eb956; color: #fff !important; }
 .btn-inv-outline { background: #fff; color: #334155 !important; border-color: #cbd5e1; }
@@ -198,72 +198,73 @@ $amount_in_words = invoice_num_to_words(round($net_payable));
 .inv-meta-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    margin-bottom: 24px;
+    gap: 10px;
+    margin-bottom: 16px;
 }
 .meta-box {
     background: #ffffff;
     border: 1px solid #e2e8f0;
-    border-radius: 10px;
-    padding: 16px;
+    border-radius: 6px;
+    padding: 10px 12px;
     position: relative;
 }
 .meta-box-label {
-    font-size: 12px;
+    font-size: 10.5px;
     font-weight: 700;
     color: #64748b;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 6px;
+    letter-spacing: 0.04em;
+    margin-bottom: 3px;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
 }
 .meta-box-value {
-    font-size: 15px;
-    font-weight: 700;
+    font-size: 13.5px;
+    font-weight: 800;
     color: #0f172a;
-    line-height: 1.4;
+    line-height: 1.25;
 }
 .meta-box-sub {
-    font-size: 12.5px;
+    font-size: 10.5px;
     color: #64748b;
-    margin-top: 4px;
-    line-height: 1.35;
+    margin-top: 2px;
+    line-height: 1.3;
 }
 
 /* Purchase Intelligence Banner */
 .profit-banner {
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-    color: #fff;
-    border-radius: 12px;
-    padding: 18px 24px;
-    margin-bottom: 24px;
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    color: #166534;
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+    padding: 14px 20px;
+    margin-bottom: 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: 16px;
-    box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.2);
+    gap: 14px;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1);
 }
 .profit-stat {
     display: flex;
     flex-direction: column;
 }
 .profit-stat-label {
-    font-size: 12px;
-    font-weight: 600;
-    color: #94a3b8;
+    font-size: 11px;
+    font-weight: 700;
+    color: #15803d;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 .profit-stat-val {
-    font-size: 22px;
+    font-size: 18px;
     font-weight: 800;
-    color: #fff;
+    color: #14532d;
 }
 .profit-stat-val.highlight {
-    color: #34d399;
+    color: #047857;
 }
 
 /* Modern Items Table */
@@ -274,20 +275,23 @@ $amount_in_words = invoice_num_to_words(round($net_payable));
 .inv-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 13.5px;
+    font-size: 11px;
     text-align: left;
 }
 .inv-table thead th {
-    background: #f8fafc;
-    color: #475569;
+    background: linear-gradient(180deg, #f0f7ff 0%, #e0eefe 100%) !important;
+    color: #1e40af !important;
+    font-size: 10.5px;
     font-weight: 700;
-    padding: 12px 14px;
-    border-top: 1px solid #e2e8f0;
-    border-bottom: 2px solid #cbd5e1;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 6px 8px;
+    border-top: 1px solid #cbd5e1;
+    border-bottom: 2px solid #93c5fd;
     white-space: nowrap;
 }
 .inv-table tbody td {
-    padding: 12px 14px;
+    padding: 5px 8px;
     border-bottom: 1px solid #f1f5f9;
     vertical-align: middle;
 }
@@ -296,19 +300,19 @@ $amount_in_words = invoice_num_to_words(round($net_payable));
 }
 .purchase-pill {
     display: inline-block;
-    padding: 4px 8px;
+    padding: 2px 6px;
     background: #f1f5f9;
     border: 1px solid #e2e8f0;
-    border-radius: 6px;
-    font-size: 11.5px;
+    border-radius: 4px;
+    font-size: 10.5px;
     color: #334155;
-    line-height: 1.35;
+    line-height: 1.3;
 }
 .margin-badge {
     display: inline-block;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 11px;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 10px;
     font-weight: 700;
     background: #dcfce7;
     color: #15803d;
@@ -318,14 +322,14 @@ $amount_in_words = invoice_num_to_words(round($net_payable));
 .inv-footer-grid {
     display: grid;
     grid-template-columns: 1.4fr 1fr;
-    gap: 24px;
-    margin-top: 24px;
+    gap: 14px;
+    margin-top: 14px;
 }
 .inv-summary-card {
     background: #f8fafc;
     border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 20px;
+    border-radius: 8px;
+    padding: 12px 16px;
 }
 .summary-row {
     display: flex;

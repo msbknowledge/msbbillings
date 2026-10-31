@@ -1,18 +1,32 @@
 <?php
-class Landing extends MY_Controller {
+class Landing extends MY_Controller
+{
 
     public $publicAccess = array(
-        'index', 'blogs', 'chat', 'wishes', 'home', 'wishe', 'about_us', 
-        'blogdetails', 'contact_us', 'payment_terms_and_conditions', 
-        'privacy_policy', 'details', 'main', 'check_subscriber'
+        'index',
+        'blogs',
+        'chat',
+        'wishes',
+        'home',
+        'wishe',
+        'about_us',
+        'blogdetails',
+        'contact_us',
+        'payment_terms_and_conditions',
+        'privacy_policy',
+        'details',
+        'main',
+        'check_subscriber'
     );
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
         $this->load->model('help_model');
     }
-    
-    public function index() {
+
+    public function index()
+    {
         $server_name = isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : 'localhost';
         $subdomain = explode('.', $server_name)[0];
 
@@ -89,6 +103,7 @@ class Landing extends MY_Controller {
             'channels_count' => $channels_count,
             'internet_packages' => $internet_packages,
             'medicine_categories' => $medicine_categories,
+            'login_url' => site_url('console/user/login')
         );
 
         $this->load->view('subdomain_tpl.php', $data);
@@ -97,7 +112,8 @@ class Landing extends MY_Controller {
     /**
      * Live Subscriber Account / Dues Lookup Endpoint
      */
-    public function check_subscriber() {
+    public function check_subscriber()
+    {
         header('Content-Type: application/json');
         $query = $this->input->get_post('query', TRUE);
         if (empty($query)) {
@@ -157,17 +173,21 @@ class Landing extends MY_Controller {
             echo json_encode(array('status' => false, 'message' => 'No active subscriber found with that Mobile number or ID. Please check and try again.'));
         }
     }
-    
-    public function contact_us() {
+
+    public function contact_us()
+    {
         $this->render();
     }
-    public function about_us() {
+    public function about_us()
+    {
         $this->render();
     }
-    public function wishes() {
+    public function wishes()
+    {
         $this->load->view('2024_tpl.php');
     }
-    public function chat() {
+    public function chat()
+    {
         echo 'coming soon';
     }
 }

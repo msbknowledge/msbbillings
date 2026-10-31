@@ -56,12 +56,12 @@
                             <?php if (in_array('delete', $config['allowed_action']) !== FALSE) {
                                 ?>
                                 <hr/> 
-                                <a href="#" class="btn btn_select_all" title="Select the Entry of current list." data-rel="tooltip">Select All</a>
-                                <a href="#" class="btn btn_deselect_all" title="Clear the Selected Iteams." data-rel="tooltip">Clear Selected</a>
+                                <a href="#" class="btn btn_select_all" title="Select the Entry of current list." data-rel="tooltip"><i class="fa fa-check-square-o"></i> Select All</a>
+                                <a href="#" class="btn btn_deselect_all" title="Clear the Selected Items." data-rel="tooltip"><i class="fa fa-square-o"></i> Clear Selected</a>
                                <?php 
                                 $user_login=$this->session->userdata('current_user_session');
                              ?>
-                                <a href="#" onclick="popupDeleteAll()" class="btn search_remove btn-danger" title="Select and Delete Entry." data-rel="tooltip">Delete Selected</a>
+                                <a href="#" onclick="popupDeleteAll()" class="btn search_remove btn-danger" title="Select and Delete Entry." data-rel="tooltip"><i class="fa fa-trash"></i> Delete Selected</a>
                                 <!--<a href="<?=console_url('sale/generate_sale');?> " onclick="popupExport()" class="btn search_remove btn-success" title="Export Data." data-rel="tooltip">Export Data</a>-->
                                 <?php 
                             }
@@ -72,7 +72,7 @@
                     if (is_array($config['allowed_action'])) {
                         if (in_array('add_detail', $config['allowed_action']) !== FALSE) {
                             ?>
-                            <a href="<?=console_url('sale/add_detail');?> " style="float: right"  class="btn btn-info" >Create Sale</a>
+                            <a href="<?=console_url('sale/add_detail');?>" style="float: right" class="btn btn-info"><i class="fa fa-plus-circle"></i> Create Sale</a>
                             <br/><hr/>
                         <?php }
                         ?>

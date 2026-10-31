@@ -1,0 +1,1 @@
+[{"Table":"purchases","Non_unique":"0","Key_name":"PRIMARY","Seq_in_index":"1","Column_name":"purchase_ID","Collation":"A","Cardinality":"51357","Sub_part":null,"Packed":null,"Null":"","Index_type":"BTREE","Comment":"","Index_comment":""}]

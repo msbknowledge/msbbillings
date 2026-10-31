@@ -1,0 +1,1 @@
+{"textarea_columns":["payment_note"],"datetimepicker_columns":null,"datepicker_columns":["payment_date"],"use_status_columns":null,"tablePrimaryKey":"payment_ID","generalInput":["payment_suppliers","payment_paid_amount","payment_invoice"]}

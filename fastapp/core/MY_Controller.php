@@ -8,15 +8,17 @@
  * @dependent Model permission_model,site_settings_model,menus_model
  * @deprecated since version 1.0.2 dependent  Model 
  */
-class MY_Controller extends CI_Controller {
+class MY_Controller extends CI_Controller
+{
 
     protected $publicAccess, $validationRules, $moduleControllers,
-            $allowed_action, $translator, $record_per_page = 15,
-            $default_uri_segment = 4;
-    public $moduleMenu,$targetModel, $current_user_session,
-            $current_site_settings, $routedirectory, $moduleMeta, $function_hook;
-    
-    public function __construct() {
+        $allowed_action, $translator, $record_per_page = 15,
+        $default_uri_segment = 4;
+    public $moduleMenu, $targetModel, $current_user_session,
+        $current_site_settings, $routedirectory, $moduleMeta, $function_hook;
+
+    public function __construct()
+    {
         parent::__construct();
         //$this->output->enable_profiler(TRUE);
         if ($this->input->get()) {
@@ -26,10 +28,10 @@ class MY_Controller extends CI_Controller {
         $this->initilise();
         $this->access_control();
         $this->load_module_packages();
-        
     }
 
-    private function initilise() {
+    private function initilise()
+    {
         /** populate basic site settings ans user data to application wise */
         $this->current_user_session = $this->session->userdata('current_user_session');
         //$this->allowed_action = array('add_detail', 'edit_detail', 'delete', 'view_detail', 'quick_edit');
@@ -42,7 +44,8 @@ class MY_Controller extends CI_Controller {
      * autoload module active module packages
      * with all models and helpers
      * *** */
-    private function load_module_packages() {
+    private function load_module_packages()
+    {
         /** get the active modules */
         if (file_exists(ROOTPATH . 'fastapp/cachefiles/' . NODE . '/module.txt')) {
             $modules = $this->get_modules();
@@ -51,7 +54,7 @@ class MY_Controller extends CI_Controller {
 
             file_put_contents(ROOTPATH . 'fastapp/cachefiles/' . NODE . '/module.txt', json_encode($modules));
         }
-        
+
         //pr($modules);
         foreach ($modules as $moduleMeta) {
             /*             * load the package */
@@ -96,7 +99,8 @@ class MY_Controller extends CI_Controller {
      * prepare user capability permission and access controle
      *      * @ticket:  $this->is_authorised malfunctionaing
      * * */
-    private function access_control() {
+    private function access_control()
+    {
         if (!$this->is_capabale()) {
             $this->show_error_page(403);
             exit();
@@ -107,47 +111,152 @@ class MY_Controller extends CI_Controller {
     /**
      * only for console capability check    
      *  */
-    private function is_capabale() {
-        if ($this->current_user_session['user_type_super'] == 1) {
+
+
+    private function is_capabale()
+    {
+
+        // 1. Read and validate the current user session.
+        $session = is_array($this->current_user_session)
+            ? $this->current_user_session
+            : array();
+
+        $isConsole = (
+            isset($this->uri->segments[1]) &&
+            $this->uri->segments[1] === 'console'
+        );
+
+        $controller = $this->uri->segment(2);
+        $controller = !empty($controller) ? $controller : 'dashboard';
+
+        $action = isset($this->uri->segments[3])
+            ? $this->uri->segments[3]
+            : $this->router->method;
+
+        // 2. Preserve public actions.
+        $publicAccess = is_array($this->publicAccess)
+            ? $this->publicAccess
+            : array();
+
+        if (in_array($action, $publicAccess, true)) {
             return true;
         }
-        $controller = empty($this->uri->segment(2)) ? 'dashboard' : $this->uri->segment(2);
-        $capability_list = json_decode(get_option('capability_' . $controller), true);
-        $this->allowed_action = array_keys($capability_list['capability'][$controller][$this->current_user_session['user_type_id']]);
-        if (isset($this->uri->segments[1]) && $this->uri->segments[1] == 'console') {
-            $verify_capable_action = isset($this->uri->segments[3]) ? $this->uri->segments[3] : $this->uri->rsegments[2];
 
-            if (in_array($verify_capable_action, $this->publicAccess)) {
-                return true;
-            }
-
-            if ($verify_capable_action == 'capability_list')
-                return true;
-
-            if ($capability_list['capability'][$controller][$this->current_user_session['user_type_id']][$verify_capable_action] == 'true') {
-                return TRUE;
-            }
-            if($controller=="dashboard"||$verify_capable_action=="login"||$verify_capable_action=="logout"){
-                //allowed dashboard for all users
-                return TRUE;
-
-
-            }else{
-                // pr($capability_list['capability']);
-                // pr($controller);
-                // pr($verify_capable_action);
-                $message = '<script>window.location="' . console_url() . 'user/login"</script>Please Wait...';
-                show_error($message, '403', 'Not Authorised!! Please wait...');
-    
-                return FALSE;
-            }
-           
-        } else {
-            return TRUE;
+        if ($this->publicAccess === '*') {
+            return true;
         }
+
+        // 3. Allow login/logout and dashboard routes.
+        if (
+            $isConsole &&
+            (
+                $controller === 'dashboard' ||
+                $action === 'login' ||
+                $action === 'logout'
+            )
+        ) {
+            return true;
+        }
+
+        // 4. Require a valid session for protected console pages.
+        if (
+            !isset($session['user_ID']) ||
+            !isset($session['user_type_super'])
+        ) {
+            if ($isConsole) {
+                redirect(console_url() . 'user/login');
+                exit;
+            }
+
+            return false;
+        }
+
+        // 5. Super admin has unrestricted access.
+        if ((int) $session['user_type_super'] === 1) {
+            return true;
+        }
+
+        // 6. Non-console frontend routes need no console capability check.
+        if (!$isConsole) {
+            return true;
+        }
+
+        // 7. Validate the user type.
+        if (
+            !isset($session['user_type_id']) ||
+            $session['user_type_id'] === ''
+        ) {
+            show_error(
+                'User type is missing. Please log in again.',
+                403,
+                'Access Denied'
+            );
+
+            return false;
+        }
+
+        // 8. Load and validate saved permissions.
+        $option = get_option('capability_' . $controller);
+
+        $capabilityList = is_string($option) && $option !== ''
+            ? json_decode($option, true)
+            : array();
+
+        if (!is_array($capabilityList)) {
+            $capabilityList = array();
+        }
+
+        $userTypeId = (string) $session['user_type_id'];
+
+        $permissions = array();
+
+        if (
+            isset($capabilityList['capability']) &&
+            is_array($capabilityList['capability']) &&
+            isset($capabilityList['capability'][$controller]) &&
+            is_array($capabilityList['capability'][$controller]) &&
+            isset($capabilityList['capability'][$controller][$userTypeId]) &&
+            is_array($capabilityList['capability'][$controller][$userTypeId])
+        ) {
+            $permissions =
+                $capabilityList['capability'][$controller][$userTypeId];
+        }
+
+        // Keep allowed_action as an array.
+        $this->allowed_action = array_keys($permissions);
+
+        // 9. Preserve the capability-list access rule.
+        if ($action === 'capability_list') {
+            return true;
+        }
+
+        // 10. Check the requested action.
+        if (
+            isset($permissions[$action]) &&
+            (
+                $permissions[$action] === 'true' ||
+                $permissions[$action] === true ||
+                $permissions[$action] === 1 ||
+                $permissions[$action] === '1'
+            )
+        ) {
+            return true;
+        }
+
+        // 11. Deny all other unauthorized actions.
+        show_error(
+            'Not authorised to access this page.',
+            403,
+            'Access Denied'
+        );
+
+        return false;
     }
 
-    public function capability_list() {
+
+
+    public function capability_list()
+    {
         $this->page_config['use_dropdown_columns_options']['capability_user_type'] = $this->user_types_model->get_list_for_dropdown('user_type_name');
         $this->page_config['use_dropdown_columns_options']['capability_controller'] = $this->get_controllers();
         if (!$this->current_user_session['user_type_super']) {
@@ -161,10 +270,11 @@ class MY_Controller extends CI_Controller {
         $choosenData = json_decode(get_option('capability_' . $this->uri->segment(2)), true);
         $this->render(array('choosenData' => $choosenData), 'capability_list_tpl');
         //pr($viewData);
-       // $this->render(array('viewData' => $viewData));
+        // $this->render(array('viewData' => $viewData));
     }
 
-    private function get_controllers() {
+    private function get_controllers()
+    {
         /*         * default controllers* */
         $files = get_dir_file_info(APPPATH . 'controllers', FALSE);
         $modules = $this->get_modules();
@@ -185,19 +295,21 @@ class MY_Controller extends CI_Controller {
         return $controllers;
     }
 
-    private function get_modules() {
+    private function get_modules()
+    {
         //$moduleMeta = $this->modules_model->get_list_for_dropdown('module_name', array('module_status' => 1));
-        
-	$moduleMeta = explode(',',PLAN_PACKAGES);
-	$modules = json_decode(PLAN_PACKAGES,true);
 
-	if(!empty($modules)){
-		$moduleMeta = $modules ;
-	}
+        $moduleMeta = explode(',', PLAN_PACKAGES);
+        $modules = json_decode(PLAN_PACKAGES, true);
+
+        if (!empty($modules)) {
+            $moduleMeta = $modules;
+        }
         return $moduleMeta;
     }
 
-    public function excel_convert() {
+    public function excel_convert()
+    {
 
         $all_data = $this->{$this->targetModel}->get_list();
 
@@ -230,7 +342,8 @@ class MY_Controller extends CI_Controller {
         }
     }
 
-    protected function breadcrumb_generator($segments) {
+    protected function breadcrumb_generator($segments)
+    {
         $breadcrumb[ucwords(str_replace('_', ' ', $segments[1]))] = '/' . $segments[1];
         if ($segments[2] != 'index' && !empty($segments[2]))
             $breadcrumb[ucwords(str_replace('_', ' ', $segments[2]))] = '/' . $segments[1] . '/' . $segments[2];
@@ -263,7 +376,8 @@ class MY_Controller extends CI_Controller {
      * @param string footer view name  $footer_tpl, ex- default is 'footer.tpl'
      */
 
-    protected function render($passedData = array(), $view_file = null, $returnData = FALSE, $header_tpl = 'common/header_tpl', $footer_tpl = 'common/footer_tpl') {
+    protected function render($passedData = array(), $view_file = null, $returnData = FALSE, $header_tpl = 'common/header_tpl', $footer_tpl = 'common/footer_tpl')
+    {
         try {
             $segments = $this->router->uri->segments;
             if ($segments[1] == 'console') {
@@ -322,7 +436,8 @@ class MY_Controller extends CI_Controller {
         }
     }
 
-    protected function get_site_setting() {
+    protected function get_site_setting()
+    {
         if (file_exists(ROOTPATH . 'fastapp/cachefiles/' . NODE . '/site_setting.txt')) {
             $site_setting = json_decode(file_get_contents(ROOTPATH . 'fastapp/cachefiles/' . NODE . '/site_setting.txt'), true);
         } else {
@@ -340,12 +455,13 @@ class MY_Controller extends CI_Controller {
         return $site_setting;
     }
 
-    protected function sendmail($mailMeta, $printDebug = FALSE, $use_defined_config = NULL) {
+    protected function sendmail($mailMeta, $printDebug = FALSE, $use_defined_config = NULL)
+    {
 
         $this->load->library('email');
         /*         * send mail config* */
-         $config = array(
-            'protocol'  => 'smtp',//'sendmail'
+        $config = array(
+            'protocol'  => 'smtp', //'sendmail'
             'smtp_host' => 'smtp.hostinger.com',
             'smtp_crypto' => 'ssl',
             'smtp_port' => 465,                        // Use 587 (TLS) or 465 (SSL)
@@ -386,7 +502,7 @@ class MY_Controller extends CI_Controller {
 
         $this->email->subject(isset($mailMeta['subject']) ? $mailMeta['subject'] : '');
         $this->email->message(isset($mailMeta['body']) ? $mailMeta['body'] : '');
-        
+
 
         $sendMailStatus = $this->email->send();
         // if ($printDebug)
@@ -397,7 +513,8 @@ class MY_Controller extends CI_Controller {
     /**
      * need modification
      */
-    private function is_authorised($allowed_action = NULL) {
+    private function is_authorised($allowed_action = NULL)
+    {
         /*         * *
          * public access set in controllers
          */
@@ -433,7 +550,8 @@ class MY_Controller extends CI_Controller {
     /**
      * generate view for index listing table 
      */
-    protected function generate_table_view($data = NULL, $user_config = array(), $view_template = 'elements/table_tpl') {
+    protected function generate_table_view($data = NULL, $user_config = array(), $view_template = 'elements/table_tpl')
+    {
         /** auto field type detect Start* */
         $config = $this->auto_fieldtype_detect($user_config);
         /** auto field type detect End* */
@@ -471,7 +589,7 @@ class MY_Controller extends CI_Controller {
         // $config['use_file_columns'] = is_string(@$admin_config['use_file_columns']) ? explode(',', $admin_config['use_file_columns']) : NULL;
         
         // $config['use_file_columns_path'] = is_string(@$admin_config['use_file_columns_path']) ? explode(',', $admin_config['use_file_columns_path']) : $admin_config['use_file_columns_path'];
-           /** imageuploader */
+        /** imageuploader */
         $config['multi_upload'] = isset($user_config['multi_upload']) ? ($user_config['multi_upload'] ? 'true' : 'false') : 'false';
         $tabledata['table_meta']['config'] = $config;
         $tabledata['table_meta']['data'] = isset($data['current_paged_list']) ? $data['current_paged_list'] : array();
@@ -482,28 +600,29 @@ class MY_Controller extends CI_Controller {
     /**
      * generate view for index search section 
      */
-   protected function generate_table_search_view($user_config = array(), $view_template = 'elements/search_box_tpl') {
+    protected function generate_table_search_view($user_config = array(), $view_template = 'elements/search_box_tpl')
+    {
         /** auto field type detect Start* */
         $config = $this->auto_fieldtype_detect($user_config);
-        foreach($config as $fname=>$fieldx){
-		if($fname=="use_dropdown_columns_options"){
+        foreach ($config as $fname => $fieldx) {
+            if ($fname == "use_dropdown_columns_options") {
 
-			foreach( (array_keys($fieldx)) as $field){
-				$fields[] = ($field);
-			}
-		}else{ 
-			foreach($fieldx as $field){
-				$fields[] = ($field);
-			}
-		}	
-	}
+                foreach ((array_keys($fieldx)) as $field) {
+                    $fields[] = ($field);
+                }
+            } else {
+                foreach ($fieldx as $field) {
+                    $fields[] = ($field);
+                }
+            }
+        }
 
         /** auto field type detect End* */
         /*         * dropdown */
         $config['use_dropdown_columns_options'] = isset($user_config['use_dropdown_columns_options']) ? $user_config['use_dropdown_columns_options'] : array();
 
         //$default['searchFields'] = is_string($user_config['searchFields'])?$user_config['searchFields']:NULL;
-        $config['searchFields'] = is_string(isset($user_config['searchFields']) ? $user_config['searchFields'] : 0) ? explode(',', $user_config['searchFields']) :$fields;
+        $config['searchFields'] = is_string(isset($user_config['searchFields']) ? $user_config['searchFields'] : 0) ? explode(',', $user_config['searchFields']) : $fields;
         $config['default_search_value'] = isset($user_config['default_search_value']) ? $user_config['default_search_value'] : NULL;
 
         return $this->render($config, $view_template, true, false, false);
@@ -512,7 +631,8 @@ class MY_Controller extends CI_Controller {
     /**
      * generate view for view details 
      */
-    protected function generate_detail_view($data = NULL, $user_config = array(), $view_template = 'elements/detail_tpl') {
+    protected function generate_detail_view($data = NULL, $user_config = array(), $view_template = 'elements/detail_tpl')
+    {
         /** auto field type detect Start* */
         $config = $this->auto_fieldtype_detect($user_config);
         /** auto field type detect End* */
@@ -525,7 +645,7 @@ class MY_Controller extends CI_Controller {
         }
         $config['use_image_columns'] = is_string(@$user_config['use_image_columns']) ? explode(',', $user_config['use_image_columns']) : NULL;
         $config['use_image_columns_path'] = is_string(@$user_config['use_image_columns_path']) ? explode(',', $user_config['use_image_columns_path']) : $user_config['use_image_columns_path'];
-         /** image */
+        /** image */
         // if (!isset($admin_config['use_image_columns_path'])) {
         //     $admin_config['use_image_columns_path'] = base_url() . 'uploads/' . NODE . '/';
         // }
@@ -540,7 +660,7 @@ class MY_Controller extends CI_Controller {
 
 
 
-   /** imageuploader */
+        /** imageuploader */
         $config['multi_upload'] = isset($user_config['multi_upload']) ? ($user_config['multi_upload'] ? 'true' : 'false') : 'false';
 
         $tabledata['table_meta']['config'] = $config;
@@ -553,7 +673,8 @@ class MY_Controller extends CI_Controller {
     /**
      * generate view for add or edit  details 
      */
-    protected function generate_form_view($data = NULL, $user_config = array(), $view_template = 'elements/add_edit_tpl') {
+    protected function generate_form_view($data = NULL, $user_config = array(), $view_template = 'elements/add_edit_tpl')
+    {
         /** auto field type detect Start* */
         $config = $this->auto_fieldtype_detect($user_config);
         /** auto field type detect End* */
@@ -567,7 +688,7 @@ class MY_Controller extends CI_Controller {
         }
         $config['use_image_columns'] = is_string(@$user_config['use_image_columns']) ? explode(',', $user_config['use_image_columns']) : NULL;
         $config['use_image_columns_path'] = is_string(@$user_config['use_image_columns_path']) ? explode(',', $user_config['use_image_columns_path']) : $user_config['use_image_columns_path'];
-         /** image */
+        /** image */
         // if (!isset($admin_config['use_image_columns_path'])) {
         //     $admin_config['use_image_columns_path'] = base_url() . 'uploads/' . NODE . '/';
         // }
@@ -580,7 +701,7 @@ class MY_Controller extends CI_Controller {
         // $config['use_file_columns'] = is_string(@$admin_config['use_file_columns']) ? explode(',', $admin_config['use_file_columns']) : NULL;
         // $config['use_file_columns_path'] = is_string(@$admin_config['use_file_columns_path']) ? explode(',', $admin_config['use_file_columns_path']) : $admin_config['use_file_columns_path'];
 
-        
+
 
         /** dropdown */
         $config['use_dropdown_columns_options'] = isset($user_config['use_dropdown_columns_options']) ? $user_config['use_dropdown_columns_options'] : array();
@@ -602,7 +723,8 @@ class MY_Controller extends CI_Controller {
     /**
      * Detect entry field type from database column type
      */
-    protected function auto_fieldtype_detect($user_config = NULL) {
+    protected function auto_fieldtype_detect($user_config = NULL)
+    {
         if (file_exists(ROOTPATH . 'fastapp/cachefiles/' . NODE . '/field' . $this->targetModel . '.txt')) {
             $config = json_decode(file_get_contents(ROOTPATH . 'fastapp/cachefiles/' . NODE . '/field' . $this->targetModel . '.txt'), true);
         } else {
@@ -613,25 +735,25 @@ class MY_Controller extends CI_Controller {
             $autoDateTimePicker = NULL;
             $autoStatus = NULL;
             $primaryKey = NULL;
-	    $generalInput = null;	
+            $generalInput = null;
             foreach ($tableFieldMeta[0] as $key => $value) {
                 if ($value['Type'] == 'text' || $value['Type'] == 'longtext') {
                     $autoTextArea[] = $key;
-                }else
+                } else
                 if ($value['Type'] == 'date') {
                     $autoDatePicker[] = $key;
-                }else
+                } else
                 if ($value['Type'] == 'datetime') {
                     $autoDateTimePicker[] = $key;
-                }else
+                } else
                 if ($value['Type'] == 'tinyint(1)') {
                     $autoStatus[] = $key;
-                }else
+                } else
                 if ($value['Key'] == 'PRI') {
                     $primaryKey = $key;
-                }else{
-		$generalInput[] =  $key;
-		}
+                } else {
+                    $generalInput[] =  $key;
+                }
             }
             /*             * textarea */
             $config['textarea_columns'] = is_string(@$user_config['textarea_columns']) ? explode(',', $user_config['textarea_columns']) : $autoTextArea;
@@ -643,15 +765,16 @@ class MY_Controller extends CI_Controller {
             $config['use_status_columns'] = is_string(@$user_config['use_status_columns']) ? explode(',', $user_config['use_status_columns']) : $autoStatus;
             /*             * PRIMARY KEY */
             $config['tablePrimaryKey'] = is_string(@$user_config['tablePrimaryKey']) ? $user_config['tablePrimaryKey'] : $primaryKey;
-	 
-	$config['generalInput'] = $generalInput;	
+
+            $config['generalInput'] = $generalInput;
             /** auto field type detect End* */
             file_put_contents(ROOTPATH . 'fastapp/cachefiles/' . NODE . '/field' . $this->targetModel . '.txt', json_encode($config));
         }
         return $config;
     }
 
-    protected function menu_generater() {
+    protected function menu_generater()
+    {
 
         $result_array = null;
         if (file_exists(ROOTPATH . 'fastapp/cachefiles/' . NODE . '/menu_cache.txt')) {
@@ -684,8 +807,8 @@ class MY_Controller extends CI_Controller {
                     $moduleMenu = json_decode(read_file(ROOTPATH . 'modules/' . $moduleData . '/config.json'), TRUE);
                     if (isset($moduleMenu['menu']) && is_array($moduleMenu['menu'])) {
                         foreach ($moduleMenu['menu'] as $value) {
-                           // if ((!isset($value['menu_user_type_id'])) || ($value['menu_user_type_id'] == intval($this->current_user_session['user_type_id']))) {
-                                $moduleMenuList[$value['menu_ID']] = $value;
+                            // if ((!isset($value['menu_user_type_id'])) || ($value['menu_user_type_id'] == intval($this->current_user_session['user_type_id']))) {
+                            $moduleMenuList[$value['menu_ID']] = $value;
                             //}
                         }
                     }
@@ -705,7 +828,8 @@ class MY_Controller extends CI_Controller {
     /**
      * add detail
      */
-    public function add_detail() {
+    public function add_detail()
+    {
         $postedData = $this->input->post();
         $config = $this->auto_fieldtype_detect(NULL);
         $this->page_config = array_merge($config, $this->page_config);
@@ -742,16 +866,17 @@ class MY_Controller extends CI_Controller {
     /**
      * edit detail
      */
-    public function edit_detail() {
+    public function edit_detail()
+    {
         $postedData = $this->input->post();
         $config = $this->auto_fieldtype_detect(NULL);
         $this->page_config = array_merge($config, $this->page_config);
         if (isset($postedData['load_edit_entry'])) {
-            
+
             $entryData2 = $this->{$this->targetModel}->get_list(array($this->{$this->targetModel}->get_primary_key() => trim($postedData['load_edit_entry'])));
             $entryData1 = $this->{$this->targetModel}->get_field_list();
             $entryData = array_intersect_key($entryData2[0], $entryData1[0]);
-           
+
             echo $this->generate_form_view($entryData, $this->page_config);
         } else {
             if ($postedData) {
@@ -777,22 +902,24 @@ class MY_Controller extends CI_Controller {
     /**
      * view detail
      */
-    public function view_detail() {
+    public function view_detail()
+    {
         $config = $this->auto_fieldtype_detect(NULL);
         $this->page_config = array_merge($config, $this->page_config);
         $entryID = trim($this->input->post('entry'));
         $entryData2 = $this->{$this->targetModel}->get_list(array($this->page_config['tablePrimaryKey'] => $entryID));
         $entryData1 = $this->{$this->targetModel}->get_field_list();
         $entryData = array_intersect_key($entryData2[0], $entryData1[0]);
-        
+
         echo $this->generate_detail_view($entryData, $this->page_config);
     }
 
-    public function autocomplete() {
+    public function autocomplete()
+    {
         $field = $this->uri->segment(5);
         $model = $this->uri->segment(4);
-        if(strpos($model,'_model')===false){
-            $model.='_model';
+        if (strpos($model, '_model') === false) {
+            $model .= '_model';
         }
         $search = $this->input->get('term');
         $data = ($this->{$model}->get_list_for_dropdown($field, NULL, NULL, 10, NULL, array($field => $search)));
@@ -806,7 +933,8 @@ class MY_Controller extends CI_Controller {
     /**
      * delete
      */
-    public function delete() {
+    public function delete()
+    {
         $postedData = $this->input->post();
         $config = $this->auto_fieldtype_detect(NULL);
         $this->page_config = array_merge($config, $this->page_config);
@@ -823,7 +951,8 @@ class MY_Controller extends CI_Controller {
     /**
      * index show list
      */
-    public function index() {
+    public function index()
+    {
 
         $config = $this->auto_fieldtype_detect(NULL);
         $this->page_config = array_merge($config, $this->page_config);
@@ -842,7 +971,8 @@ class MY_Controller extends CI_Controller {
 
     /*     * some of helper function* */
 
-    protected function orderby_input_process() {
+    protected function orderby_input_process()
+    {
         $orderBy = '';
         if (isset($_COOKIE['orderBy_' . $this->targetModel])) {
             $orderByArr = explode(':', $_COOKIE['orderBy_' . $this->targetModel]);
@@ -851,24 +981,26 @@ class MY_Controller extends CI_Controller {
         return $orderBy;
     }
 
-       protected function generate_search_like_condition() {
+    protected function generate_search_like_condition()
+    {
         $config = $this->auto_fieldtype_detect(NULL);
         $posted = $this->input->post();
         $likeCondition = NULL;
         if (isset($config['use_status_columns'])) {
             foreach ($config['use_status_columns'] as $statusColumn) {
-                unset($posted[$statusColumn]);//$posted[$statusColumn] = isset($posted[$statusColumn]) ? 1 : 0;
+                unset($posted[$statusColumn]); //$posted[$statusColumn] = isset($posted[$statusColumn]) ? 1 : 0;
             }
         }
-        foreach ($posted as $k=>$p) {
-			if(empty($p)){
-			unset($posted[$k]);
-			}
-         }
-                return $posted;
+        foreach ($posted as $k => $p) {
+            if (empty($p)) {
+                unset($posted[$k]);
+            }
+        }
+        return $posted;
     }
 
-    public function chooseUpload() {
+    public function chooseUpload()
+    {
         $mimeTypes = explode(',', $this->input->post('mimeTypes'));
         $dirMap = directory_map('./uploads/' . NODE);
         $dataArray = [];
@@ -881,15 +1013,17 @@ class MY_Controller extends CI_Controller {
         echo json_encode($dataArray);
     }
 
-	private function load_model($tablename){
-		require_once(ROOTPATH.'fastapp/models/dynamic_model.php');
-	       $this->{$tablename.'_model'} = new Dynamic_model($tablename);	
-	}
+    private function load_model($tablename)
+    {
+        require_once(ROOTPATH . 'fastapp/models/dynamic_model.php');
+        $this->{$tablename . '_model'} = new Dynamic_model($tablename);
+    }
     /*
      * not translated
      * * */
 
-    private function show_error_page($code = null, $message = null) {
+    private function show_error_page($code = null, $message = null)
+    {
         if ($this->uri->segment(1) == 'console') {
             $message = '<script>window.location="' . console_url() . 'user/login"</script>Please Wait...';
             show_error($message, $code, 'Oops!! Please wait...');
@@ -899,7 +1033,8 @@ class MY_Controller extends CI_Controller {
         }
     }
 
-    public function quick_edit() {
+    public function quick_edit()
+    {
         $config = $this->auto_fieldtype_detect(NULL);
         $this->page_config = array_merge($config, $this->page_config);
         $postedData = $this->input->post();
@@ -911,9 +1046,9 @@ class MY_Controller extends CI_Controller {
         echo (json_encode(array('status' => 'success', 'message' => 'Data Updated Successfully')));
     }
 
-    protected function set_user_session($user_ID) {
+    protected function set_user_session($user_ID)
+    {
         $userData = $this->users_model->get_list(array('user_ID' => $user_ID));
         $this->session->set_userdata('current_user_session', $userData[0]);
     }
-
 }

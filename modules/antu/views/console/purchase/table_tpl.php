@@ -53,9 +53,9 @@
                             <?php if (in_array('delete', $config['allowed_action']) !== FALSE) {
                                 ?>
                                 <hr/> 
-                                <a href="#" class="btn btn_select_all" title="Select the Entry of current list." data-rel="tooltip">Select All</a>
-                                <a href="#" class="btn btn_deselect_all" title="Clear the Selected Iteams." data-rel="tooltip">Clear Selected</a>
-                                <a href="#" onclick="popupDeleteAll()" class="btn search_remove btn-danger" title="Select and Delete Entry." data-rel="tooltip">Delete Selected</a>
+                                <a href="#" class="btn btn_select_all" title="Select the Entry of current list." data-rel="tooltip"><i class="fa fa-check-square-o"></i> Select All</a>
+                                <a href="#" class="btn btn_deselect_all" title="Clear the Selected Items." data-rel="tooltip"><i class="fa fa-square-o"></i> Clear Selected</a>
+                                <a href="#" onclick="popupDeleteAll()" class="btn search_remove btn-danger" title="Select and Delete Entry." data-rel="tooltip"><i class="fa fa-trash"></i> Delete Selected</a>
                                 <?php 
                             }
                         }
@@ -65,7 +65,7 @@
                     if (is_array($config['allowed_action'])) {
                         if (in_array('add_detail', $config['allowed_action']) !== FALSE) {
                             ?>
-                            <a href="<?=console_url('purchase/add_detail');?>"  style="float: right"  class="btn btn-info" >Add</a>
+                            <a href="<?=console_url('purchase/add_detail');?>" style="float: right" class="btn btn-info"><i class="fa fa-plus-circle"></i> Add Purchase</a>
                             <br/><hr/>
                         <?php }
                         ?>

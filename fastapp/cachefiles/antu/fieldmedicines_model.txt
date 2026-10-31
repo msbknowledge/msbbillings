@@ -1,0 +1,1 @@
+{"textarea_columns":null,"datetimepicker_columns":null,"datepicker_columns":null,"use_status_columns":null,"tablePrimaryKey":"medicine_id","generalInput":["medicine_name","medicine_manufacturer","medicine_category","medicine_hsn","medicine_discount","medicine_gst","medicine_unit","medicine_storage","medicine_schedule"]}

@@ -1,0 +1,1 @@
+{"textarea_columns":["body"],"datetimepicker_columns":["created_on","updated_on"],"datepicker_columns":null,"use_status_columns":null,"tablePrimaryKey":"id","generalInput":["name","slug","subject"]}
