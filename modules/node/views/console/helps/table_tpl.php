@@ -95,7 +95,13 @@
                                                 }
                                             }
                                             ?>
-                                            <th><?= ucwords(str_replace('_', ' ', (str_replace(array_keys($this->page_config['replace_text']), array_values($this->page_config['replace_text']), $table_th)))) ?><i data-rel="<?= $table_th ?>" class="icon icon-black icon-triangle-ns shorter" style="cursor: pointer"></i></th>
+                                            <?php
+                                            $header_text = $table_th;
+                                            if (!empty($this->page_config['replace_text']) && is_array($this->page_config['replace_text'])) {
+                                                $header_text = str_replace(array_keys($this->page_config['replace_text']), array_values($this->page_config['replace_text']), $header_text);
+                                            }
+                                            ?>
+                                            <th><?= ucwords(str_replace('_', ' ', $header_text)) ?><i data-rel="<?= $table_th ?>" class="icon icon-black icon-triangle-ns shorter" style="cursor: pointer"></i></th>
                                         <?php endforeach; ?>
                                         <th>Action</th> 
                                     </tr>
@@ -183,9 +189,18 @@
                                                     if (is_array($config['use_image_columns'])) {
                                                         $arr_index = array_search($t_key, $config['use_image_columns']);
                                                         if ($arr_index !== FALSE) {
+                                                            $default_path = isset($table_meta['config']['use_image_columns_path'][0]) ? $table_meta['config']['use_image_columns_path'][0] : (base_url() . 'uploads/' . (defined('NODE') ? NODE : 'node') . '/');
+                                                            $img_src = resolve_image_url($table_td, $default_path);
                                                             ?> 
-                                                            <td class="center">                                                                                          
-                                                                <img style="width:64px" src='<?= $table_td ? $table_meta['config']['use_image_columns_path'][0] . $table_td : cdn_url() . 'uploads/noImage.jpg' ?>' alt="<?= $table_td ?>" />
+                                                            <td class="center" style="vertical-align: middle;">                                                                                          
+                                                                <a href="<?= $img_src ?>" target="_blank" title="Click to view full image" style="display:inline-block; text-decoration:none;">
+                                                                    <img style="max-width: 60px; max-height: 50px; object-fit: cover; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.15); border: 1px solid #cbd5e1; vertical-align: middle; transition: transform 0.2s;" 
+                                                                         onmouseover="this.style.transform='scale(1.2)';" 
+                                                                         onmouseout="this.style.transform='scale(1)';" 
+                                                                         src='<?= $img_src ?>' 
+                                                                         onerror="this.onerror=null;this.src='<?= base_url() ?>uploads/noImage.jpg';" 
+                                                                         alt="<?= htmlspecialchars(strip_tags($table_td)) ?>" />
+                                                                </a>
                                                             </td> <?php
                                                             continue;
                                                         }

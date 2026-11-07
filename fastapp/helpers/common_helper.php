@@ -233,3 +233,63 @@ function app_reply($message = "", $content = "", $eval = "", $setData = "") {
         'setData' => array("key" => key($setData), "value" => $setData[key($setData)]),
     ));
 }
+
+if (!function_exists('resolve_image_url')) {
+    function resolve_image_url($image_val, $default_prefix = '') {
+        if (empty($image_val)) {
+            return cdn_url() . 'uploads/noImage.jpg';
+        }
+
+        // If JSON-encoded string, extract the filename or url
+        if (is_string($image_val) && (substr(trim($image_val), 0, 1) === '{' || substr(trim($image_val), 0, 1) === '[')) {
+            $decoded = json_decode($image_val, true);
+            if (is_array($decoded)) {
+                if (!empty($decoded['filename'])) {
+                    $image_val = $decoded['filename'];
+                } elseif (!empty($decoded['file'])) {
+                    $image_val = $decoded['file'];
+                } elseif (!empty($decoded['link'])) {
+                    $image_val = $decoded['link'];
+                } elseif (!empty($decoded['url'])) {
+                    return $decoded['url'];
+                } elseif (!empty($decoded[0])) {
+                    $image_val = $decoded[0];
+                }
+            }
+        }
+
+        $image_val = trim($image_val);
+        if (empty($image_val)) {
+            return cdn_url() . 'uploads/noImage.jpg';
+        }
+
+        // Absolute URL
+        if (preg_match('#^(https?:)?//#i', $image_val)) {
+            return $image_val;
+        }
+
+        // Starts with uploads/
+        if (strpos($image_val, 'uploads/') === 0) {
+            return base_url() . $image_val;
+        }
+
+        $node_folder = defined('NODE') ? NODE : 'node';
+        $root = defined('ROOTPATH') ? ROOTPATH : (defined('FCPATH') ? FCPATH : '');
+
+        if (!empty($root)) {
+            if (file_exists($root . 'uploads/' . $node_folder . '/' . $image_val)) {
+                return base_url() . 'uploads/' . $node_folder . '/' . $image_val;
+            }
+            if (file_exists($root . 'uploads/' . $image_val)) {
+                return base_url() . 'uploads/' . $image_val;
+            }
+        }
+
+        if (!empty($default_prefix)) {
+            return rtrim($default_prefix, '/') . '/' . ltrim($image_val, '/');
+        }
+
+        return base_url() . 'uploads/' . $node_folder . '/' . $image_val;
+    }
+}
+

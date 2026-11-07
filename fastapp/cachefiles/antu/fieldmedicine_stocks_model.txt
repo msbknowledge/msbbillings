@@ -1,0 +1,1 @@
+{"textarea_columns":null,"datetimepicker_columns":["medicine_stock_date"],"datepicker_columns":null,"use_status_columns":null,"tablePrimaryKey":"medicine_stock_ID","generalInput":["medicine_stock_medicine","medicine_stock_batch","medicine_strip_stock","medicine_loose_stock","medicine_expire_month","medicine_expire_year","medicine_stock_loose","medicine_mrp"]}

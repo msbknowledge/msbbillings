@@ -132,32 +132,125 @@ function field_image($t_key = NULL, $table_meta, $table_td) {
     if (is_array($table_meta['config']['use_image_columns'])) {
         $arr_index = array_search($t_key, $table_meta['config']['use_image_columns']);
         if ($arr_index !== FALSE) {
+            $default_path = isset($table_meta['config']['use_image_columns_path'][0]) ? $table_meta['config']['use_image_columns_path'][0] : (base_url() . 'uploads/' . (defined('NODE') ? NODE : 'node') . '/');
+            $clean_val = $table_td;
+            if (is_string($table_td) && (substr(trim($table_td), 0, 1) === '{' || substr(trim($table_td), 0, 1) === '[')) {
+                $dec = json_decode($table_td, true);
+                if (is_array($dec)) {
+                    if (!empty($dec['filename'])) $clean_val = $dec['filename'];
+                    elseif (!empty($dec['link'])) $clean_val = $dec['link'];
+                    elseif (!empty($dec['url'])) $clean_val = $dec['url'];
+                }
+            }
+            $clean_val = trim($clean_val);
+            $img_src = resolve_image_url($clean_val, $default_path);
             ?>
             <div class="span4">
                 <div class="control-group">
-                    <label class="control-label" for="<?= $t_key ?>"><?= ucfirst(str_replace('_', ' ', $t_key)) ?></label>
-                    <img id="file_uploader_image<?= $t_key ?>" class="file_uploaded_img" style="max-width: 300px" src='<?= $table_td ? ($table_meta['config']['use_image_columns_path'][0] ? $table_meta['config']['use_image_columns_path'][0] : '' ) . $table_td : cdn_url() . 'uploads/noImage.jpg'; ?>' alt="<?= $table_td ?>"/>
+                    <label class="control-label" for="<?= $t_key ?>" style="font-weight: 600;"><?= ucfirst(str_replace('_', ' ', $t_key)) ?></label>
                     <div class="controls">
-                        <input type="hidden" id="file_uploader_field<?= $t_key ?>"  name="<?= $t_key ?>" value="<?= $table_td ?>" value="<?= $table_td ?>"/>
-                        <input type="file" data-no-uniform="true" id="file_uploader<?= $t_key ?>"  />
-                        <span class="help-inline"></span>
+                        <div style="margin-bottom: 8px;">
+                            <img id="file_uploader_image<?= $t_key ?>" class="file_uploaded_img" 
+                                 style="max-width: 260px; max-height: 180px; display: block; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.15); object-fit: contain; background: #f8fafc; padding: 4px; border: 1px solid #cbd5e1;" 
+                                 src="<?= $img_src ?>" 
+                                 onerror="this.onerror=null;this.src='<?= base_url() ?>uploads/noImage.jpg';" 
+                                 alt="<?= htmlspecialchars($clean_val) ?>"/>
+                        </div>
+                        <input type="hidden" id="file_uploader_field<?= $t_key ?>" name="<?= $t_key ?>" value="<?= htmlspecialchars($clean_val) ?>"/>
+                        <input type="file" id="file_uploader_input_<?= $t_key ?>" accept="image/*" style="display: none;" />
+                        <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 6px;">
+                            <button type="button" class="btn btn-primary btn-small" onclick="$('#file_uploader_input_<?= $t_key ?>').click();" style="border-radius: 4px;">
+                                <i class="fa fa-upload"></i> Choose Image
+                            </button>
+                            <button type="button" class="btn btn-danger btn-small" id="btn_clear_<?= $t_key ?>" onclick="clearImageUpload_<?= $t_key ?>();" style="border-radius: 4px; <?= empty($clean_val) ? 'display:none;' : '' ?>">
+                                <i class="fa fa-trash"></i> Remove
+                            </button>
+                            <span id="file_upload_status_<?= $t_key ?>" style="font-size: 12px; color: #64748b; font-weight: 600;"></span>
+                        </div>
+                        <span class="help-inline" style="font-size: 11px; color: #94a3b8; display: block; margin-top: 4px;">JPG, PNG, GIF, WEBP</span>
                     </div>
                 </div>
 
                 <script>
-                    $('#file_uploader<?= $t_key ?>').uploadify({
-                        'swf': '<?= cdn_url() ?>js/uploadify.swf',
-                        'uploader': '<?= cdn_url() ?>uploader/',
-                        'multi': <?= $table_meta['config']['multi_upload'] ?>,
-                        'onUploadSuccess': function (file, data, response) {
-                            $('#file_uploader_image<?= $t_key ?>').attr('src', '<?= $table_meta['config']['use_image_columns_path'][0] ?>' + $.trim(data));
-                            $('#file_uploader_field<?= $t_key ?>').val($.trim(data));
+                (function() {
+                    var fKey = '<?= $t_key ?>';
+                    var uUrl = '<?= site_url("uploader") ?>';
+                    var defImg = '<?= base_url() ?>uploads/noImage.jpg';
+                    var basePath = '<?= rtrim($default_path, "/") ?>/';
+
+                    $('#file_uploader_input_' + fKey).on('change', function(e) {
+                        var file = this.files && this.files[0];
+                        if (!file) return;
+
+                        if (window.URL && window.URL.createObjectURL) {
+                            $('#file_uploader_image' + fKey).attr('src', window.URL.createObjectURL(file));
                         }
-                        // Put your options here
+
+                        var fd = new FormData();
+                        fd.append('Filedata', file);
+                        fd.append('format', 'json');
+
+                        var $st = $('#file_upload_status_' + fKey);
+                        $st.html('<span style="color:#0284c7;"><i class="fa fa-spinner fa-spin"></i> Uploading...</span>').show();
+
+                        $.ajax({
+                            url: uUrl,
+                            type: 'POST',
+                            data: fd,
+                            processData: false,
+                            contentType: false,
+                            dataType: 'text',
+                            success: function(resp) {
+                                var fn = '';
+                                var fullU = '';
+                                try {
+                                    var r = JSON.parse(resp);
+                                    if (r && r.status === 'success' && r.filename) {
+                                        fn = r.filename;
+                                        fullU = r.url || (basePath + fn);
+                                    } else if (r && r.filename) {
+                                        fn = r.filename;
+                                        fullU = r.url || (basePath + fn);
+                                    } else if (r && r.message) {
+                                        $st.html('<span style="color:#ef4444;"><i class="fa fa-exclamation-triangle"></i> ' + r.message + '</span>');
+                                        return;
+                                    }
+                                } catch(err) {
+                                    fn = $.trim(resp);
+                                    fullU = basePath + fn;
+                                }
+
+                                if (fn) {
+                                    $('#file_uploader_field' + fKey).val(fn);
+                                    if (fullU) {
+                                        $('#file_uploader_image' + fKey).attr('src', fullU);
+                                    }
+                                    $('#btn_clear_' + fKey).show();
+                                    $st.html('<span style="color:#16a34a;"><i class="fa fa-check-circle"></i> Uploaded!</span>');
+                                    setTimeout(function() { $st.fadeOut(1000); }, 3500);
+                                } else {
+                                    $st.html('<span style="color:#ef4444;"><i class="fa fa-times-circle"></i> Upload failed</span>');
+                                }
+                            },
+                            error: function(xhr, status, err) {
+                                $st.html('<span style="color:#ef4444;"><i class="fa fa-times-circle"></i> Upload error: ' + err + '</span>');
+                            }
+                        });
                     });
+
+                    window['clearImageUpload_' + fKey] = function() {
+                        $('#file_uploader_field' + fKey).val('');
+                        $('#file_uploader_image' + fKey).attr('src', defImg);
+                        $('#file_uploader_input_' + fKey).val('');
+                        $('#btn_clear_' + fKey).hide();
+                        var $st = $('#file_upload_status_' + fKey);
+                        $st.html('<span style="color:#64748b;">Image removed</span>').show();
+                        setTimeout(function() { $st.fadeOut(1000); }, 2000);
+                    };
+                })();
                 </script>
             </div>
-            <?
+            <?php
             return true;
         } else {
             return false;
@@ -281,18 +374,6 @@ function field_text($t_key = NULL, $table_meta, $table_td) {
         setTimeout(function() {
             if ($.fn.iphoneStyle) {
                 $('.iphone-togglex').iphoneStyle();
-            }
-            if ($.fn.uploadify) {
-                $('.file_uploader<?= $t_key ?>').uploadify({
-                    'swf': '<?= cdn_url() ?>js/uploadify.swf',
-                    'uploader': '<?= cdn_url() ?>uploader/',
-                    'multi': <?= $table_meta['config']['multi_upload'] ?>,
-                    'onUploadSuccess': function(file, data, response) {
-                        $('.file_uploaded_img').attr('src', '<?= $table_meta['config']['use_image_columns_path'][0] ?>' + $.trim(data));
-                        $('#file_uploader_field<?= $t_key ?>').val($.trim(data));
-                    }
-                    // Put your options here
-                });
             }
         }, 200);
     });

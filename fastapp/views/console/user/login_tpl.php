@@ -275,7 +275,7 @@
                                 <div class="demo-roles">
                                     <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #94a3b8; font-weight: 600; margin-bottom: 6px; text-align: center;">Demo Credentials</div>
                                     <div class="btn-group btn-group-justified" style="width: 100%;">
-                                        <a href="javascript:void(0)" class="btn btn-primary" onclick="copyCredentials('admin', 'admin')" style="background:#0084B4;" title="Copy Super Admin Login">
+                                        <a href="javascript:void(0)" class="btn btn-primary" onclick="copyCredentials('admin', 'admin123')" style="background:#0084B4;" title="Copy Super Admin Login">
                                             <i class="fa fa-user-secret"></i> Super Admin
                                         </a>
                                         <a href="javascript:void(0)" class="btn btn-primary" onclick="copyCredentials('manager', 'password')" style="background:#1bbed3;" title="Copy Manager Login">

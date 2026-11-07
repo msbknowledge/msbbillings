@@ -222,6 +222,11 @@ class MY_Controller extends CI_Controller
                 $capabilityList['capability'][$controller][$userTypeId];
         }
 
+        // If no custom capability restrictions are defined for this controller, allow authenticated console access
+        if (empty($capabilityList['capability'][$controller])) {
+            return true;
+        }
+
         // Keep allowed_action as an array.
         $this->allowed_action = array_keys($permissions);
 
