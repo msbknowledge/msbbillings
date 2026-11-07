@@ -1,3 +1,57 @@
+<style>
+.table_view_wrapper {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+}
+.table_view_wrapper .scrollgard {
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    display: block !important;
+    box-sizing: border-box !important;
+    margin-bottom: 12px !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 6px !important;
+    background: #ffffff !important;
+}
+.table_view_wrapper .scrollgard > .table {
+    width: 100% !important;
+    min-width: 900px;
+    max-width: none !important;
+    margin-bottom: 0 !important;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+}
+.table_view_wrapper .scrollgard table th {
+    white-space: nowrap !important;
+    padding: 8px 10px !important;
+    background: linear-gradient(180deg, #f0f7ff 0%, #e0eefe 100%) !important;
+    color: #1e40af !important;
+    border: 1px solid #cbd5e1 !important;
+    border-bottom: 2px solid #93c5fd !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.3px;
+}
+.table_view_wrapper .scrollgard table td {
+    white-space: nowrap;
+    padding: 8px 10px !important;
+    font-size: 11.5px !important;
+    color: #334155 !important;
+    border-color: #e2e8f0 !important;
+    vertical-align: middle !important;
+}
+.table_view_wrapper .scrollgard table td.col-wrap-text {
+    white-space: normal !important;
+    min-width: 140px;
+    max-width: 280px;
+    word-break: break-word !important;
+}
+</style>
 <div class="table_view_wrapper">
 
     <?php
@@ -36,48 +90,38 @@
 //pr($table_meta['config']);
     $table_allowed_header = is_array($config['list_columns']) ? 1000 : 4;
     ?>
-    <div class="row-fluid sortable">	
-        <div class="box span12">
-            <div class="box-header well" data-original-title>
-                <h2><i class="icon-list"></i><?= $table_meta['config']['title'] ?></h2>
-                <div class="box-icon">
-
+    <div class="row-fluid sortable" style="width: 100%; max-width: 100%; margin: 0; box-sizing: border-box;">	
+        <div class="box span12" style="width: 100% !important; max-width: 100% !important; float: none !important; margin: 0 0 20px 0 !important; padding: 0 !important; box-sizing: border-box !important; overflow: hidden !important; border: 1px solid #e2e8f0 !important; border-radius: 8px !important; background: #ffffff !important;">
+            <div class="box-header well" data-original-title style="background: #f8fafc; border-bottom: 1px solid #e2e8f0; padding: 10px 16px; border-radius: 8px 8px 0 0;">
+                <h2><i class="fa fa-envelope" style="color: #35aa47; margin-right: 6px;"></i><?= $table_meta['config']['title'] ?></h2>
+                <div class="box-icon" style="float: right;">
                     <a href="#" class="btn btn-minimize btn-round"><i class="icon-chevron-up"></i></a>
                     <a href="#" class="btn btn-close btn-round"><i class="icon-remove"></i></a>
                 </div>
             </div>
 
-            <div class="box-content" >
-                <?php if (count($table_meta['data'])) { ?>
-                    <form method="post"  action="" class="choose_entry_form">
+            <div class="box-content" style="width: 100%; max-width: 100%; padding: 14px 16px; box-sizing: border-box; overflow: hidden;">
+                <!-- Modern Action Toolbar -->
+                <div class="table-toolbar" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; padding: 4px 0 10px 0; border-bottom: 1px solid #e2e8f0;">
+                    <div class="toolbar-left" style="display: flex; align-items: center; flex-wrap: wrap; gap: 6px;">
+                        <?php if (count($table_meta['data'])): ?>
+                            <?php if (is_array($config['allowed_action']) && in_array('delete', $config['allowed_action']) !== FALSE): ?>
+                                <a href="#" class="btn btn_select_all" title="Select All Entries" data-rel="tooltip"><i class="fa fa-check-square-o"></i> Select All</a>
+                                <a href="#" class="btn btn_deselect_all" title="Clear Selected Entries" data-rel="tooltip"><i class="fa fa-square-o"></i> Clear Selected</a>
+                                <a href="javascript:void(0);" onclick="popupDeleteAll(); return false;" class="btn search_remove btn-danger" title="Delete Selected Entries" data-rel="tooltip"><i class="fa fa-trash"></i> Delete Selected</a>
+                            <?php endif; ?>
+                        <?php endif; ?>
+                    </div>
+                    <div class="toolbar-right" style="display: flex; align-items: center; gap: 6px;">
+                        <?php if (is_array($config['allowed_action']) && in_array('add_detail', $config['allowed_action']) !== FALSE): ?>
+                            <a href="javascript:void(0);" onclick="generateAddView(); return false;" class="btn btn-success" title="Add"><i class="fa fa-plus-circle"></i> Add</a>
+                        <?php endif; ?>
+                    </div>
+                </div>
 
-                        <?php if (is_array($config['allowed_action'])) { ?>
-                            <?php if (in_array('delete', $config['allowed_action']) !== FALSE) { ?>
-                                <hr/> 
-                                <a href="#" class="btn btn_select_all" title="Select the Entry of current list." data-rel="tooltip">Select All</a>
-                                <a href="#" class="btn btn_deselect_all" title="Clear the Selected Iteams." data-rel="tooltip">Clear Selected</a>
-                                <a href="#" onclick="popupDeleteAll()" class="btn search_remove btn-danger" title="Select and Delete Entry." data-rel="tooltip">Delete Selected</a>
-                                <a href="lco/view_bill" target="_blank" class="btn search_remove btn-success" title="Genereate bill details" data-rel="tooltip">Generate Bill</a>
-                                    <?php
-                            }
-                        }
-                        ?>
-                    <?php } ?>       
-                    <?php
-                    if (is_array($config['allowed_action'])) {
-                        if (in_array('add_detail', $config['allowed_action']) !== FALSE) {
-                            ?>
-                            <a href="#"  style="float: right" onclick="generateAddView()" class="btn btn-info" >Add</a>
-                            <br/><hr/>
-                        <?php }
-                        ?>
-                        <?php
-                    }
-                    ?>
-
-
-                    <?php if (count($table_meta['data'])): ?>
-                        <div class="scrollgard" style="overflow: auto">
+                <?php if (count($table_meta['data'])): ?>
+                    <form method="post" action="" class="choose_entry_form" style="width: 100%; max-width: 100%; margin: 0; padding: 0; display: block; box-sizing: border-box;">
+                        <div class="scrollgard table-responsive">
                             <table class="table table-bordered table-striped table-condensed">
                                 <thead>
 
@@ -108,10 +152,16 @@
                                                     }
                                                 }
                                             }
+                                            $header_title = $table_th;
+                                            if (!empty($config['list_column_aliases'][$table_th])) {
+                                                $header_title = $config['list_column_aliases'][$table_th];
+                                            } elseif (!empty($this->page_config['replace_text']) && is_array($this->page_config['replace_text'])) {
+                                                $header_title = str_replace(array_keys($this->page_config['replace_text']), array_values($this->page_config['replace_text']), $table_th);
+                                            }
                                             ?>
-                                            <th><?= ucwords(str_replace('_', ' ', ($table_th))) ?><i data-rel="<?= $table_th ?>" class="icon icon-black icon-triangle-ns shorter" style="cursor: pointer"></i></th>
+                                            <th style="white-space: nowrap;"><?= ucwords(str_replace('_', ' ', $header_title)) ?><i data-rel="<?= $table_th ?>" class="icon icon-black icon-triangle-ns shorter" style="cursor: pointer; margin-left: 4px;"></i></th>
                                         <?php endforeach; ?>
-                                        <th>Action</th> 
+                                        <th style="text-align: center; width: 140px; min-width: 140px; white-space: nowrap;">Action</th> 
                                     </tr>
                                 </thead> 
                                 <?php if ($config['enable_ordering']): ?>
@@ -204,17 +254,17 @@
                                                     }
                                                 }
                                                 ?>
-                                                <td class="center">
+                                                <td class="center<?= ($t_key === 'body' || $t_key === 'subject') ? ' col-wrap-text' : '' ?>" style="vertical-align: middle;">
                                                     
                                                     <?php if (is_array($config['allowed_action'])) {
                                                     if (in_array('quick_edit', $config['allowed_action']) !== FALSE) {
                                                         ?>
-                                                    <span style="cursor: pointer; width: 100%; display: block; min-height: 32px; border-radius: 4px; vertical-align: middle; background-color: wheat;" relId="<?= $table_tr[$config['tablePrimaryKey']]; ?>" relfield = "<?= $t_key ?>" onclick="quickEdit(this)" id="<?= $t_key . '-' . $table_tr[$config['tablePrimaryKey']] ?>" title="Click To Quick Edit"   style="cursor: pointer">
+                                                    <span style="cursor: pointer; width: 100%; display: block; min-height: 32px; border-radius: 4px; vertical-align: middle; background-color: #fef3c7;" relId="<?= $table_tr[$config['tablePrimaryKey']]; ?>" relfield = "<?= $t_key ?>" onclick="quickEdit(this)" id="<?= $t_key . '-' . $table_tr[$config['tablePrimaryKey']] ?>" title="Click To Quick Edit">
                                                         <?= strip_tags($table_td) ?>
                                                     </span>
-                                                    <? } else{?>
+                                                    <?php } else { ?>
                                                          <?= strip_tags($table_td); ?>
-                                                    <?}
+                                                    <?php }
                                                     
                                                     } ?>
                                                 </td>
@@ -222,41 +272,42 @@
             <!--                                                        <td class="center"><?= strip_tags($table_td); ?></td>-->
                                             <?php endforeach; ?>
 
-                                            <td class="center">
-                                                 <a class="btn btn-warning" title="Mail" data-rel="tooltip" href="#" onclick="sentMail(<?= $table_tr[$config['tablePrimaryKey']] ?>)">
-                                                            <i class="icon-envelope icon-color"></i>  
-                                                        </a>
-                                                <?php
-                                                if (is_array($config['allowed_action'])) {
-                                                    if (in_array('view_detail', $config['allowed_action']) !== FALSE) {
-                                                        ?>
-                                                        <a class="btn btn-success" title="View" data-rel="tooltip" href="#" onclick="generateDetailedView(<?= $table_tr[$config['tablePrimaryKey']] ?>)">
-                                                            <i class="icon-zoom-in icon-white"></i>  
-                                                        </a>
-                                                        <?php
+                                            <td class="center" style="white-space: nowrap !important; text-align: center; vertical-align: middle;">
+                                                <div style="display: inline-flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap;">
+                                                    <a class="btn btn-warning" title="Mail" data-rel="tooltip" href="javascript:void(0);" onclick="sentMail(<?= $table_tr[$config['tablePrimaryKey']] ?>); return false;">
+                                                        <i class="fa fa-envelope"></i>  
+                                                    </a>
+                                                    <?php
+                                                    if (is_array($config['allowed_action'])) {
+                                                        if (in_array('view_detail', $config['allowed_action']) !== FALSE) {
+                                                            ?>
+                                                            <a class="btn btn-success" title="View" data-rel="tooltip" href="javascript:void(0);" onclick="generateDetailedView(<?= $table_tr[$config['tablePrimaryKey']] ?>); return false;">
+                                                                <i class="fa fa-eye"></i>  
+                                                            </a>
+                                                            <?php
+                                                        }
                                                     }
-                                                }
-                                                if (is_array($config['allowed_action'])) {
-                                                    if (in_array('edit_detail', $config['allowed_action']) !== FALSE) {
-                                                        ?>
-                                                        <a class="btn btn-info" title="Edit" data-rel="tooltip" href="#" onclick="generateEditView(<?= $table_tr[$config['tablePrimaryKey']] ?>)">
-                                                            <i class="icon-edit icon-white"></i>  
-                                                        </a>
-                                                        <?php
+                                                    if (is_array($config['allowed_action'])) {
+                                                        if (in_array('edit_detail', $config['allowed_action']) !== FALSE) {
+                                                            ?>
+                                                            <a class="btn btn-info" title="Edit" data-rel="tooltip" href="javascript:void(0);" onclick="generateEditView(<?= $table_tr[$config['tablePrimaryKey']] ?>); return false;">
+                                                                <i class="fa fa-pencil"></i>  
+                                                            </a>
+                                                            <?php
+                                                        }
                                                     }
-                                                }
 
-                                                if (is_array($config['allowed_action'])) {
-                                                    if (in_array('delete', $config['allowed_action']) !== FALSE) {
-                                                        ?>
-                                                        <a class="btn btn-danger" title="Delete" data-rel="tooltip" href="#" onclick="popupDeleteSingle(<?= $table_tr[$config['tablePrimaryKey']] ?>)">
-                                                            <i class="icon-trash icon-white"></i> 
-
-                                                        </a>
-                                                        <?php
+                                                    if (is_array($config['allowed_action'])) {
+                                                        if (in_array('delete', $config['allowed_action']) !== FALSE) {
+                                                            ?>
+                                                            <a class="btn btn-danger" title="Delete" data-rel="tooltip" href="javascript:void(0);" onclick="popupDeleteSingle(<?= $table_tr[$config['tablePrimaryKey']] ?>); return false;">
+                                                                <i class="fa fa-trash-o"></i> 
+                                                            </a>
+                                                            <?php
+                                                        }
                                                     }
-                                                }
-                                                ?>
+                                                    ?>
+                                                </div>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>                          

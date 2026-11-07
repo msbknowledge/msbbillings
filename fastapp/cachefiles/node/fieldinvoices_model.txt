@@ -1,0 +1,1 @@
+{"textarea_columns":["invoice_note","invoice_meta"],"datetimepicker_columns":null,"datepicker_columns":["invoice_date","invoice_due_date"],"use_status_columns":null,"tablePrimaryKey":"invoice_ID","generalInput":["invoice_customer","invoice_for","invoice_billed_amount","invoice_entry_timestamp","invoice_tax_amount"]}

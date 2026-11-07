@@ -1,0 +1,1 @@
+{"textarea_columns":["collection_note"],"datetimepicker_columns":null,"datepicker_columns":["collection_date"],"use_status_columns":null,"tablePrimaryKey":"collection_ID","generalInput":["collection_collected_by","collection_for","collection_customer","collection_amount","collection_entry_timestamp"]}

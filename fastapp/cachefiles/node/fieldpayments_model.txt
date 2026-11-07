@@ -1,0 +1,1 @@
+{"textarea_columns":null,"datetimepicker_columns":["payment_timestamp"],"datepicker_columns":null,"use_status_columns":null,"tablePrimaryKey":"payment_ID","generalInput":["payment_user_id","payment_amount"]}

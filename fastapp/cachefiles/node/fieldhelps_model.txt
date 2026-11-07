@@ -1,0 +1,1 @@
+{"textarea_columns":["help_title","help_description","link"],"datetimepicker_columns":null,"datepicker_columns":null,"use_status_columns":null,"tablePrimaryKey":"help_id","generalInput":["help_type"]}

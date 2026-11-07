@@ -64,8 +64,8 @@
 
 
                     <?php if (count($table_meta['data'])): ?>
-                        <div class="scrollgard" style="overflow: auto">
-                            <table class="table table-bordered table-striped table-condensed">
+                        <div class="scrollgard table-responsive" style="width: 100%; max-width: 100%; overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; display: block; box-sizing: border-box; margin-bottom: 12px; border: 1px solid #e2e8f0; border-radius: 6px; background: #ffffff;">
+                            <table class="table table-bordered table-striped table-condensed" style="width: 100%; min-width: 850px; max-width: none; margin-bottom: 0; border-collapse: separate; border-spacing: 0;">
                                 <thead>
                                     <tr>
                                         <?php if ($config['enable_ordering']): ?>
@@ -245,9 +245,8 @@
                                                     if (in_array('download', $config['allowed_action']) !== FALSE) {
                                                         ?>
 
-                                                        <a class="btn btn-primary" title="Download" data-rel="tooltip" href="download/<?= base64_encode($table_tr[$config['tablePrimaryKey']]) ?>" target="_blank">
+                                                        <a class="btn btn-primary" title="Download Invoice" data-rel="tooltip" href="<?= console_url('invoice/download/' . base64_encode($table_tr[$config['tablePrimaryKey']])) ?>" target="_blank">
                                                             <i class="fa fa-download"></i>
-
                                                         </a>
                                                         <?php
                                                     }
@@ -289,35 +288,54 @@
             }
 <?php endif; ?>
 var print_bill = function () {
-                currentPostRequest = $.post(page_url + 'print_bill', $('.choose_entry_form').live().serialize(), function (d) {
-                    var new_window = window.open();
-                    $(new_window.document.body).append(d);
-                });
-            }
-            
-        /**
-         *for AllOperation 
-         **/ 
-    var downloadAllOperation = function () {
+    var checked = $('.choose_entry_form input[name="selectedItem[]"]:checked');
+    if (checked.length === 0) {
+        alert('Please select at least one invoice to print.');
+        return false;
+    }
+    var form = $('.choose_entry_form');
+    var oldAction = form.attr('action');
+    var oldTarget = form.attr('target');
+    var printUrl = (typeof page_url !== 'undefined' ? page_url + 'print_bill' : '<?= console_url('invoice/print_bill') ?>');
 
-    currentPostRequest = $.post(page_url + 'doc_download', $('.choose_entry_form').live().serialize(), function (respData) {
-        if (respData.status != '') {
-            $('.modal-body p').html(respData);
-            $('.modal-footer .btn-primary').hide();
-            $('#myModal').modal('show');
+    form.attr('action', printUrl);
+    form.attr('target', '_blank');
+    form.get(0).submit();
 
-            postDetailLoad();
+    setTimeout(function () {
+        form.attr('action', oldAction || '');
+        if (oldTarget) {
+            form.attr('target', oldTarget);
+        } else {
+            form.removeAttr('target');
         }
-    }, 'html');
-}
+    }, 500);
+};
 
 var popupDownloadAll = function () {
-    
-		currentPostRequest = $.post(page_url + 'popupDownloadAll', $('.choose_entry_form').live().serialize(), function (d) {
-			var new_window = window.open();
-			$(new_window.document.body).append(d);
-		});
-	}
+    var checked = $('.choose_entry_form input[name="selectedItem[]"]:checked');
+    if (checked.length === 0) {
+        alert('Please select at least one invoice to download.');
+        return false;
+    }
+    var form = $('.choose_entry_form');
+    var oldAction = form.attr('action');
+    var oldTarget = form.attr('target');
+    var downloadUrl = (typeof page_url !== 'undefined' ? page_url + 'popupDownloadAll' : '<?= console_url('invoice/popupDownloadAll') ?>');
+
+    form.attr('action', downloadUrl);
+    form.attr('target', '_blank');
+    form.get(0).submit();
+
+    setTimeout(function () {
+        form.attr('action', oldAction || '');
+        if (oldTarget) {
+            form.attr('target', oldTarget);
+        } else {
+            form.removeAttr('target');
+        }
+    }, 500);
+};
     </script>
 
 </div>

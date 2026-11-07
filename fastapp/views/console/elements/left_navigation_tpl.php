@@ -94,6 +94,115 @@ if (!function_exists('sidebar_is_active')) {
     }
 }
 
+if (!function_exists('sidebar_resolve_icon')) {
+    function sidebar_resolve_icon($menu, $level = 1) {
+        $rawIcon = isset($menu['menu_icon_class']) ? trim((string)$menu['menu_icon_class']) : '';
+        $name = isset($menu['menu_name']) ? strtolower(trim((string)$menu['menu_name'])) : '';
+        $link = isset($menu['menu_link']) ? strtolower(trim((string)$menu['menu_link'])) : '';
+        $hint = isset($menu['menu_hint']) ? strtolower(trim((string)$menu['menu_hint'])) : '';
+
+        // Check if rawIcon has an explicit modern FontAwesome / Glyphicon class
+        $hasFa = (strpos($rawIcon, 'fa-') !== false || strpos($rawIcon, 'fa ') !== false || strpos($rawIcon, 'glyphicon') !== false);
+
+        // Name or link based matching (semantic icon detection)
+        if (strpos($name, 'email') !== false || strpos($link, 'email') !== false || strpos($hint, 'email') !== false || strpos($name, 'mail') !== false) {
+            if (strpos($name, 'variable') !== false) {
+                return 'fa fa-code';
+            } elseif ($level > 1 || strpos($name, 'template') !== false) {
+                return 'fa fa-envelope-o';
+            }
+            return 'fa fa-envelope';
+        }
+
+        if (strpos($name, 'dashboard') !== false) {
+            return 'fa fa-tachometer';
+        }
+
+        if (strpos($name, 'billing') !== false || strpos($name, 'invoice') !== false || strpos($link, 'invoice') !== false) {
+            return ($level === 1) ? 'fa fa-calculator' : 'fa fa-file-text-o';
+        }
+
+        if (strpos($name, 'collection') !== false) {
+            return ($level === 1) ? 'fa fa-folder-open' : 'fa fa-money';
+        }
+
+        if (strpos($name, 'customer') !== false || strpos($link, 'customer') !== false) {
+            return 'fa fa-users';
+        }
+
+        if (strpos($name, 'payment') !== false || strpos($link, 'payment') !== false) {
+            return 'fa fa-credit-card';
+        }
+
+        if (strpos($name, 'report') !== false || strpos($link, 'report') !== false) {
+            return 'fa fa-bar-chart';
+        }
+
+        if (strpos($name, 'transaction') !== false) {
+            return 'fa fa-exchange';
+        }
+
+        if (strpos($name, 'expence') !== false || strpos($name, 'expense') !== false) {
+            return 'fa fa-calculator';
+        }
+
+        if (strpos($name, 'medicine') !== false || strpos($name, 'stock') !== false) {
+            return 'fa fa-medkit';
+        }
+
+        if (strpos($name, 'purchase') !== false) {
+            return 'fa fa-shopping-cart';
+        }
+
+        if (strpos($name, 'sale') !== false) {
+            return 'fa fa-line-chart';
+        }
+
+        if (strpos($name, 'user') !== false || strpos($name, 'management') !== false) {
+            return 'fa fa-user';
+        }
+
+        if (strpos($name, 'help') !== false) {
+            return 'fa fa-question-circle';
+        }
+
+        if (strpos($name, 'entry') !== false) {
+            return 'fa fa-edit';
+        }
+
+        if (strpos($name, 'setting') !== false || strpos($name, 'config') !== false) {
+            return 'fa fa-cogs';
+        }
+
+        // If explicitly set with a real FontAwesome class:
+        if ($hasFa) {
+            return $rawIcon;
+        }
+
+        // Legacy Charisma class conversion
+        if (strpos($rawIcon, 'icon-') !== false || strpos($rawIcon, 'icon ') !== false) {
+            if (strpos($rawIcon, 'envelope') !== false || strpos($rawIcon, 'mail') !== false) {
+                return 'fa fa-envelope';
+            }
+            if (strpos($rawIcon, 'calendar') !== false) {
+                return 'fa fa-calendar';
+            }
+            if (strpos($rawIcon, 'document') !== false || strpos($rawIcon, 'file') !== false) {
+                return ($level === 1) ? 'fa fa-folder-open-o' : 'fa fa-file-text-o';
+            }
+            if (strpos($rawIcon, 'edit') !== false || strpos($rawIcon, 'pencil') !== false) {
+                return 'fa fa-pencil-square-o';
+            }
+            if (strpos($rawIcon, 'user') !== false) {
+                return 'fa fa-user';
+            }
+        }
+
+        // Default fallback based on hierarchy level
+        return ($level === 1) ? 'fa fa-folder-o' : 'fa fa-circle-o';
+    }
+}
+
 if (!function_exists('sidebar_render_menus')) {
     function sidebar_render_menus(
         $menus,
@@ -118,10 +227,7 @@ if (!function_exists('sidebar_render_menus')) {
                 ? (string) $menu['menu_hint']
                 : $name;
 
-            $icon = isset($menu['menu_icon_class']) &&
-                trim((string) $menu['menu_icon_class']) !== ''
-                ? (string) $menu['menu_icon_class']
-                : 'fa fa-circle-o';
+            $icon = sidebar_resolve_icon($menu, $level);
 
             $link = isset($menu['menu_link']) &&
                 is_scalar($menu['menu_link'])
@@ -170,7 +276,7 @@ if (!function_exists('sidebar_render_menus')) {
                 echo ' title="' . $safeHint . '">';
             }
 
-            echo '<i class="' . $safeIcon . '"></i>';
+            echo '<i class="' . $safeIcon . '" style="margin-right: 8px; width: 18px; text-align: center; display: inline-block;"></i>';
             echo '<span>' . $safeName . '</span>';
 
             if ($hasChildren) {

@@ -223,148 +223,163 @@ class Invoice extends MY_Controller {
         redirect('/console/inventory/migrate/');
     }
     public function print_bill() {
-       $postedData = $this->input->post();
-  //pr($postedData,1);
-    $data= $postedData['selectedItem'];
-       //$data=array(566,568);
-        $string= implode(',', $data);
-       $output=$this->db->query("select * from invoices where invoice_ID in ($string)")->result_array();
-       //pr($data,1); 
-       foreach ($output as $key =>$value){
-        $invoice_data = $this->invoices_model->get_list(array('invoice_date' => $value['invoice_date'], 'invoice_customer' =>$value['invoice_customer'] ));
-        $data = $this->customers_model->account_statement($value['invoice_customer'], $value['invoice_date']);
-        $this->load->view('console/customer/print_template_invoice_tpl', array('invoice' => $value, 'data' => $data, 'date' => $value['invoice_date']));
-       }
+        $postedData = $this->input->post();
+        $selected = isset($postedData['selectedItem']) ? $postedData['selectedItem'] : null;
+        if (empty($selected)) {
+            $getSelect = $this->input->get('selectedItem');
+            if (!empty($getSelect)) {
+                $selected = is_array($getSelect) ? $getSelect : explode(',', $getSelect);
+            }
+        }
+
+        if (empty($selected) || !is_array($selected)) {
+            echo "<script>alert('Please select at least one invoice to print.'); window.close();</script>";
+            return;
+        }
+
+        $clean_ids = array();
+        foreach ($selected as $item) {
+            $id = intval($item);
+            if ($id > 0) {
+                $clean_ids[] = $id;
+            }
+        }
+
+        if (empty($clean_ids)) {
+            echo "<script>alert('No valid invoice selected.'); window.close();</script>";
+            return;
+        }
+
+        $string = implode(',', $clean_ids);
+        $output = $this->db->query("SELECT * FROM invoices WHERE invoice_ID IN ($string) ORDER BY invoice_ID ASC")->result_array();
+
+        if (empty($output)) {
+            echo "<script>alert('No invoices found.'); window.close();</script>";
+            return;
+        }
+
+        foreach ($output as $key => $value) {
+            $data = $this->customers_model->account_statement($value['invoice_customer'], $value['invoice_date']);
+            $this->load->view('console/customer/print_template_invoice_tpl', array(
+                'invoice' => $value,
+                'data' => $data,
+                'date' => $value['invoice_date']
+            ));
+        }
     }
-  public function popupDownloadAll()
-{
-    $postedData = $this->input->post();
-    $data = $postedData['selectedItem'];
-    $string = implode(',', $data);
 
-    $output = $this->db->query("SELECT * FROM invoices WHERE invoice_ID IN ($string)")->result_array();
+    public function popupDownloadAll() {
+        $postedData = $this->input->post();
+        $selected = isset($postedData['selectedItem']) ? $postedData['selectedItem'] : null;
+        if (empty($selected)) {
+            $getSelect = $this->input->get('selectedItem');
+            if (!empty($getSelect)) {
+                $selected = is_array($getSelect) ? $getSelect : explode(',', $getSelect);
+            }
+        }
 
-    $full_html = '';
+        if (empty($selected) || !is_array($selected)) {
+            echo "<script>alert('Please select at least one invoice to download.'); window.close();</script>";
+            return;
+        }
 
-    foreach ($output as $value) {
-        $invoice_data = $this->invoices_model->get_list(array(
-            'invoice_date' => $value['invoice_date'],
-            'invoice_customer' => $value['invoice_customer']
+        $clean_ids = array();
+        foreach ($selected as $item) {
+            $id = intval($item);
+            if ($id > 0) {
+                $clean_ids[] = $id;
+            }
+        }
+
+        if (empty($clean_ids)) {
+            echo "<script>alert('No valid invoice selected.'); window.close();</script>";
+            return;
+        }
+
+        $string = implode(',', $clean_ids);
+        $output = $this->db->query("SELECT * FROM invoices WHERE invoice_ID IN ($string) ORDER BY invoice_ID ASC")->result_array();
+
+        if (empty($output)) {
+            echo "<script>alert('No invoices found.'); window.close();</script>";
+            return;
+        }
+
+        $full_html = '';
+        $total = count($output);
+        $i = 0;
+
+        foreach ($output as $value) {
+            $i++;
+            $customer_data = $this->customers_model->account_statement($value['invoice_customer'], $value['invoice_date']);
+            $html = $this->load->view(
+                'console/customer/download_template_invoice_tpl',
+                array(
+                    'invoice' => $value,
+                    'data' => $customer_data,
+                    'date' => $value['invoice_date']
+                ),
+                true
+            );
+
+            $full_html .= $html;
+            if ($i < $total) {
+                $full_html .= '<div style="page-break-after: always;"></div>';
+            }
+        }
+
+        $this->load->library('pdf');
+        $this->pdf->create($full_html, 'invoices_selected.pdf', true);
+    }
+
+    public function download($id = null) {
+        if (empty($id)) {
+            $id = $this->uri->segment(4);
+        }
+
+        $entryID = 0;
+        if (!empty($id)) {
+            $decoded = base64_decode($id, true);
+            if ($decoded !== false && is_numeric($decoded)) {
+                $entryID = intval($decoded);
+            } elseif (is_numeric($id)) {
+                $entryID = intval($id);
+            }
+        }
+
+        if ($entryID <= 0) {
+            show_404();
+            return;
+        }
+
+        $invoiceList = $this->invoices_model->get_list(array(
+            $this->invoices_model->table_name . '.' . $this->invoices_model->get_primary_key() => $entryID
         ));
 
-        $customer_data = $this->customers_model->account_statement($value['invoice_customer'], $value['invoice_date']);
+        if (empty($invoiceList)) {
+            show_404();
+            return;
+        }
 
-        // Render HTML for each invoice and concatenate
+        $invoice = $invoiceList[0];
+        $customer_data = $this->customers_model->account_statement($invoice['invoice_customer'], $invoice['invoice_date']);
+
         $html = $this->load->view(
             'console/customer/download_template_invoice_tpl',
             array(
-                'invoice' => $value,
+                'invoice' => $invoice,
                 'data' => $customer_data,
-                'date' => $value['invoice_date']
+                'date' => $invoice['invoice_date']
             ),
             true
         );
 
-        $full_html .= $html . '<div style="page-break-after: always;"></div>'; // page break
+        $this->load->library('pdf');
+        $filename = 'invoice_' . $entryID . '.pdf';
+        $this->pdf->create($html, $filename, true);
     }
 
-    // Create one PDF
-    $this->pdf->create($full_html, 'invoices.pdf', true); // downloads all in one
-}
-
-
-     public function popupDownloadAll1() {
-       $postedData = $this->input->post();
-        $data= $postedData['selectedItem'];
-        $string= implode(',', $data);
-         $output=$this->db->query("select * from invoices where invoice_ID in ($string)")->result_array();
-       foreach ($output as $key =>$value){
-        $invoice_data = $this->invoices_model->get_list(array('invoice_date' => $value['invoice_date'], 'invoice_customer' =>$value['invoice_customer'] ));
-        $data = $this->customers_model->account_statement($value['invoice_customer'], $value['invoice_date']);
-           $html = $this->load->view('console/customer/download_template_invoice_tpl', array('invoice' => $value, 'data' => $data, 'date' => $value['invoice_date']), true);
-        
-        
-       }
-       $this->load->library('pdf');
-$this->pdf->create($html, 'invoice.pdf');
-    }
-    public function download_invoice_pdf($invoice_id)
-{
-    $invoice = $this->invoices_model->get($invoice_id); // Get invoice data
-    $data = $this->customers_model->account_statement($invoice['invoice_customer'], $invoice['invoice_date']);
-
-    $html = $this->load->view('console/customer/download_template_invoice_tpl', [
-        'invoice' => $invoice,
-        'data' => $data,
-        'date' => $invoice['invoice_date']
-    ], true); // true = return as string, not echo
-
-    $this->pdf->create($html, 'invoice_' . $invoice_id . '.pdf');
-}
-
-    public function pdf()
-    {
-
-        // page info here, db calls, etc.
-        $data = null;
-        //$html = $this->load->view('console/customer/pdf_tpl', $data, true);
-        $html = file_get_contents('http://prerelease.website/invoice_template/');
-        pdf_create($html, 'filename');
-        // or
-        // $data = pdf_create($html, '', false);
-        // write_file('name', $data);
-    }
-    public function download()
-    {
-        $config = $this->auto_fieldtype_detect(NULL);
-        $this->page_config = array_merge($config, $this->page_config);
-        $entryID = base64_decode($this->uri->segment(4));
-        $entryData2 = $this->{$this->targetModel}->get_list(array($this->{$this->targetModel}->table_name . '.' . $this->{$this->targetModel}->get_primary_key() => trim($entryID)));
-     
-        // $entryData2[0]['employee_educations'] = $this->sortme( $entryData2[0]['employee_educations'],'year_of_passing');
-        // $entryData2[0]['employment_records'] = $this->sortme( $entryData2[0]['employment_records'],'from');
-        // $entryData2[0]['employee_assignments'] = $this->sortme( $entryData2[0]['employee_assignments'],'year');
-        //        pr($entryData2);
-
-        $employeeData  = $entryData2[0];
-        $phpWord = new PHPDoc();
-        $section = $phpWord->addSection();
-        $header = array('size' => 16, 'bold' => true);
-        $phpWord->setDefaultFontName('Calibri');
-        $phpWord->setDefaultFontSize(11);
-pr($employeeData );
-        // 2. Advanced table
-
-        $section->addTextBreak(1);
-        $section->addText($employeeData['customer_name'], $header);
-
-        $fancyTableStyleName = 'Fancy Table';
-        $fancyTableStyle = array('borderSize' => 0.5, 'borderColor' => '00000', 'cellMargin' => 20, 'alignment' => \PhpOffice\PhpWord\SimpleType\JcTable::CENTER, 'cellSpacing' => 10);
-        $fancyTableFirstRowStyle = array('borderBottomSize' => 0, 'borderBottomColor' => '', '' => '');
-
-        $fancyTableCellStyle = array('valign' => 'center', "fontSize" => 11, "color" => "ffffff", 'bgColor' => "9c3234");
-        $fancyTableCellBtlrStyle = array('valign' => 'center', 'bgColor' => "9c3234");
-
-        $fancyTableFontStyle = array('bold' => true, "fontSize" => 11, "color" => "ffffff", 'bgColor' => "9c3234");
-
-        $phpWord->addTableStyle($fancyTableStyleName, $fancyTableStyle, $fancyTableFirstRowStyle);
-        $table = $section->addTable($fancyTableStyleName);
-        $table->addRow(900);
-        $table->addCell(1000, $fancyTableCellBtlrStyle)->addText('S No', $fancyTableFontStyle);
-        $table->addCell(2000, $fancyTableCellStyle)->addText('Components', $fancyTableFontStyle);
-        $table->addCell(6000, $fancyTableCellStyle)->addText('Descriptions', $fancyTableFontStyle);
-
-        $this->generateData($employeeData, $table);
-
-
-        //  $phpWord = new PHPDoc();
-        //  $section = $phpWord->createSection();
-        //  $section->addText('Hello World war!');        
-        $phpWord->download($phpWord, str_ireplace(" ", "_", $employeeData['customer_name']) . ".doc");
-
-        //$phpWord->view($phpWord);
-        // echo $this->generate_detail_view($entryData2[0], $this->page_config);
-
+    public function download_invoice_pdf($invoice_id) {
+        $this->download($invoice_id);
     }
     public function download_filtered(){
 

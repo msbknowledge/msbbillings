@@ -1,219 +1,244 @@
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<!-- jQuery library -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<!-- Latest compiled JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <style>
-    td,h3,h5,h6,h4{
-        margin-left:4px;
-        margin-right:4px;
-        margin-bottom: 2px;
-        margin-top: 2px;
-
-    }
-    .collection td:first-child{width: 590px}
-    table{
+    .invoice-box {
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        color: #333;
+        font-size: 12px;
+        line-height: 1.4;
         width: 100%;
+        max-width: 800px;
+        margin: auto;
+        padding: 10px;
     }
-    th{
-        text-align: center;
-        font-size: 18px;
-        background-color: white;
-        color: black;
+    .invoice-box table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 8px;
     }
-    th{
-
-        font-size: 13px;
+    .invoice-box table.table-bordered {
+        border: 1px solid #999;
     }
+    .invoice-box table.table-bordered th, 
+    .invoice-box table.table-bordered td {
+        border: 1px solid #999;
+        padding: 4px 6px;
+    }
+    .invoice-box th {
+        background-color: #f5f5f5;
+        font-weight: bold;
+        font-size: 11.5px;
+    }
+    .invoice-box .text-left { text-align: left; }
+    .invoice-box .text-right { text-align: right; }
+    .invoice-box .text-center { text-align: center; }
+    .invoice-box h4, .invoice-box h5 { margin: 2px 0; }
+    .invoice-box h4 { font-size: 14px; }
+    .invoice-box h5 { font-size: 12px; font-weight: normal; }
+    .invoice-box .company_details { font-size: 11px; }
+    .invoice-box .company_details h5 { font-size: 11px; }
     @media print {
-        footer {page-break-after: always;}
+        footer { page-break-after: always; }
     }
-    td h6 {
-        font-size: 10px;
-    }
-    h5{font-size: 12px}
-    .company_details h5{font-size: 10px;}
-    .collection  td{border:1px solid black;font-size: 12px;text-align: center}
 </style>
-<? //pr($data);?>
 
-<div class="container" style="width:21cm; <?
-if (count($invoices) == 1) {
-    echo 'overflow: hidden;height: 14cm; ';
+<?php
+$cust = isset($data['customerData']) ? $data['customerData'] : array();
+$cust_name = isset($cust['customer_name']) ? strtoupper($cust['customer_name']) : '';
+$cust_code = isset($cust['customer_code']) ? $cust['customer_code'] : '';
+$cust_addr = isset($cust['customer_address']) ? strtoupper($cust['customer_address']) : '';
+$cust_area = isset($cust['customer_area']) ? strtoupper($cust['customer_area']) : '';
+$cust_contact = isset($cust['customer_contact']) ? $cust['customer_contact'] : '';
+$cust_stb = isset($cust['customer_stb']) ? strtoupper($cust['customer_stb']) : '';
+$cust_mso = isset($cust['customer_mso_account']) ? $cust['customer_mso_account'] : '';
+
+$logo_path = '';
+if (function_exists('get_option') && get_option('invoice_logo')) {
+    $custom_logo = FCPATH . 'uploads/' . get_option('invoice_logo');
+    if (file_exists($custom_logo)) {
+        $logo_path = $custom_logo;
+    }
 }
-?>">
-    <table style="width: 100%;">
-        <caption><h5 style="font-size: 20px;font-weight: 900;text-align: center;">Tax Invoice</h5></caption>
-        <tr style="border: 1px solid; border-radius: 10px;">
-            <td class="company_details"><?= get_option('company_details'); ?></td>
-            <td style=" text-align: right;">
-                <?php if (get_option('invoice_logo')): ?>
-                    <img src="<?= base_url() ?>/uploads/<?= get_option('invoice_logo') ?>" style="width: 44%;" alt="no-imgbn   ">
-                <?php else: ?>
-                    <img src="<?= base_url() ?>/img_1/simplebillings.png" style=" width: 22%;">
-                <?php endif; ?>
-                <h5> <b>Generated On:</b><?= date('d/M/Y', strtotime($date)); ?></h5>
-                <h5 style=" font-size: 15px;"> <b>Renew Date: <?= date('d/M/Y', strtotime($invoice['invoice_due_date'])); ?></b></h5>
+if (!$logo_path && file_exists(FCPATH . 'img_1/simplebillings.png')) {
+    $logo_path = FCPATH . 'img_1/simplebillings.png';
+}
 
-            </td>
+$dataval = !empty($invoice['invoice_meta']) ? json_decode($invoice['invoice_meta'], true) : array();
+$items = array();
+if (isset($dataval['billings']['items']) && is_array($dataval['billings']['items'])) {
+    $items = $dataval['billings']['items'];
+} elseif (isset($dataval['billings']) && is_array($dataval['billings']) && isset($dataval['billings'][0])) {
+    $items = $dataval['billings'];
+} elseif (isset($dataval['items']) && is_array($dataval['items'])) {
+    $items = $dataval['items'];
+}
 
-        </tr>
-    </table>  
+$tot_invoice = isset($data['total_invoice_amount_till_date'][0]['invoice_bill']) ? floatval($data['total_invoice_amount_till_date'][0]['invoice_bill']) : 0;
+$tot_collected = isset($data['total_collection_amount_till_date'][0]['collected_bill']) ? floatval($data['total_collection_amount_till_date'][0]['collected_bill']) : 0;
+$current_billed = isset($invoice['invoice_billed_amount']) ? floatval($invoice['invoice_billed_amount']) : 0;
+$due_till_date = $tot_invoice - $tot_collected;
+$payable_due = $due_till_date - $current_billed;
+
+$last_col_date = !empty($data['last_collection_data'][0]['collection_date']) ? date('d/M/Y', strtotime($data['last_collection_data'][0]['collection_date'])) : 'N/A';
+$last_col_amount = !empty($data['last_collection_data'][0]['collection_amount']) ? number_format(floatval($data['last_collection_data'][0]['collection_amount']), 2, '.', '') : '0.00';
+?>
+
+<div class="invoice-box">
     <table>
-
-        <tr style=" border: 1px solid; border-right: 1px solid; border-bottom: 1px solid; text-align: left;">
-            <td style=" font-size: 15px;"><h4><?= strtoupper($data['customerData']['customer_name']); ?></h4></td>
-            <td style=" border: 1px solid;"><h4><?= $data['customerData']['customer_code']; ?></h4></td>
-        </tr>
-    </table>
-    <table style=" margin-top: 10px;">
-        <tr style=" border: 1px solid; text-align: left;">
-            <td style=" border: 1px solid;"><h5> <b>Address:</b><?= strtoupper($data['customerData']['customer_address']); ?></h5></td>
-            <td style=" border: 1px solid;"><h5><b>Area: </b><?= strtoupper($data['customerData']['customer_area']); ?></h5></td>
-            <td style=" border: 1px solid;"><h5><b>Mobile No:</b> <?= $data['customerData']['customer_contact']; ?></h5></td>
-
-        </tr>
-        <tr style=" border: 1px solid; text-align: left;">
-            <?php if (!empty($data['customerData']['customer_mso_account'])) { ?>
-                <td style=" border: 1px solid;"><h5> <b>Number of Connection:</b> Single</h5></td>
-                <td  colspan="" style=" border: 1px solid;"><h5> <b>STB (VC) : </b><?= strtoupper($data['customerData']['customer_stb']); ?></h5></td>
-                <td style=" border: 1px solid;"><h4><b>Mso account:</b> <?= $data['customerData']['customer_mso_account']; ?></h4></td>
-
-            <? } else { ?>
-                <td style=" border: 1px solid;"><h5> <b>Number of Connection:</b> Single</h5></td>
-                <td  colspan="2" style=" border: 1px solid;"><h5> <b>STB (VC) : </b><?= strtoupper($data['customerData']['customer_stb']); ?></h5></td>
-            <? } ?>
-        </tr>
-    </table>
-    <table style=" margin-top: 10px;">
-        <p style="text-align: center; font-size: 17px;margin-top: 10px;font-weight: 600;">Invoice For : <?= $invoice['invoice_for'] ?></p>
         <tr>
-            
-            <th style="text-align: left;">Package Details</th>
-            <th style="text-align: right;">Cost</th>
+            <td colspan="2" class="text-center">
+                <h3 style="margin: 0 0 6px 0; font-size: 20px; font-weight: bold;">Tax Invoice</h3>
+            </td>
         </tr>
-        <?
-        $dataval = json_decode($invoice['invoice_meta'], true);
-        $items = $dataval['billings']['items'];
-
-        if (!empty($items))
-            foreach ($items as $value) {
-                ?>
-                <tr style=" border: 1px solid; ">
-                    <td style=" border: 1px solid;text-align: left;width: 590px"><h5><?= $value['name'] . " " . $note ?></h5></td>
-                    <td style=" border: 1px solid;text-align: right;"><h5><?= $value['price'] ?></h5></td>
-                </tr>
-
-            <? } ?>
-
-            <?php if(($invoice['invoice_tax_amount'])>0){
-             ?>
-        <tr style=" border: 1px solid; text-align: right;">
-            <td style=" border: 1px solid;text-align: left;width: 590px"><h5><b>GST</b></h5></td>
-            <td style=" border: 1px solid;text-align: right;"><h5><?= $invoice['invoice_tax_amount']; ?></h5></td>
+        <tr style="border: 1px solid #999;">
+            <td class="company_details" style="padding: 6px; vertical-align: top; width: 60%;">
+                <?= function_exists('get_option') ? get_option('company_details') : ''; ?>
+            </td>
+            <td class="text-right" style="padding: 6px; vertical-align: top; width: 40%;">
+                <?php if ($logo_path): ?>
+                    <img src="<?= $logo_path ?>" style="max-width: 140px; max-height: 55px;" alt="Logo"><br>
+                <?php endif; ?>
+                <h5><b>Generated On:</b> <?= date('d/M/Y', strtotime($date)); ?></h5>
+                <h5><b>Renew Date:</b> <?= !empty($invoice['invoice_due_date']) ? date('d/M/Y', strtotime($invoice['invoice_due_date'])) : date('d/M/Y', strtotime($date)); ?></h5>
+            </td>
         </tr>
-        <?php } ?>
-        
-        <tr style=" border: 1px solid; text-align: right;">
-            <td style=" border: 1px solid;text-align: left;width: 590px"><h5><b>Total </b></h5></td>
-            <td style=" border: 1px solid;text-align: right;"><h5>
-            <?php if(($invoice['invoice_tax_amount'])>0){
-            ?>    
-            <?= floatval($dataval['billings']['subtotal']) + floatval($dataval['billings']['subtotal']) * 18 / 100; ?>
-            <?php }else{
-            ?>
-                <?= floatval($dataval['billings']['subtotal']);?>
-           <?php }
-            
-            ?>
-        </h5></td>
-        </tr>
-         
-        <tr style=" border: 1px solid; text-align: right;">
-            <td style=" border: 1px solid;text-align: left;width: 590px"><h5><b>Discount</b></h5></td>
-            <td style=" border: 1px solid;text-align: right;"><h5><?= $dataval['billings']['discount']; ?></h5></td>
-        </tr>
-        <tr style=" border: 1px solid; text-align: right;">
-            <td style=" border: 1px solid;text-align: left;width: 590px"><h5><b>Total Round off</b></h5></td>
-            <td style=" border: 1px solid;text-align: right;"><h5><?= $invoice['invoice_billed_amount']; ?></h5></td>
-        </tr>
-     <?phpif ?>
-        <tr style=" border: 1px solid; text-align: right;">
-            <td style=" border: 1px solid;text-align: left;width: 590px"><h5><b>Total Payable Due amount <?= date('d/M/Y', strtotime($date)); ?></b></h5></td>
-            <td style=" border: 1px solid;text-align: right;"><h5><?= (float) (($data['total_invoice_amount_till_date'][0]['invoice_bill'] - $data['total_collection_amount_till_date'][0]['collected_bill'])- $invoice['invoice_billed_amount']) ?></h5></td>
-        </tr>
-        
-        <tr style=" border: 1px solid; ">
-            <td style=" border: 1px solid;text-align: left;width: 590px"><h5><b>Total Previous Due Amount Till <?= date('d/M/Y', strtotime($date)); ?></b></h5></td>
-            <td style=" border: 1px solid;text-align: right;"><h5><?= (float) ($data['total_invoice_amount_till_date'][0]['invoice_bill'] - $data['total_collection_amount_till_date'][0]['collected_bill']) ?></h5></td>
-        </tr> 
-        
-                <tr style=" border: 1px solid; ">
-                    <td style=" border: 1px solid;text-align: left;width: 590px"><h5><b>Collected Amount Till <?= $data['last_collection_data'][0]['collection_date'] ?></b></h5></td>
-                    <td style=" border: 1px solid;text-align: right;"><h5><?= $data['last_collection_data'][0]['collection_amount'] ?></h5></td>
-                </tr> 
-         
     </table>
 
-    <!---?php if (count($data['last_collection_data'])) { ?>
-    
-            <center><h4>Last Collections</h4></center>
-            <table style=" margin-top: 10px;">
-                <tr>
-                    <th style="text-align: left;">Collection Date</th>
-                    <th style="text-align: right;">Collection Amount</th>
-                </tr>
-    <!--?php foreach ($data['last_collection_data'] as $val) { ?>
-                <tr style=" border: 1px solid; ">
+    <table class="table-bordered" style="margin-top: 6px;">
+        <tr>
+            <td style="width: 70%;"><h4><b>Customer Name:</b> <?= $cust_name; ?></h4></td>
+            <td style="width: 30%;"><h4><b>Code:</b> <?= $cust_code; ?></h4></td>
+        </tr>
+    </table>
 
-                    <td style=" border: 1px solid;text-align: left;"><h5><date('d/M/Y', strtotime($val['collection_date'])); ?></h5></td>
-                    <td style=" border: 1px solid;text-align: right;"><h5>< $val['collection_amount'] ?></h5></td>
-                </tr>
-   
-        </table---->
+    <table class="table-bordered" style="margin-top: 6px;">
+        <tr>
+            <td style="width: 40%;"><h5><b>Address:</b> <?= $cust_addr; ?></h5></td>
+            <td style="width: 30%;"><h5><b>Area:</b> <?= $cust_area; ?></h5></td>
+            <td style="width: 30%;"><h5><b>Mobile No:</b> <?= $cust_contact; ?></h5></td>
+        </tr>
+        <tr>
+            <td style="width: 40%;"><h5><b>Connection:</b> Single</h5></td>
+            <td style="width: 30%;"><h5><b>STB (VC):</b> <?= $cust_stb; ?></h5></td>
+            <td style="width: 30%;"><h5><b>MSO Account:</b> <?= $cust_mso ? $cust_mso : 'N/A'; ?></h5></td>
+        </tr>
+    </table>
 
-    <?php if (get_option('counter_part') == 'true') { ?>
-        <br> </br>
-        <center><h4>Summery</h4></center>
-        <table style=" margin-top: 10px;">
+    <div style="text-align: center; font-size: 14px; margin: 8px 0; font-weight: bold;">
+        Invoice For: <?= isset($invoice['invoice_for']) ? $invoice['invoice_for'] : ''; ?>
+    </div>
 
-            <td style=" font-size: 12px; font-weight: 700;">Customer Name:<?= strtoupper($data['customerData']['customer_name']); ?></td>
-            <td style=" font-size: 12px;font-weight: 700;">Customer Code:<?= strtoupper($data['customerData']['customer_code']); ?></td>
-
-
-            <tr style=" border: 1px solid; ">
-                <td style=" border: 1px solid;text-align: left;width: 590px"><h5>Total Invoice Amount Till <?= date('d/M/Y', strtotime($date)); ?></h5></td>
-                <td style=" border: 1px solid;text-align: right;"><h5><?= (float) $data['total_invoice_amount_till_date'][0]['invoice_bill'] ?></h5></td>
-            </tr>
-
-            <tr style=" border: 1px solid; ">
-                <td style=" border: 1px solid;text-align: left;width: 590px"><h5>Total collected Amount Till <?= date('d/M/Y', strtotime($date)); ?></h5></td>
-                <td style=" border: 1px solid;text-align: right;"><h5><?= (float) $data['total_collection_amount_till_date'][0]['collected_bill'] ?></h5></td>
-            </tr>
-            <tr style=" border: 1px solid; ">
-                <td style=" border: 1px solid;text-align: left;width: 590px"><h5>Total Due Amount Till <?= date('d/M/Y', strtotime($date)); ?></h5></td>
-                <td style=" border: 1px solid;text-align: right;"><h5><?= (float) ($data['total_invoice_amount_till_date'][0]['invoice_bill'] - $data['total_collection_amount_till_date'][0]['collected_bill']) ?></h5></td>
-            </tr>                     
-
-            <tr style=" border: 1px solid; ">
-                <td style=" border: 1px solid;text-align: left;width: 590px"><h5>Collected Amount </h5></td>
-                <td style=" border: 1px solid;text-align: right;"><h5> </h5></td>
-            </tr>   
-            <tr style=" border: 1px solid; ">
-                <td style=" border: 1px solid;text-align: left;width: 590px"><h5>Collection Date </h5></td>
-                <td style=" border: 1px solid;text-align: right;"><h5> </h5></td>
-            </tr>  
+    <table class="table-bordered">
+        <thead>
             <tr>
-                <td>  <span style="font-size: 15px;width: 100%;display: block;text-align: left; margin-top: 35px;"><b><?= get_option('signature'); ?></b><br><b>Signature of Collection Executive</b></span></td>
-
-                <td> <span style="font-size: 15px;width: 100%;display: block;text-align: right; margin-top: 35px;"><b><?= get_option('signature'); ?></b><br><b>Customer Signature</b></span></td>
+                <th class="text-left" style="width: 70%;">Package / Item Details</th>
+                <th class="text-right" style="width: 30%;">Cost (INR)</th>
             </tr>
-        </table>
-    <? } ?>
+        </thead>
+        <tbody>
+            <?php if (!empty($items)): ?>
+                <?php foreach ($items as $val): 
+                    $itemName = isset($val['name']) ? $val['name'] : (isset($val['item_name']) ? $val['item_name'] : 'Package');
+                    $itemPrice = isset($val['price']) ? $val['price'] : (isset($val['cost']) ? $val['cost'] : (isset($val['rate']) ? $val['rate'] : '0.00'));
+                ?>
+                    <tr>
+                        <td class="text-left"><h5><?= htmlspecialchars($itemName) ?></h5></td>
+                        <td class="text-right"><h5><?= number_format(floatval($itemPrice), 2, '.', '') ?></h5></td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <tr>
+                    <td class="text-left"><h5><?= isset($invoice['invoice_for']) ? $invoice['invoice_for'] : 'Monthly Subscription'; ?></h5></td>
+                    <td class="text-right"><h5><?= number_format(floatval($invoice['invoice_billed_amount']), 2, '.', ''); ?></h5></td>
+                </tr>
+            <?php endif; ?>
+
+            <?php if (isset($invoice['invoice_tax_amount']) && floatval($invoice['invoice_tax_amount']) > 0): ?>
+                <tr>
+                    <td class="text-left"><h5><b>GST</b></h5></td>
+                    <td class="text-right"><h5><?= number_format(floatval($invoice['invoice_tax_amount']), 2, '.', ''); ?></h5></td>
+                </tr>
+            <?php endif; ?>
+
+            <tr>
+                <td class="text-left"><h5><b>Subtotal / Total</b></h5></td>
+                <td class="text-right"><h5>
+                    <?php
+                    $subtotal = isset($dataval['billings']['subtotal']) ? floatval($dataval['billings']['subtotal']) : floatval($invoice['invoice_billed_amount']);
+                    echo number_format($subtotal, 2, '.', '');
+                    ?>
+                </h5></td>
+            </tr>
+
+            <?php if (isset($dataval['billings']['discount']) && floatval($dataval['billings']['discount']) > 0): ?>
+                <tr>
+                    <td class="text-left"><h5><b>Discount</b></h5></td>
+                    <td class="text-right"><h5><?= number_format(floatval($dataval['billings']['discount']), 2, '.', ''); ?></h5></td>
+                </tr>
+            <?php endif; ?>
+
+            <tr style="background-color: #f9f9f9;">
+                <td class="text-left"><h5><b>Total Billed Amount (Round off)</b></h5></td>
+                <td class="text-right"><h5><b><?= number_format(floatval($invoice['invoice_billed_amount']), 2, '.', ''); ?></b></h5></td>
+            </tr>
+
+            <tr>
+                <td class="text-left"><h5><b>Total Payable Due Amount as of <?= date('d/M/Y', strtotime($date)); ?></b></h5></td>
+                <td class="text-right"><h5><?= number_format($payable_due, 2, '.', ''); ?></h5></td>
+            </tr>
+
+            <tr>
+                <td class="text-left"><h5><b>Total Previous Due Amount Till <?= date('d/M/Y', strtotime($date)); ?></b></h5></td>
+                <td class="text-right"><h5><?= number_format($due_till_date, 2, '.', ''); ?></h5></td>
+            </tr>
+
+            <tr>
+                <td class="text-left"><h5><b>Last Collected Amount Till <?= $last_col_date; ?></b></h5></td>
+                <td class="text-right"><h5><?= $last_col_amount; ?></h5></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <?php if (function_exists('get_option') && get_option('counter_part') == 'true'): ?>
+        <div style="margin-top: 15px;">
+            <h4 class="text-center" style="font-size: 13px; font-weight: bold; margin-bottom: 6px;">Summary</h4>
+            <table class="table-bordered">
+                <tr>
+                    <td><b>Customer Name:</b> <?= $cust_name; ?></td>
+                    <td><b>Customer Code:</b> <?= $cust_code; ?></td>
+                </tr>
+                <tr>
+                    <td><h5>Total Invoice Amount Till <?= date('d/M/Y', strtotime($date)); ?></h5></td>
+                    <td class="text-right"><h5><?= number_format($tot_invoice, 2, '.', ''); ?></h5></td>
+                </tr>
+                <tr>
+                    <td><h5>Total Collected Amount Till <?= date('d/M/Y', strtotime($date)); ?></h5></td>
+                    <td class="text-right"><h5><?= number_format($tot_collected, 2, '.', ''); ?></h5></td>
+                </tr>
+                <tr>
+                    <td><h5>Total Due Amount Till <?= date('d/M/Y', strtotime($date)); ?></h5></td>
+                    <td class="text-right"><h5><?= number_format($due_till_date, 2, '.', ''); ?></h5></td>
+                </tr>
+            </table>
+            <table style="margin-top: 30px;">
+                <tr>
+                    <td style="width: 50%; vertical-align: top;">
+                        <span style="font-size: 11px; display: block;">
+                            <b><?= function_exists('get_option') ? get_option('signature') : ''; ?></b><br>
+                            <b>Signature of Collection Executive</b>
+                        </span>
+                    </td>
+                    <td style="width: 50%; text-align: right; vertical-align: top;">
+                        <span style="font-size: 11px; display: block;">
+                            <b>Customer Signature</b>
+                        </span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    <?php endif; ?>
+
+    <?= function_exists('get_option') ? get_option('option_footer') : ''; ?>
+
+    <div style="text-align: center; font-size: 9px; color: #777; margin-top: 12px; border-top: 1px dotted #ccc; padding-top: 4px;">
+        <b>Msbbillings.com &copy; <?= date("Y") ?></b>
+    </div>
 </div>
-<?= get_option('option_footer'); ?>
-
-<footer>
-    <span style="font-size: 10px;width: 100%;display: block;text-align: center;"><b>Msbbillings.com&copy<?php echo date("Y") ?></b></span>
-
-</footer>

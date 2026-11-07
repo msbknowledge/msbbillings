@@ -17,7 +17,7 @@ class Customer extends MY_Controller
 
         //$this->page_config['use_status_columns'] = 'customer_status';
         $this->targetModel = 'customers_model';
-       // $this->moduleMeta = array('cables' => 'Customer');
+        // $this->moduleMeta = array('cables' => 'Customer');
         $this->load->model($this->targetModel);
         $this->page_config['use_dropdown_columns'] = 'customer_ID,customer_name,customer_address,customer_proof,customer_contact,customer_refer';
         // $this->page_config['use_dropdown_columns_options']['customer_stb'] = $this->stb();
@@ -244,7 +244,7 @@ class Customer extends MY_Controller
 
     public function customer_wise_report()
     {
-       
+
         $post_data = $this->input->post();
         $period_start = $this->input->post('start');
         $period_end = $this->input->post('end');
@@ -260,14 +260,14 @@ class Customer extends MY_Controller
         if (!empty($post_data)) {
             $sql = "SELECT * FROM  `customers` WHERE 1 = 1 ";
 
-            
+
             if (!empty($customer_address)) {
                 $sql .= "AND customer_address like '%" . $customer_address . "%'";
             }
             if (!empty($customer_name)) {
                 $sql .= "AND customer_name like '%" . $customer_name . "%'";
             }
-           
+
             $customers = $this->db->query($sql)->result_array();
 
             $customer_data = null;
@@ -280,7 +280,7 @@ class Customer extends MY_Controller
         if ($this->input->post()) {
             $this->load->view('console/customer/customer_wise_ajax_billing', array('customer_data' => $customer_data));
         } else {
-             $this->render(array('package' => $package ),customer_wise_billing_report_tpl);
+            $this->render(array('package' => $package), customer_wise_billing_report_tpl);
             // $this->load->view('console/customer/customer_wise_billing_report_tpl', array(
             //     'package' => $package
             // ));
@@ -543,31 +543,31 @@ class Customer extends MY_Controller
         //$this->page_config['use_dropdown_columns_options']['customer_stb'] = $this->stb('SPARE');
 
         $postedData = $this->input->post();
-       // $stb = $this->input->post();
-        
+        // $stb = $this->input->post();
+
         if (isset($postedData['load_add_entry'])) {
             $entryData = $this->{$this->targetModel}->get_field_list();
 
-        //     /*             * **********channel data************** */
+            //     /*             * **********channel data************** */
 
-        //     $channel_sql = "SELECT * FROM `channels`  WHERE channel_type !='FTA'";
-        //     $package_sql = "SELECT * FROM `packages`";
+            //     $channel_sql = "SELECT * FROM `channels`  WHERE channel_type !='FTA'";
+            //     $package_sql = "SELECT * FROM `packages`";
 
-        //     $paychannel = $this->db->query($channel_sql)->result_array();
-        //     $packages = $this->db->query($package_sql)->result_array();
+            //     $paychannel = $this->db->query($channel_sql)->result_array();
+            //     $packages = $this->db->query($package_sql)->result_array();
 
-        //     if ($packages) {
-        //         foreach ($packages as $key => $row) {
-        //             $data['packages'][] = $row;
-        //         }
-        //     }
+            //     if ($packages) {
+            //         foreach ($packages as $key => $row) {
+            //             $data['packages'][] = $row;
+            //         }
+            //     }
 
-        //     if ($paychannel) {
-        //         foreach ($paychannel as $key => $row) {
-        //             $data['paychannels'][] = $row;
-        //         }
-        //     }
-        //     $this->page_config['channelData'] = $data;
+            //     if ($paychannel) {
+            //         foreach ($paychannel as $key => $row) {
+            //             $data['paychannels'][] = $row;
+            //         }
+            //     }
+            //     $this->page_config['channelData'] = $data;
 
             /*             * **********channel data****** */
             echo $this->generate_form_view($entryData[0], 'add_edit_tpl');
@@ -593,21 +593,20 @@ class Customer extends MY_Controller
                 $lastInsertedID = $this->{$this->targetModel}->insert_data($postedData);
                 $pay['payment_user_id'] = $lastInsertedID;
                 $this->payments_model->insert_data($pay);
-            //$dataFull = $this->{$this->targetModel}->get_list(array('sale_invoice' => $invoice));
-            $payment['customer_payment_customer'] = $lastInsertedID;
-            $payment['customer_payment_date'] = date('Y-m-d', strtotime($this->input->post('payment_date')));
-            $payment['customer_payment_paid_amount'] = $this->input->post('payment_amount');
-            $payment['customer_payment_note'] = $this->input->post('customer_proof');
-            $payment['customer_payment_invoice'] = $this->input->post('payment_invoice');
-            if (!empty($this->customer_payment_model->get_list(array('customer_payment_customer' => $payment['customer_payment_customer'], 'customer_payment_invoice' => $payment['customer_payment_invoice'])))) {
+                //$dataFull = $this->{$this->targetModel}->get_list(array('sale_invoice' => $invoice));
+                $payment['customer_payment_customer'] = $lastInsertedID;
+                $payment['customer_payment_date'] = date('Y-m-d', strtotime($this->input->post('payment_date')));
+                $payment['customer_payment_paid_amount'] = $this->input->post('payment_amount');
+                $payment['customer_payment_note'] = $this->input->post('customer_proof');
+                $payment['customer_payment_invoice'] = $this->input->post('payment_invoice');
+                if (!empty($this->customer_payment_model->get_list(array('customer_payment_customer' => $payment['customer_payment_customer'], 'customer_payment_invoice' => $payment['customer_payment_invoice'])))) {
 
-                $data = $this->customer_payment_model->update_data(array('customer_payment_paid_amount' => $payment['customer_payment_paid_amount'], 'customer_payment_note' => $payment['customer_payment_note'], 'customer_payment_date' => $payment['customer_payment_date']), array('customer_payment_invoice' => $payment['customer_payment_invoice'], 'customer_payment_customer' => $payment['customer_payment_customer']));
-            } else {
-                 $this->db->query("UPDATE `options` SET `option_value`=(option_value+1) WHERE option_key='invoice_last_count'");
-                $data = $this->customer_payment_model->insert_data($payment);
-                
-            }
-           // $this->render(array('status' => 'success', 'data' => $dataFull, 'message' => '<strong>Well done!</strong> Data Save.'));
+                    $data = $this->customer_payment_model->update_data(array('customer_payment_paid_amount' => $payment['customer_payment_paid_amount'], 'customer_payment_note' => $payment['customer_payment_note'], 'customer_payment_date' => $payment['customer_payment_date']), array('customer_payment_invoice' => $payment['customer_payment_invoice'], 'customer_payment_customer' => $payment['customer_payment_customer']));
+                } else {
+                    $this->db->query("UPDATE `options` SET `option_value`=(option_value+1) WHERE option_key='invoice_last_count'");
+                    $data = $this->customer_payment_model->insert_data($payment);
+                }
+                // $this->render(array('status' => 'success', 'data' => $dataFull, 'message' => '<strong>Well done!</strong> Data Save.'));
                 if (function_exists('trigger_sms')) {
                     trigger_sms('welcome_cable', $postedData);
                 }
@@ -660,11 +659,11 @@ class Customer extends MY_Controller
 
             $entryData = array_intersect_key($entryData2[0], $entryData1[0]);
 
-           echo $this->generate_form_view($entryData, $this->page_config, 'add_edit_tpl');
+            echo $this->generate_form_view($entryData, $this->page_config, 'add_edit_tpl');
         } else {
 
             if ($postedData) {
-           
+
                 /** status* */
                 // if (isset($config['use_status_columns'])) {
                 //     foreach ($config['use_status_columns'] as $statusColumn) {
@@ -680,17 +679,17 @@ class Customer extends MY_Controller
                 $entryData2 = $this->{$this->targetModel}->get_list(array($this->{$this->targetModel}->get_primary_key() => trim($postedData[$config['tablePrimaryKey']])));
 
                 //$this->change_stb_status($entryData2[0]['customer_stb'], $postedData['customer_stb']);
-            $this->{$this->targetModel}->update_data($postedData, array($config['tablePrimaryKey'] => $postedData[$config['tablePrimaryKey']]));
-                $payment['customer_payment_customer'] =$postedData['customer_ID'];
+                $this->{$this->targetModel}->update_data($postedData, array($config['tablePrimaryKey'] => $postedData[$config['tablePrimaryKey']]));
+                $payment['customer_payment_customer'] = $postedData['customer_ID'];
                 $payment['customer_payment_date'] = date('Y-m-d', strtotime($postedData['payment_date']));
-                $payment['customer_payment_paid_amount'] =$postedData['payment_amount'];
+                $payment['customer_payment_paid_amount'] = $postedData['payment_amount'];
                 $payment['customer_payment_note'] = $postedData['customer_proof'];
-                $payment['customer_payment_invoice'] =$postedData['payment_invoice'];
-               if (!empty($this->customer_payment_model->get_list(array('customer_payment_customer' => $postedData['customer_ID'], 'customer_payment_invoice' => $postedData['payment_invoice'])))) {
-    
+                $payment['customer_payment_invoice'] = $postedData['payment_invoice'];
+                if (!empty($this->customer_payment_model->get_list(array('customer_payment_customer' => $postedData['customer_ID'], 'customer_payment_invoice' => $postedData['payment_invoice'])))) {
+
                     $data = $this->customer_payment_model->update_data(array('customer_payment_paid_amount' => $payment['customer_payment_paid_amount'], 'customer_payment_note' => $payment['customer_payment_note'], 'customer_payment_date' => $payment['customer_payment_date']), array('customer_payment_invoice' => $payment['customer_payment_invoice'], 'customer_payment_customer' => $payment['customer_payment_customer']));
                 } else {
-                     $this->db->query("UPDATE `options` SET `option_value`=(option_value+1) WHERE option_key='invoice_last_count'");
+                    $this->db->query("UPDATE `options` SET `option_value`=(option_value+1) WHERE option_key='invoice_last_count'");
                     $data = $this->customer_payment_model->insert_data($payment);
                 }
                 echo (json_encode(array('status' => 'success', 'message' => 'Data Updated Successfully')));
@@ -768,7 +767,7 @@ class Customer extends MY_Controller
 
         $data['sheetData'] = $sheetData;
         $data['statement_for'] = $value['$value'];
-         //pr($data);
+        //pr($data);
         //pr($this->customers_model->account_statement($customer,$invoice_date));
 
         $this->load->view('console/customer/print_template_tpl', $data);
@@ -777,21 +776,21 @@ class Customer extends MY_Controller
     public function print_due_statement()
     {
         $collection_ID = $this->uri->segment(4);
-        
-    
+
+
         $collection_data = $this->collections_model->get_list(array('collection_ID' => $collection_ID));   // print_r($collection_data);die();
-          
+
         $data = $this->customers_model->account_statement($collection_data[0]['customer_ID'], $collection_data[0]['collection_date']);
-    
+
         $this->load->view('console/customer/print_template_due_tpl', array('collection' => $collection_data[0], 'data' => $data, 'date' => $collection_data[0]['collection_date']));
     }
 
     public function print_invoice_statement()
     {
         $invoice_ID = $this->uri->segment(4);
-     
+
         $invoice_data = $this->invoices_model->get_list(array('invoice_ID' => $invoice_ID));
-          
+
         $data = $this->customers_model->account_statement($invoice_data[0]['invoice_customer'], $invoice_data[0]['invoice_date']);
 
         $this->load->view('console/customer/print_template_invoice_tpl', array('invoice' => $invoice_data[0], 'data' => $data, 'date' => $invoice_data[0]['invoice_date'], 'collection_data' => $collection_data));
@@ -1120,14 +1119,14 @@ class Customer extends MY_Controller
             if (!empty($collection_for)) {
                 $sql .= "AND collection_for like '%" . $collection_for . "%'";
             }
-          
+
             if (!empty($customer_address)) {
                 $sql .= "AND customer_address like '%" . $customer_address . "%'";
             }
             if (!empty($customer_name)) {
                 $sql .= "AND customer_name like '%" . $customer_name . "%'";
             }
-           
+
             # $collections = $this->db->query("SELECT * FROM `collections` WHERE collection_date >='" . $period_start . "' AND collection_date<='" . $period_end . "'")->result_array();
             $collections = $this->db->query($sql)->result_array();
             //echo $sql;
@@ -1151,7 +1150,7 @@ class Customer extends MY_Controller
         if ($this->input->post()) {
             $this->load->view('console/customer/collection_ajax_report_tpl', array('customer_data' => $customer_data, 'start' => $period_start, 'end' => $period_end, 'collected_data' => $collected_data));
         } else {
-             $this->render(array('customer_data' => $customer_data, 'start' => $period_start, 'end' => $period_end, 'package' => $package, 'mso' => $customer_mso),'collection_report_tpl');
+            $this->render(array('customer_data' => $customer_data, 'start' => $period_start, 'end' => $period_end, 'package' => $package, 'mso' => $customer_mso), 'collection_report_tpl');
             //$this->load->view('console/customer/collection_report_tpl', array('customer_data' => $customer_data, 'start' => $period_start, 'end' => $period_end, 'package' => $package, 'mso' => $customer_mso));
         }
     }
@@ -1216,7 +1215,7 @@ class Customer extends MY_Controller
         if ($this->input->post()) {
             $this->load->view('console/customer/not_collected_ajax_report_tpl', array('customer_data' => $customer_data, 'start' => $period_start, 'end' => $period_end, 'collected_data' => $collected_data));
         } else {
-             $this->render( array('customer_data' => $customer_data, 'start' => $period_start, 'end' => $period_end, 'package' => $package), 'not_collected_report_tpl');
+            $this->render(array('customer_data' => $customer_data, 'start' => $period_start, 'end' => $period_end, 'package' => $package), 'not_collected_report_tpl');
             //$this->load->view('console/customer/not_collected_report_tpl', array('customer_data' => $customer_data, 'start' => $period_start, 'end' => $period_end, 'package' => $package));
         }
     }
@@ -1544,7 +1543,7 @@ class Customer extends MY_Controller
     public function quick_bill()
     {
         $data = $this->input->post();
-       
+
         $invoice['invoice_customer'] = $data['invoice_customer'];
         $invoice['invoice_date'] = $data['invoice_date'];
         $invoice['invoice_due_date'] = $data['invoice_due_date'];
@@ -1575,7 +1574,7 @@ class Customer extends MY_Controller
         $invoice['invoice_billed_amount'] = $billingData['billings']['total'];
         $invoice['invoice_tax_amount'] = $taxtotal;
         $invoice['invoice_meta'] = json_encode($billingData);
-        
+
         if (isset($data['package'])) {
             $this->customers_model->update_data(array("customer_package" => json_encode($billingData['billings'])), array('customer_ID' => $data['invoice_customer']));
         } else {
@@ -1602,7 +1601,7 @@ class Customer extends MY_Controller
             $total_tax_rate = 0;
             if (!empty($taxes)) {
                 $total_tax_rate =  isset($taxes[0]['total_tax']) ? floatval($taxes[0]['total_tax']) : 0;
-              }
+            }
 
             foreach ($customer as $c) {
                 $billingData =  json_decode($c['customer_package'], true);
@@ -1610,10 +1609,10 @@ class Customer extends MY_Controller
                     if (empty($this->invoices_model->get_list(array('invoice_customer' => $c['customer_ID'], 'invoice_for' => $invoice['invoice_for'])))) {
                         $invoice['invoice_for'] = 'Bill for ' . date('F-y', strtotime($posted['invoice_bill_date']));
                         $invoice_meta['billings'] = $billingData;
-                        $invoice_meta['total'] = $billingData['total'];// total comes with gst
+                        $invoice_meta['total'] = $billingData['total']; // total comes with gst
                         $invoice['invoice_tax_amount'] = $billingData['subtotal'] * $total_tax_rate / 100;
                         $invoice['invoice_date'] = $posted['invoice_bill_date'];
-                        $invoice['invoice_billed_amount'] =   $billingData['total'] ;
+                        $invoice['invoice_billed_amount'] =   $billingData['total'];
                         $invoice['invoice_due_date'] = $posted['invoice_due_date'];
                         $invoice['invoice_customer'] = $c['customer_ID'];
                         $invoice['invoice_meta'] = json_encode($invoice_meta);
@@ -1622,16 +1621,15 @@ class Customer extends MY_Controller
                 }
             }
 
-           header('Content-Type: application/json');
-            if(count($billingData)>0){
-               echo json_encode(array("status"=>"success"));
-                }else{
-                echo json_encode(array("status"=>"unsuccess"));
-                }
+            header('Content-Type: application/json');
+            if (count($billingData) > 0) {
+                echo json_encode(array("status" => "success"));
+            } else {
+                echo json_encode(array("status" => "unsuccess"));
+            }
             // die();
-        }else{
+        } else {
             $this->render(array('customer' => $customer), 'generate_bill_all_tpl');
         }
-
     }
 }
