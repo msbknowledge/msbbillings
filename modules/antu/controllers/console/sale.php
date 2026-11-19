@@ -725,10 +725,10 @@ class Sale extends MY_Controller
     private function _get_daily_sale_medicine_data($period_start = null, $period_end = null, $sale_invoice = null, $medicine_name = null, $customer_name = null, $sale_batch = null)
     {
         $sql = "SELECT sales.*, medicines.medicine_name, medicines.medicine_hsn, medicines.medicine_manufacturer, "
-             . "customers.customer_name, customers.customer_mobile, customers.customer_gst "
+             . "customers.customer_name, customers.customer_contact, customers.customer_gst "
              . "FROM `sales` "
              . "LEFT JOIN `medicines` ON sales.sale_medicine_id = medicines.medicine_id "
-             . "LEFT JOIN `customers` ON sales.sale_customer = customers.customer_id "
+             . "LEFT JOIN `customers` ON sales.sale_customer = customers.customer_ID "
              . "WHERE (sales.sale_return = 0 OR sales.sale_return IS NULL) ";
 
         if (!empty($period_start) && !empty($period_end)) {
@@ -790,7 +790,7 @@ class Sale extends MY_Controller
                     'medicine_hsn'         => isset($invoice['medicine_hsn']) ? $invoice['medicine_hsn'] : '',
                     'medicine_manufacturer'=> isset($invoice['medicine_manufacturer']) ? $invoice['medicine_manufacturer'] : '',
                     'customer_name'        => isset($invoice['customer_name']) ? $invoice['customer_name'] : '',
-                    'customer_mobile'      => isset($invoice['customer_mobile']) ? $invoice['customer_mobile'] : '',
+                    'customer_contact'     => isset($invoice['customer_contact']) ? $invoice['customer_contact'] : '',
                     'customer_gst'         => isset($invoice['customer_gst']) ? $invoice['customer_gst'] : '',
                     'sale_batch'           => isset($invoice['sale_batch']) ? $invoice['sale_batch'] : '',
                     'sale_expire_month'    => isset($invoice['sale_expire_month']) ? $invoice['sale_expire_month'] : '',

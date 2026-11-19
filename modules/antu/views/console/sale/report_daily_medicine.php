@@ -116,6 +116,9 @@ if (empty($total_sum) && !empty($medicine_data)) {
                                 <span style="font-weight: 600; color: #334155;">
                                     <?= !empty($value['customer_name']) ? htmlspecialchars($value['customer_name']) : '<span style="color: #94a3b8; font-weight: normal;">Walk-in</span>' ?>
                                 </span>
+                                <?php if (!empty($value['customer_contact'])): ?>
+                                    <div style="font-size: 11px; color: #64748b;"><i class="fa fa-phone" style="font-size: 10px;"></i> <?= htmlspecialchars($value['customer_contact']) ?></div>
+                                <?php endif; ?>
                             </td>
                             <td>
                                 <span style="font-weight: 600; color: #0f172a;">
