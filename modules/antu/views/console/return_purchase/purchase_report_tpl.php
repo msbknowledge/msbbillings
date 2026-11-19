@@ -1,157 +1,377 @@
+<style>
+/* Modern styling for Purchase Return Report in AdminLTE Console Layout */
+.report-header-card {
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    margin-bottom: 16px;
+    border: 1px solid #e2e8f0;
+}
+.report-title {
+    font-size: 17px !important;
+    font-weight: 700 !important;
+    color: #0f172a;
+    margin: 0 0 4px 0 !important;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.report-filter-bar {
+    background: #f8fafc;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    padding: 14px 16px 6px 16px;
+    margin-bottom: 18px;
+}
+.filter-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #475569;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+    display: block;
+}
+.kpi-card {
+    background: #fff;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    padding: 14px 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.kpi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+.kpi-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    margin-right: 14px;
+    flex-shrink: 0;
+}
+.kpi-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+}
+.kpi-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.2;
+}
 
-                           
-                            <script>
-                                var reqst = null;
-                                $(document).ready(function () {
-                                    $('#report_sub').click(function () {
-                                        reqst = $.post("<?= base_url() ?>console/return_purchase/purchases_report/", $('form').serialize(), function (resp) {
-                                            $(".ajax_resp").html(resp);
-                                            console.log(resp);
-                                            $('div#container').hide();
-                                        });
-                                    });
-                                    $('div#container').hide();
+/* Table Card */
+.table-card {
+    background: #fff;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+.table-card-header {
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.table-card-title {
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    color: #1e293b;
+    margin: 0 !important;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.gst-table th {
+    background: #f1f5f9 !important;
+    color: #334155 !important;
+    font-weight: 700 !important;
+    font-size: 11px !important;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    border-top: none !important;
+    padding: 10px 12px !important;
+    vertical-align: middle !important;
+}
+.gst-table td {
+    font-size: 12px !important;
+    padding: 9px 12px !important;
+    vertical-align: middle !important;
+    color: #1e293b;
+}
+.gst-table tbody tr:hover {
+    background-color: #f8fafc !important;
+}
+.gst-table tfoot td {
+    background: #e2e8f0 !important;
+    font-weight: 700 !important;
+    font-size: 12px !important;
+    color: #0f172a !important;
+    border-top: 2px solid #cbd5e1 !important;
+    padding: 10px 12px !important;
+}
 
+/* Print Styles */
+@media print {
+    body, .wrapper, .content-wrapper, .content, #content {
+        background: #fff !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+    }
+    .main-header, .main-sidebar, .content-header, .main-footer, .breadcrumb,
+    .report-filter-bar, .report-actions, .no-print {
+        display: none !important;
+    }
+    .print-only {
+        display: block !important;
+    }
+    .table-card, .kpi-card {
+        border: 1px solid #cbd5e1 !important;
+        box-shadow: none !important;
+        margin-bottom: 12px !important;
+    }
+    .table-responsive {
+        overflow: visible !important;
+    }
+    .gst-table th, .gst-table td {
+        border: 1px solid #94a3b8 !important;
+        font-size: 10px !important;
+        padding: 4px 6px !important;
+    }
+}
+.print-only {
+    display: none;
+}
+</style>
 
+<!-- Print-Only Header -->
+<div class="print-only" style="text-align: center; margin-bottom: 20px; border-bottom: 2px solid #0f172a; padding-bottom: 10px;">
+    <h2 style="font-size: 20px; font-weight: bold; margin: 0 0 5px 0; color: #0f172a;">Purchase Return Billing Report</h2>
+    <p style="font-size: 12px; color: #475569; margin: 0;">Period: <strong class="print-start-date"><?= !empty($start) ? htmlspecialchars($start) : '-' ?></strong> to <strong class="print-end-date"><?= !empty($end) ? htmlspecialchars($end) : '-' ?></strong></p>
+</div>
 
-                                });
+<!-- Main Report Container -->
+<div class="report-wrapper">
+    <!-- Top Header Card -->
+    <div class="report-header-card" style="padding: 14px 18px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+            <div>
+                <h1 class="report-title">
+                    <i class="fa fa-undo text-warning"></i> Purchase Return Report
+                </h1>
+                <span style="font-size: 12px; color: #64748b; display: inline-block;">
+                    Detailed record of purchase returns, expiry returns, damaged stock, and supplier adjustments
+                </span>
+            </div>
+            <div class="report-actions" style="display: flex; gap: 8px; align-items: center;">
+                <a href="<?= console_url('return_purchase/purchases_report_export'); ?>?start=<?= !empty($start) ? urlencode($start) : '' ?>&end=<?= !empty($end) ? urlencode($end) : '' ?>&supplier_name=<?= !empty($supplier_name) ? urlencode($supplier_name) : '' ?>&return_purchase_type=<?= !empty($return_purchase_type) ? urlencode($return_purchase_type) : '' ?>&return_purchase_medicine=<?= !empty($return_purchase_medicine) ? urlencode($return_purchase_medicine) : '' ?>&return_purchase_Batch=<?= !empty($return_purchase_Batch) ? urlencode($return_purchase_Batch) : '' ?>&return_purchase_ref=<?= !empty($return_purchase_ref) ? urlencode($return_purchase_ref) : '' ?>&return_purchase_entry_number=<?= !empty($return_purchase_entry_number) ? urlencode($return_purchase_entry_number) : '' ?>" 
+                   id="btn_export_excel" class="btn btn-success btn-sm" style="font-weight: 600; border-radius: 4px;">
+                    <i class="fa fa-file-excel-o"></i> Export to Excel
+                </a>
+                <button type="button" onclick="window.print();" class="btn btn-default btn-sm" style="font-weight: 600; border-radius: 4px; border-color: #cbd5e1;">
+                    <i class="fa fa-print"></i> Print Report
+                </button>
+            </div>
+        </div>
+    </div>
 
-
-
-                            </script>
-
-
-        <div class="index-wrapper">
-         <div class="row-fluid sortable search_box ui-sortable">
-            <div class="box span12">
-                <div class="box-header well" data-original-title="">
-                    <!--<h2><i class="icon-search"></i>Medicine Shortage</h2>-->
-                    <!--<div class="box-icon">-->
-                    <!--    <a href="#" class="btn btn-minimize btn-round"><i class="icon-chevron-up"></i></a>-->
-                    <!--    <a href="#" class="btn btn-close btn-round"><i class="icon-remove"></i></a>-->
-                    <!--</div>-->
+    <!-- Filter Bar Card -->
+    <div class="report-filter-bar no-print">
+        <form id="returnPurchaseFilterForm" method="post" action="<?= console_url('return_purchase/purchases_report') ?>" style="margin: 0;">
+            <div class="row">
+                <div class="col-md-3 col-sm-6" style="margin-bottom: 10px;">
+                    <label class="filter-label">Supplier Name</label>
+                    <div class="input-group" style="width: 100%;">
+                        <span class="input-group-addon" style="background: #fff; border-color: #cbd5e1;"><i class="fa fa-user"></i></span>
+                        <input type="text" name="supplier_name" id="supplier_name" list="supplier_list" value="<?= !empty($supplier_name) ? htmlspecialchars($supplier_name) : '' ?>" class="form-control input-sm" placeholder="Search supplier..." style="border-color: #cbd5e1;">
+                        <datalist id="supplier_list">
+                            <?php if (!empty($supplier)): ?>
+                                <?php foreach ($supplier as $val): ?>
+                                    <option value="<?= htmlspecialchars($val['supplier_name']) ?>">
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </datalist>
+                    </div>
                 </div>
-                <div class="box-content">
-                        <h1 style="color:black; text-align:center;">Purchase Return Billing Sheet</h1>
-                      
-                                <!--<form method="post" onsubmit="return false">-->
-                                <!--    <div class="controls controls-row">-->
-                                <!--        <div class="form-group col-sm-3">-->
-                                <!--        <label for="supplier_name">Supplier:</label>-->
-                                <!--        <select name="supplier_name" class="supplier_id form-control">-->
-                                <!--            <option value="">--supplier name--</option>-->
-                                <!--            <?php foreach ($supplier as $val) { ?>-->
-                                <!--                <option value="<?= $val['supplier_name'] ?>"><?= $val['supplier_name'] ?></option> -->
-                                <!--            <?php } ?>-->
-                                <!--        </select>-->
-                                <!--        </div>-->
-                                <!--        <div class="form-group col-sm-3">-->
-                                <!--        <label for="return_purchase_type">Type:</label>-->
-                                <!--        <select name="return_purchase_type" class="return_purchase_type form-control">-->
-                                <!--            <option value="">--return purchase type--</option>-->
-                                <!--            <option value="expiry">Expiry</option>-->
-                                <!--            <option value="extra">Extra</option>-->
-                                <!--            <option value="damage">Damage</option> -->
-                                <!--        </select>-->
-                                <!--        </div>-->
-                                <!--        <div class="form-group col-sm-3">-->
-                                <!--        <label for="return_purchase_medicine">Medicine:</label>-->
-                                <!--        <input type="text" name="return_purchase_medicine" id="return_purchase_medicine" placeholder="medicine name" class="return_purchase_medicine form-control"/>-->
-                                <!--        </div>-->
-                                <!--        <div class="form-group col-sm-3">-->
-                                <!--        <label for="return_purchase_Batch">Batch:</label>-->
-                                <!--        <input type="text" name="return_purchase_Batch" id="return_purchase_Batch" placeholder="return purchase batch" class="form-control"/>-->
-                                <!--        </div>-->
-                                <!--         </div>-->
-                                <!--        <div class="form-group col-sm-3">-->
-                                <!--        <label for="return_purchase_ref">Reference:</label>-->
-                                <!--        <input type="text" name ="return_purchase_ref"id="return_purchase_ref" placeholder="reference" class="form-control"/>-->
-                                <!--        </div>-->
-                                <!--        <div class="form-group col-sm-3">-->
-                                <!--        <label for="datepicker">Start Date:</label>-->
-                                <!--        <input typex="text" type="date-local" value="<?=  date('Y-m-d',strtotime("-1 month")) ?>" id="start_date" name="start" class="datepicker form-control">-->
-                                <!--        </div>-->
-                                <!--        <div class="form-group col-sm-3">-->
-                                <!--        <label for="end_date">End Date:</label>-->
-                                <!--        <input typex="text" type="date-local" value="<?=  date('Y-m-d') ?>" id="end_date" name="end" class="datepicker form-control">-->
-                                <!--        </div>-->
-                                <!--        <div class="form-group col-sm-3">-->
-                                <!--        <button id="report_sub" class="btn btn-info" style=" margin-top: 9%;">SEARCH</button>-->
-                                <!--        </div>-->
-                                <!--    </div>-->
-                                <!--</form>-->
-<form method="post" onsubmit="return false">
-  <div class="form-row">
-    <div class="form-group col-md-6">
-      <label for="supplier_name">Supplier:</label>
-        <select name="supplier_name" class="supplier_id form-control">
-            <option value="">--supplier name--</option>
-            <?php foreach ($supplier as $val) { ?>
-                <option value="<?= $val['supplier_name'] ?>"><?= $val['supplier_name'] ?></option> 
-            <?php } ?>
-        </select>
+                <div class="col-md-2 col-sm-6" style="margin-bottom: 10px;">
+                    <label class="filter-label">Return Type</label>
+                    <div class="input-group" style="width: 100%;">
+                        <span class="input-group-addon" style="background: #fff; border-color: #cbd5e1;"><i class="fa fa-tag"></i></span>
+                        <select name="return_purchase_type" id="return_purchase_type" class="form-control input-sm" style="border-color: #cbd5e1;">
+                            <option value="">-- All Types --</option>
+                            <option value="expiry" <?= (!empty($return_purchase_type) && strtolower($return_purchase_type) == 'expiry') ? 'selected' : '' ?>>Expiry</option>
+                            <option value="extra" <?= (!empty($return_purchase_type) && strtolower($return_purchase_type) == 'extra') ? 'selected' : '' ?>>Extra</option>
+                            <option value="damage" <?= (!empty($return_purchase_type) && strtolower($return_purchase_type) == 'damage') ? 'selected' : '' ?>>Damage</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-6" style="margin-bottom: 10px;">
+                    <label class="filter-label">Medicine Name</label>
+                    <div class="input-group" style="width: 100%;">
+                        <span class="input-group-addon" style="background: #fff; border-color: #cbd5e1;"><i class="fa fa-medkit"></i></span>
+                        <input type="text" name="return_purchase_medicine" id="return_purchase_medicine" value="<?= !empty($return_purchase_medicine) ? htmlspecialchars($return_purchase_medicine) : '' ?>" class="form-control input-sm" placeholder="Medicine name..." style="border-color: #cbd5e1;">
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-6" style="margin-bottom: 10px;">
+                    <label class="filter-label">Batch #</label>
+                    <div class="input-group" style="width: 100%;">
+                        <span class="input-group-addon" style="background: #fff; border-color: #cbd5e1;"><i class="fa fa-barcode"></i></span>
+                        <input type="text" name="return_purchase_Batch" id="return_purchase_Batch" value="<?= !empty($return_purchase_Batch) ? htmlspecialchars($return_purchase_Batch) : '' ?>" class="form-control input-sm" placeholder="Batch..." style="border-color: #cbd5e1;">
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6" style="margin-bottom: 10px;">
+                    <label class="filter-label">Reference / Bill #</label>
+                    <div class="input-group" style="width: 100%;">
+                        <span class="input-group-addon" style="background: #fff; border-color: #cbd5e1;"><i class="fa fa-file-text-o"></i></span>
+                        <input type="text" name="return_purchase_ref" id="return_purchase_ref" value="<?= !empty($return_purchase_ref) ? htmlspecialchars($return_purchase_ref) : '' ?>" class="form-control input-sm" placeholder="Reference note / bill #..." style="border-color: #cbd5e1;">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3 col-sm-6" style="margin-bottom: 10px;">
+                    <label class="filter-label">Return Entry / Voucher #</label>
+                    <div class="input-group" style="width: 100%;">
+                        <span class="input-group-addon" style="background: #fff; border-color: #cbd5e1;"><i class="fa fa-hashtag"></i></span>
+                        <input type="text" name="return_purchase_entry_number" id="return_purchase_entry_number" value="<?= !empty($return_purchase_entry_number) ? htmlspecialchars($return_purchase_entry_number) : '' ?>" class="form-control input-sm" placeholder="Entry / Voucher #..." style="border-color: #cbd5e1;">
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6" style="margin-bottom: 10px;">
+                    <label class="filter-label">Start Date</label>
+                    <div class="input-group" style="width: 100%;">
+                        <span class="input-group-addon" style="background: #fff; border-color: #cbd5e1;"><i class="fa fa-calendar"></i></span>
+                        <input type="date" name="start" id="start_date" value="<?= !empty($start) ? $start : date('Y-m-d', strtotime('-1 month')) ?>" class="form-control input-sm" style="border-color: #cbd5e1;">
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6" style="margin-bottom: 10px;">
+                    <label class="filter-label">End Date</label>
+                    <div class="input-group" style="width: 100%;">
+                        <span class="input-group-addon" style="background: #fff; border-color: #cbd5e1;"><i class="fa fa-calendar"></i></span>
+                        <input type="date" name="end" id="end_date" value="<?= !empty($end) ? $end : date('Y-m-d') ?>" class="form-control input-sm" style="border-color: #cbd5e1;">
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6" style="margin-bottom: 10px;">
+                    <label class="filter-label" style="opacity: 0;">Actions</label>
+                    <div style="display: flex; gap: 8px;">
+                        <button type="submit" id="btn_filter" class="btn btn-primary btn-sm" style="font-weight: 600; width: 50%; border-radius: 4px;" title="Apply Filter">
+                            <i class="fa fa-search"></i> Filter
+                        </button>
+                        <button type="button" id="btn_reset" class="btn btn-default btn-sm" style="font-weight: 600; width: 50%; border-radius: 4px; border-color: #cbd5e1;" title="Reset filters">
+                            <i class="fa fa-refresh"></i> Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
-    <div class="form-group col-md-6">
-       <label for="return_purchase_type">Type:</label>
-        <select name="return_purchase_type" class="return_purchase_type form-control">
-            <option value="">--return purchase type--</option>
-            <option value="expiry">Expiry</option>
-            <option value="extra">Extra</option>
-            <option value="damage">Damage</option> 
-        </select>
-    </div>
-  </div>
-  <div class="form-row">
-  <div class="form-group col-md-6">
-     <label for="return_purchase_medicine">Medicine:</label>
-    <input type="text" name="return_purchase_medicine" id="return_purchase_medicine" placeholder="medicine name" class="return_purchase_medicine form-control"/>
-                                       
-  </div>
-  <div class="form-group col-md-6">
-     <label for="return_purchase_Batch">Batch:</label>
-    <input type="text" name="return_purchase_Batch" id="return_purchase_Batch" placeholder="return purchase batch" class="form-control"/>
-  </div>
-    </div>
-  <div class="form-row">
-    <div class="form-group col-md-4">
-      <label for="return_purchase_ref">Reference:</label>
-        <input type="text" name ="return_purchase_ref"id="return_purchase_ref" placeholder="reference" class="form-control"/>
-    </div>
-    <div class="form-group col-md-4">
-     <label for="datepicker">Start Date:</label>
-    <input typex="text" type="date-local" value="<?=  date('Y-m-d',strtotime("-1 month")) ?>" id="start_date" name="start" class="datepicker form-control">
-    </div>
-    <div class="form-group col-md-4">
-      <label for="end_date">End Date:</label>
-    <input typex="text" type="date-local" value="<?=  date('Y-m-d') ?>" id="end_date" name="end" class="datepicker form-control">
-    </div>
-  </div>
- <button id="report_sub" class="btn btn-info">SEARCH</button>
-</form>
-                        <div class="ajax_resp">Choose Filter To Generate Data</div>
-                    </div>   
-                      </div>
-                        </div>
-                        </div>
-    <!--<script src="https://code.jquery.com/jquery-1.12.4.js"></script>-->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-     <script>
-                                $(function () {
-                               
-                            
-                             $("[name='start_date']").datepicker();
-                            $("[name='start_date']").datepicker("option", "dateFormat", 'dd-MM-yy');
-                                });
-                            </script>
-                <script type="text/javascript">
-                $("#site_logo").on("click",function(){
-                    window.location.href = "/console/";
-                })
-                // function googleTranslateElementInit() {
-                //   new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
-                // } 
-                </script>
 
-                <!-- <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script> -->
-      
+    <!-- Results Container (loaded with initial data and updated via AJAX) -->
+    <div id="report_results_container">
+        <?php $this->load->view('console/return_purchase/purchase_ajax_report_tpl'); ?>
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    var exportBaseUrl = '<?= console_url("return_purchase/purchases_report_export"); ?>';
+    var ajaxUrl = '<?= console_url("return_purchase/purchases_report"); ?>';
+
+    function updateExportLink() {
+        var start = $('#start_date').val();
+        var end = $('#end_date').val();
+        var supplier_name = $('#supplier_name').val();
+        var return_purchase_type = $('#return_purchase_type').val();
+        var return_purchase_medicine = $('#return_purchase_medicine').val();
+        var return_purchase_Batch = $('#return_purchase_Batch').val();
+        var return_purchase_ref = $('#return_purchase_ref').val();
+        var return_purchase_entry_number = $('#return_purchase_entry_number').val();
+
+        var params = [];
+        if (start) params.push('start=' + encodeURIComponent(start));
+        if (end) params.push('end=' + encodeURIComponent(end));
+        if (supplier_name) params.push('supplier_name=' + encodeURIComponent(supplier_name));
+        if (return_purchase_type) params.push('return_purchase_type=' + encodeURIComponent(return_purchase_type));
+        if (return_purchase_medicine) params.push('return_purchase_medicine=' + encodeURIComponent(return_purchase_medicine));
+        if (return_purchase_Batch) params.push('return_purchase_Batch=' + encodeURIComponent(return_purchase_Batch));
+        if (return_purchase_ref) params.push('return_purchase_ref=' + encodeURIComponent(return_purchase_ref));
+        if (return_purchase_entry_number) params.push('return_purchase_entry_number=' + encodeURIComponent(return_purchase_entry_number));
+
+        var fullUrl = exportBaseUrl + (params.length ? '?' + params.join('&') : '');
+        $('#btn_export_excel').attr('href', fullUrl);
+        $('.print-start-date').text(start || '-');
+        $('.print-end-date').text(end || '-');
+    }
+
+    function doFilter() {
+        updateExportLink();
+        var $container = $('#report_results_container');
+        $container.html('<div style="text-align: center; padding: 45px;"><i class="fa fa-spinner fa-spin fa-2x text-primary" style="color: #35aa47;"></i><p style="margin-top: 12px; color: #64748b; font-size: 13px; font-weight: 500;">Loading report data, please wait...</p></div>');
+
+        var postData = {
+            key: 'ajax_resp',
+            start: $('#start_date').val(),
+            end: $('#end_date').val(),
+            supplier_name: $('#supplier_name').val(),
+            return_purchase_type: $('#return_purchase_type').val(),
+            return_purchase_medicine: $('#return_purchase_medicine').val(),
+            return_purchase_Batch: $('#return_purchase_Batch').val(),
+            return_purchase_ref: $('#return_purchase_ref').val(),
+            return_purchase_entry_number: $('#return_purchase_entry_number').val()
+        };
+
+        $.post(ajaxUrl, postData, function(response) {
+            $container.html(response);
+        }).fail(function() {
+            $container.html('<div class="alert alert-danger" style="margin: 20px 0;"><i class="fa fa-exclamation-triangle"></i> Failed to load report data. Please check connection and try again.</div>');
+        });
+    }
+
+    $('#returnPurchaseFilterForm').on('submit', function(e) {
+        e.preventDefault();
+        doFilter();
+    });
+
+    $('#start_date, #end_date, #return_purchase_type').on('change', function() {
+        doFilter();
+    });
+
+    var debounceTimer = null;
+    $('#supplier_name, #return_purchase_medicine, #return_purchase_Batch, #return_purchase_ref, #return_purchase_entry_number').on('keyup', function() {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(function() {
+            doFilter();
+        }, 400);
+    });
+
+    $('#btn_reset').on('click', function() {
+        $('#supplier_name').val('');
+        $('#return_purchase_type').val('');
+        $('#return_purchase_medicine').val('');
+        $('#return_purchase_Batch').val('');
+        $('#return_purchase_ref').val('');
+        $('#return_purchase_entry_number').val('');
+        $('#start_date').val('<?= date("Y-m-d", strtotime("-1 month")) ?>');
+        $('#end_date').val('<?= date("Y-m-d") ?>');
+        doFilter();
+    });
+});
+</script>
