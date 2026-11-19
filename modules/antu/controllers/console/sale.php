@@ -1656,69 +1656,223 @@ expiry_returns.expiry_return_date,expiry_returns.expiry_return_ref,
 
     public function customer_payment_report()
     {
-        $post_data = $this->input->post();
-        $period_start = $this->input->post('start');
-        $period_end = $this->input->post('end');
-        $customer_name = $this->input->post('customer_name');
-        $alldata = null;
-        $customer_names = $this->db->query("SELECT * FROM customers")->result_array();
+        $is_ajax = $this->input->is_ajax_request() || ($this->input->post('key') == 'ajax_resp') || $this->input->get('ajax');
 
-        // $sql = "SELECT sales.sale_date ,sales.sale_invoice,sales.sale_total,sales.sale_total_paid,customers.customer_name FROM sales JOIN customers ON sales.sale_customer=customers.customer_ID  WHERE 1 = 1 ";
-
-        // if (!empty($period_start)) {
-        //     $sql .= "AND sales.sale_date >='" . $period_start . "'";
-        // }
-        // if (!empty($period_end)) {
-        //     $sql .= "AND sales.sale_date<='" . $period_end . "'";
-        // }
-
-        // if (!empty($customer_name)) {
-        //     $sql .= "AND customer_name like '%" . $customer_name . "%'";
-        // }
-        // $sale_data = $this->db->query($sql)->result_array();
-
-        //  //pr($sale_data);
-        // foreach ($sale_data as $k => $v) {
-        //     $alldata[$v['sale_date']][] = array(
-        //         'date' => $v['sale_date'],
-        //         'customer' => $v['customer_name'],
-        //         'debit' => $v['sale_total'],
-        //         'credit' => 0,
-        //         'note' => 'sale',
-        //         'number' => $v['sale_invoice']
-        //     );
-        // }
-
-        $sql = "SELECT customer_payments.customer_payment_invoice,customer_payments.customer_payment_date,customer_payments.customer_payment_paid_amount,customers.customer_name FROM customer_payments JOIN customers ON customer_payments.customer_payment_customer=customers.customer_ID WHERE 1 = 1 ";
-        //print_r($sql);
-        if (!empty($period_start)) {
-            $sql .= "AND customer_payments.customer_payment_date >='" . $period_start . "'";
-        }
-        if (!empty($period_end)) {
-            $sql .= "AND customer_payments.customer_payment_date <='" . $period_end . "'";
+        $period_start  = $this->input->get_post('start');
+        $period_end    = $this->input->get_post('end');
+        $customer_name = $this->input->get_post('customer_name');
+        $trans_type    = $this->input->get_post('trans_type');
+        if (empty($trans_type)) {
+            $trans_type = 'all';
         }
 
-        if (!empty($customer_name)) {
-            $sql .= "AND customer_name like '%" . $customer_name . "%'";
+        if (empty($period_start) && empty($period_end) && !$this->input->post()) {
+            $period_start = date('Y-m-d', strtotime('-1 month'));
+            $period_end   = date('Y-m-d');
         }
-        $payment_data = $this->db->query($sql)->result_array();
-        foreach ($payment_data as $k => $v) {
-            $alldata[$v['customer_payment_date']][] = array(
-                'date' => $v['customer_payment_date'],
-                'customer' => $v['customer_name'],
-                'debit' => 0,
-                'credit' => $v['customer_payment_paid_amount'],
-                'note' => 'payment',
-                'number' => $v['customer_payment_invoice']
+
+        $report_data = $this->_get_customer_payment_report_data($period_start, $period_end, $customer_name, $trans_type);
+        $report_data['start']         = $period_start;
+        $report_data['end']           = $period_end;
+        $report_data['customer_name'] = !empty($customer_name) ? $customer_name : '';
+        $report_data['trans_type']    = $trans_type;
+
+        if ($is_ajax) {
+            $this->load->view('console/sale/report_daily_customer', $report_data);
+        } else {
+            $this->render($report_data, 'customer_payment_report_tpl');
+        }
+    }
+
+    private function _get_customer_payment_report_data($period_start = null, $period_end = null, $customer_name = null, $trans_type = 'all')
+    {
+        $records = array();
+        $total_debit = 0;
+        $total_credit = 0;
+
+        // 1. Fetch Sales (Debit) if requested
+        if ($trans_type == 'all' || $trans_type == 'sale') {
+            $sql = "SELECT sales.sale_id, sales.sale_date, sales.sale_invoice, sales.sale_total, sales.sale_note, "
+                 . "customers.customer_name, customers.customer_contact, customers.customer_gst "
+                 . "FROM `sales` "
+                 . "JOIN `customers` ON sales.sale_customer = customers.customer_ID "
+                 . "WHERE (sales.sale_return = 0 OR sales.sale_return IS NULL) ";
+
+            if (!empty($period_start) && !empty($period_end)) {
+                $sql .= " AND DATE_FORMAT(sales.sale_date, '%Y-%m-%d') BETWEEN " . $this->db->escape($period_start) . " AND " . $this->db->escape($period_end);
+            } elseif (!empty($period_start)) {
+                $sql .= " AND DATE_FORMAT(sales.sale_date, '%Y-%m-%d') >= " . $this->db->escape($period_start);
+            } elseif (!empty($period_end)) {
+                $sql .= " AND DATE_FORMAT(sales.sale_date, '%Y-%m-%d') <= " . $this->db->escape($period_end);
+            }
+
+            if (!empty($customer_name)) {
+                $sql .= " AND customers.customer_name LIKE " . $this->db->escape('%' . $customer_name . '%');
+            }
+
+            $sales_res = $this->db->query($sql)->result_array();
+            if (!empty($sales_res)) {
+                foreach ($sales_res as $s) {
+                    $amt = (float)$s['sale_total'];
+                    $total_debit += $amt;
+                    $records[] = array(
+                        'date'             => $s['sale_date'],
+                        'invoice'          => $s['sale_invoice'],
+                        'customer_name'    => $s['customer_name'],
+                        'customer_contact' => isset($s['customer_contact']) ? $s['customer_contact'] : '',
+                        'customer_gst'     => isset($s['customer_gst']) ? $s['customer_gst'] : '',
+                        'type'             => 'sale',
+                        'debit'            => $amt,
+                        'credit'           => 0,
+                        'note'             => !empty($s['sale_note']) ? $s['sale_note'] : 'Sale Invoice',
+                    );
+                }
+            }
+        }
+
+        // 2. Fetch Payments (Credit) if requested
+        if ($trans_type == 'all' || $trans_type == 'payment') {
+            $sql = "SELECT customer_payments.customer_payment_id, customer_payments.customer_payment_invoice, "
+                 . "customer_payments.customer_payment_date, customer_payments.customer_payment_paid_amount, "
+                 . "customer_payments.customer_payment_note, customers.customer_name, customers.customer_contact, customers.customer_gst "
+                 . "FROM `customer_payments` "
+                 . "JOIN `customers` ON customer_payments.customer_payment_customer = customers.customer_ID "
+                 . "WHERE 1 = 1 ";
+
+            if (!empty($period_start) && !empty($period_end)) {
+                $sql .= " AND DATE_FORMAT(customer_payments.customer_payment_date, '%Y-%m-%d') BETWEEN " . $this->db->escape($period_start) . " AND " . $this->db->escape($period_end);
+            } elseif (!empty($period_start)) {
+                $sql .= " AND DATE_FORMAT(customer_payments.customer_payment_date, '%Y-%m-%d') >= " . $this->db->escape($period_start);
+            } elseif (!empty($period_end)) {
+                $sql .= " AND DATE_FORMAT(customer_payments.customer_payment_date, '%Y-%m-%d') <= " . $this->db->escape($period_end);
+            }
+
+            if (!empty($customer_name)) {
+                $sql .= " AND customers.customer_name LIKE " . $this->db->escape('%' . $customer_name . '%');
+            }
+
+            $pay_res = $this->db->query($sql)->result_array();
+            if (!empty($pay_res)) {
+                foreach ($pay_res as $p) {
+                    $amt = (float)$p['customer_payment_paid_amount'];
+                    $total_credit += $amt;
+                    $records[] = array(
+                        'date'             => $p['customer_payment_date'],
+                        'invoice'          => $p['customer_payment_invoice'],
+                        'customer_name'    => $p['customer_name'],
+                        'customer_contact' => isset($p['customer_contact']) ? $p['customer_contact'] : '',
+                        'customer_gst'     => isset($p['customer_gst']) ? $p['customer_gst'] : '',
+                        'type'             => 'payment',
+                        'debit'            => 0,
+                        'credit'           => $amt,
+                        'note'             => !empty($p['customer_payment_note']) ? $p['customer_payment_note'] : 'Customer Payment',
+                    );
+                }
+            }
+        }
+
+        // Sort records by date DESC
+        usort($records, function ($a, $b) {
+            return strtotime($b['date']) - strtotime($a['date']);
+        });
+
+        // Group into $alldata format by date as well for backward compatibility
+        $alldata = array();
+        foreach ($records as $r) {
+            $alldata[$r['date']][] = array(
+                'date'             => $r['date'],
+                'customer'         => $r['customer_name'],
+                'customer_contact' => $r['customer_contact'],
+                'customer_gst'     => $r['customer_gst'],
+                'debit'            => $r['debit'],
+                'credit'           => $r['credit'],
+                'note'             => $r['note'],
+                'number'           => $r['invoice'],
+                'type'             => $r['type'],
             );
         }
-        // pr($alldata, 1);
-        if ($this->input->post('key')) {
-            $this->load->view('console/sale/report_daily_customer', array('alldata' => $alldata, 'start' => $period_start, 'end' => $period_end, 'customer' => $customer_names));
-        } else {
 
-            $this->load->view('console/sale/report_daily_customer_tpl', array('alldata' => $alldata, 'start' => $period_start, 'end' => $period_end, 'customer' => $customer_names));
+        return array(
+            'records'      => $records,
+            'alldata'      => $alldata,
+            'total_items'  => count($records),
+            'total_debit'  => $total_debit,
+            'total_credit' => $total_credit,
+            'balance'      => $total_debit - $total_credit,
+        );
+    }
+
+    public function customer_payment_report_export()
+    {
+        $period_start  = $this->input->get('start');
+        $period_end    = $this->input->get('end');
+        $customer_name = $this->input->get('customer_name');
+        $trans_type    = $this->input->get('trans_type');
+        if (empty($trans_type)) {
+            $trans_type = 'all';
         }
+
+        if (empty($period_start) && empty($period_end)) {
+            $period_start = date('Y-m-d', strtotime('-1 month'));
+            $period_end   = date('Y-m-d');
+        }
+
+        $rep = $this->_get_customer_payment_report_data($period_start, $period_end, $customer_name, $trans_type);
+        $records = $rep['records'];
+
+        $objPHPExcel = new PHPExcel();
+        $objPHPExcel->setActiveSheetIndex(0);
+
+        // Header row
+        $objPHPExcel->getActiveSheet()->SetCellValue('A1', 'Sl');
+        $objPHPExcel->getActiveSheet()->SetCellValue('B1', 'Date');
+        $objPHPExcel->getActiveSheet()->SetCellValue('C1', 'Customer Name');
+        $objPHPExcel->getActiveSheet()->SetCellValue('D1', 'Contact');
+        $objPHPExcel->getActiveSheet()->SetCellValue('E1', 'Type');
+        $objPHPExcel->getActiveSheet()->SetCellValue('F1', 'Invoice / Ref #');
+        $objPHPExcel->getActiveSheet()->SetCellValue('G1', 'Debit / Sale (₹)');
+        $objPHPExcel->getActiveSheet()->SetCellValue('H1', 'Credit / Paid (₹)');
+        $objPHPExcel->getActiveSheet()->SetCellValue('I1', 'Note');
+
+        $rowCount = 2;
+        $total_debit = 0;
+        $total_credit = 0;
+
+        if (!empty($records)) {
+            $counter = 1;
+            foreach ($records as $list) {
+                $objPHPExcel->getActiveSheet()->SetCellValue('A' . $rowCount, $counter++);
+                $objPHPExcel->getActiveSheet()->SetCellValue('B' . $rowCount, $list['date']);
+                $objPHPExcel->getActiveSheet()->SetCellValue('C' . $rowCount, $list['customer_name']);
+                $objPHPExcel->getActiveSheet()->SetCellValue('D' . $rowCount, $list['customer_contact']);
+                $objPHPExcel->getActiveSheet()->SetCellValue('E' . $rowCount, strtoupper($list['type']));
+                $objPHPExcel->getActiveSheet()->SetCellValue('F' . $rowCount, $list['invoice']);
+                $objPHPExcel->getActiveSheet()->SetCellValue('G' . $rowCount, (float)$list['debit']);
+                $objPHPExcel->getActiveSheet()->SetCellValue('H' . $rowCount, (float)$list['credit']);
+                $objPHPExcel->getActiveSheet()->SetCellValue('I' . $rowCount, $list['note']);
+
+                $total_debit  += (float)$list['debit'];
+                $total_credit += (float)$list['credit'];
+                $rowCount++;
+            }
+        }
+
+        // Footer totals
+        $objPHPExcel->getActiveSheet()->SetCellValue('A' . $rowCount, 'TOTAL');
+        $objPHPExcel->getActiveSheet()->SetCellValue('G' . $rowCount, $total_debit);
+        $objPHPExcel->getActiveSheet()->SetCellValue('H' . $rowCount, $total_credit);
+
+        $rowCount++;
+        $objPHPExcel->getActiveSheet()->SetCellValue('A' . $rowCount, 'NET BALANCE (DEBIT - CREDIT)');
+        $objPHPExcel->getActiveSheet()->SetCellValue('H' . $rowCount, $total_debit - $total_credit);
+
+        $filename = "customer_payment_report_" . date("Y-m-d_H-i-s") . ".csv";
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'CSV');
+        $objWriter->save('php://output');
+        exit;
     }
     
     
