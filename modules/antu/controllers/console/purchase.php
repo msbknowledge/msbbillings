@@ -688,47 +688,219 @@ class Purchase extends MY_Controller {
     }
 
     public function daily_purchase_medicine() {
-        $post_data = $this->input->post();
-        $period_start = $this->input->post('start');
-        $period_end = $this->input->post('end');
-        $purchase_invoice = $this->input->post('purchase_invoice');
-        $medicine_name = $this->input->post('medicine_name');
+        $is_ajax = $this->input->is_ajax_request() || ($this->input->post('key') == 'ajax_resp') || $this->input->get('ajax');
 
-        $sql = "SELECT medicines.medicine_name,purchases.purchase_date,purchases.purchase_batch,purchases.purchase_quantity,purchases.purchase_invoice FROM `purchases` join `medicines` on purchases.purchase_medicine_id=medicines.medicine_id  WHERE 1 = 1";
+        $period_start     = $this->input->get_post('start');
+        $period_end       = $this->input->get_post('end');
+        $purchase_invoice = $this->input->get_post('purchase_invoice');
+        $medicine_name    = $this->input->get_post('medicine_name');
+        $supplier_name    = $this->input->get_post('supplier_name');
+        $purchase_batch   = $this->input->get_post('purchase_batch');
 
-        if (!empty($period_start)) {
-            $sql .= " AND purchase_date >='" . $period_start . "'";
+        // Default to past 1 month if GET without dates
+        if ($period_start === NULL && $period_end === NULL && !$this->input->post()) {
+            $period_start = date('Y-m-d', strtotime('-1 month'));
+            $period_end   = date('Y-m-d');
         }
-        if (!empty($period_end)) {
-            $sql .= " AND purchase_date<='" . $period_end . "'";
+
+        $report_data = $this->_get_daily_purchase_medicine_data(
+            $period_start,
+            $period_end,
+            $purchase_invoice,
+            $medicine_name,
+            $supplier_name,
+            $purchase_batch
+        );
+
+        $report_data['start']            = $period_start;
+        $report_data['end']              = $period_end;
+        $report_data['purchase_invoice'] = !empty($purchase_invoice) ? $purchase_invoice : '';
+        $report_data['medicine_name']    = !empty($medicine_name) ? $medicine_name : '';
+        $report_data['supplier_name']    = !empty($supplier_name) ? $supplier_name : '';
+        $report_data['purchase_batch']   = !empty($purchase_batch) ? $purchase_batch : '';
+
+        if ($is_ajax) {
+            $this->load->view('console/purchase/purchase_daily_medicine', $report_data);
+        } else {
+            $this->render($report_data, 'purchase_daily_medicine_tpl');
+        }
+    }
+
+    private function _get_daily_purchase_medicine_data($period_start = null, $period_end = null, $purchase_invoice = null, $medicine_name = null, $supplier_name = null, $purchase_batch = null) {
+        $sql = "SELECT purchases.*, medicines.medicine_name, medicines.medicine_hsn, medicines.medicine_manufacturer, "
+             . "suppliers.supplier_name, suppliers.supplier_gst "
+             . "FROM `purchases` "
+             . "LEFT JOIN `medicines` ON purchases.purchase_medicine_id = medicines.medicine_id "
+             . "LEFT JOIN `suppliers` ON purchases.purchase_supplier = suppliers.supplier_id "
+             . "WHERE (purchases.purchase_return = 0 OR purchases.purchase_return IS NULL) ";
+
+        if (!empty($period_start) && !empty($period_end)) {
+            $sql .= " AND purchases.purchase_date BETWEEN " . $this->db->escape($period_start) . " AND " . $this->db->escape($period_end);
+        } elseif (!empty($period_start)) {
+            $sql .= " AND purchases.purchase_date >= " . $this->db->escape($period_start);
+        } elseif (!empty($period_end)) {
+            $sql .= " AND purchases.purchase_date <= " . $this->db->escape($period_end);
         }
 
         if (!empty($purchase_invoice)) {
-            $sql .= " AND purchase_invoice like '%" . $purchase_invoice . "%'";
+            $sql .= " AND purchases.purchase_invoice LIKE " . $this->db->escape('%' . $purchase_invoice . '%');
         }
         if (!empty($medicine_name)) {
-            $sql .= " AND medicine_name like '" . $medicine_name . "%'";
+            $sql .= " AND medicines.medicine_name LIKE " . $this->db->escape('%' . $medicine_name . '%');
         }
-        // $sql .= "GROUP BY purchase_invoice";
-//print_r($sql);
-        $purchase = $this->db->query($sql)->result_array();
-
-        $medicine_data = null;
-        foreach ($purchase as $key => $invoice) {
-            // pr($invoice);
-            $medicine_data[$key]['purchase_invoice'] = $invoice['purchase_invoice'];
-            $medicine_data[$key]['purchase_date'] = $invoice['purchase_date'];
-            $medicine_data[$key]['purchase_quantity'] = $invoice['purchase_quantity'];
-            $medicine_data[$key]['medicine_name'] = $invoice['medicine_name'];
-            $medicine_data[$key]['purchase_batch'] = $invoice['purchase_batch'];
+        if (!empty($supplier_name)) {
+            $sql .= " AND suppliers.supplier_name LIKE " . $this->db->escape('%' . $supplier_name . '%');
+        }
+        if (!empty($purchase_batch)) {
+            $sql .= " AND purchases.purchase_batch LIKE " . $this->db->escape('%' . $purchase_batch . '%');
         }
 
-        if ($this->input->post('key')) {
-            $this->load->view('console/purchase/purchase_daily_medicine', array('medicine_data' => $medicine_data, 'start' => $period_start, 'end' => $period_end));
-        } else {
+        $sql .= " ORDER BY purchases.purchase_date DESC, purchases.purchase_invoice DESC, purchases.purchase_id DESC";
 
-            $this->load->view('console/purchase/purchase_daily_medicine_tpl', array('medicine_data' => $medicine_data, 'start' => $period_start, 'end' => $period_end,));
+        $purchases = $this->db->query($sql)->result_array();
+
+        $medicine_data = array();
+        $total_amount = 0;
+        $total_quantity = 0;
+        $unique_invoices = array();
+        $unique_medicines = array();
+
+        if (!empty($purchases)) {
+            foreach ($purchases as $key => $invoice) {
+                $qty = (int)(isset($invoice['purchase_quantity']) ? $invoice['purchase_quantity'] : 0);
+                $amt = (float)(isset($invoice['purchase_total']) ? $invoice['purchase_total'] : 0);
+
+                $total_amount += $amt;
+                $total_quantity += $qty;
+
+                if (!empty($invoice['purchase_invoice'])) {
+                    $unique_invoices[$invoice['purchase_invoice']] = true;
+                }
+                if (!empty($invoice['medicine_name'])) {
+                    $unique_medicines[$invoice['medicine_name']] = true;
+                }
+
+                $medicine_data[$key] = array(
+                    'purchase_id'             => isset($invoice['purchase_id']) ? $invoice['purchase_id'] : '',
+                    'purchase_invoice'        => isset($invoice['purchase_invoice']) ? $invoice['purchase_invoice'] : '',
+                    'purchase_date'           => isset($invoice['purchase_date']) ? $invoice['purchase_date'] : '',
+                    'purchase_quantity'       => $qty,
+                    'purchase_free_quantity'  => isset($invoice['purchase_free_quantity']) ? $invoice['purchase_free_quantity'] : 0,
+                    'medicine_name'           => isset($invoice['medicine_name']) ? $invoice['medicine_name'] : '',
+                    'medicine_hsn'            => isset($invoice['medicine_hsn']) ? $invoice['medicine_hsn'] : '',
+                    'medicine_manufacturer'   => isset($invoice['medicine_manufacturer']) ? $invoice['medicine_manufacturer'] : '',
+                    'purchase_batch'          => isset($invoice['purchase_batch']) ? $invoice['purchase_batch'] : '',
+                    'purchase_expire_month'   => isset($invoice['purchase_expire_month']) ? $invoice['purchase_expire_month'] : '',
+                    'purchase_expire_year'    => isset($invoice['purchase_expire_year']) ? $invoice['purchase_expire_year'] : '',
+                    'purchase_mrp'            => isset($invoice['purchase_mrp']) ? $invoice['purchase_mrp'] : 0,
+                    'purchase_rate'           => isset($invoice['purchase_rate']) ? $invoice['purchase_rate'] : 0,
+                    'purchase_taxable'        => isset($invoice['purchase_taxable']) ? $invoice['purchase_taxable'] : 0,
+                    'purchase_total'          => $amt,
+                    'supplier_name'           => isset($invoice['supplier_name']) ? $invoice['supplier_name'] : '',
+                    'supplier_gst'            => isset($invoice['supplier_gst']) ? $invoice['supplier_gst'] : '',
+                );
+            }
         }
+
+        return array(
+            'medicine_data'    => $medicine_data,
+            'total_amount'     => $total_amount,
+            'total_quantity'   => $total_quantity,
+            'total_items'      => count($medicine_data),
+            'total_invoices'   => count($unique_invoices),
+            'total_medicines'  => count($unique_medicines),
+        );
+    }
+
+    public function daily_purchase_medicine_export() {
+        $period_start     = $this->input->get('start');
+        $period_end       = $this->input->get('end');
+        $purchase_invoice = $this->input->get('purchase_invoice');
+        $medicine_name    = $this->input->get('medicine_name');
+        $supplier_name    = $this->input->get('supplier_name');
+        $purchase_batch   = $this->input->get('purchase_batch');
+
+        if (empty($period_start) && empty($period_end)) {
+            $period_start = date('Y-m-d', strtotime('-1 month'));
+            $period_end   = date('Y-m-d');
+        }
+
+        $rep = $this->_get_daily_purchase_medicine_data(
+            $period_start,
+            $period_end,
+            $purchase_invoice,
+            $medicine_name,
+            $supplier_name,
+            $purchase_batch
+        );
+
+        $medicine_data = $rep['medicine_data'];
+
+        $objPHPExcel = new PHPExcel();
+        $objPHPExcel->setActiveSheetIndex(0);
+
+        // Header row
+        $objPHPExcel->getActiveSheet()->SetCellValue('A1', 'Sl');
+        $objPHPExcel->getActiveSheet()->SetCellValue('B1', 'Purchase Date');
+        $objPHPExcel->getActiveSheet()->SetCellValue('C1', 'Invoice #');
+        $objPHPExcel->getActiveSheet()->SetCellValue('D1', 'Supplier Name');
+        $objPHPExcel->getActiveSheet()->SetCellValue('E1', 'Supplier GSTIN');
+        $objPHPExcel->getActiveSheet()->SetCellValue('F1', 'Medicine Name');
+        $objPHPExcel->getActiveSheet()->SetCellValue('G1', 'HSN');
+        $objPHPExcel->getActiveSheet()->SetCellValue('H1', 'Batch');
+        $objPHPExcel->getActiveSheet()->SetCellValue('I1', 'Exp Date (MM/YY)');
+        $objPHPExcel->getActiveSheet()->SetCellValue('J1', 'Quantity');
+        $objPHPExcel->getActiveSheet()->SetCellValue('K1', 'Free Qty');
+        $objPHPExcel->getActiveSheet()->SetCellValue('L1', 'Rate');
+        $objPHPExcel->getActiveSheet()->SetCellValue('M1', 'MRP');
+        $objPHPExcel->getActiveSheet()->SetCellValue('N1', 'Total (INR)');
+
+        $rowCount = 2;
+        $sl = 1;
+        $total_qty = 0;
+        $total_amt = 0;
+
+        if (!empty($medicine_data)) {
+            foreach ($medicine_data as $row) {
+                $exp = (!empty($row['purchase_expire_month']) || !empty($row['purchase_expire_year']))
+                    ? sprintf('%02d/%s', (int)$row['purchase_expire_month'], $row['purchase_expire_year'])
+                    : '';
+                $qty = (int)$row['purchase_quantity'];
+                $amt = (float)$row['purchase_total'];
+
+                $objPHPExcel->getActiveSheet()->SetCellValue('A' . $rowCount, $sl++);
+                $objPHPExcel->getActiveSheet()->SetCellValue('B' . $rowCount, isset($row['purchase_date']) ? $row['purchase_date'] : '');
+                $objPHPExcel->getActiveSheet()->SetCellValue('C' . $rowCount, isset($row['purchase_invoice']) ? $row['purchase_invoice'] : '');
+                $objPHPExcel->getActiveSheet()->SetCellValue('D' . $rowCount, isset($row['supplier_name']) ? $row['supplier_name'] : '');
+                $objPHPExcel->getActiveSheet()->SetCellValue('E' . $rowCount, isset($row['supplier_gst']) ? $row['supplier_gst'] : '');
+                $objPHPExcel->getActiveSheet()->SetCellValue('F' . $rowCount, isset($row['medicine_name']) ? $row['medicine_name'] : '');
+                $objPHPExcel->getActiveSheet()->SetCellValue('G' . $rowCount, isset($row['medicine_hsn']) ? $row['medicine_hsn'] : '');
+                $objPHPExcel->getActiveSheet()->SetCellValue('H' . $rowCount, isset($row['purchase_batch']) ? $row['purchase_batch'] : '');
+                $objPHPExcel->getActiveSheet()->SetCellValue('I' . $rowCount, $exp);
+                $objPHPExcel->getActiveSheet()->SetCellValue('J' . $rowCount, $qty);
+                $objPHPExcel->getActiveSheet()->SetCellValue('K' . $rowCount, isset($row['purchase_free_quantity']) ? $row['purchase_free_quantity'] : 0);
+                $objPHPExcel->getActiveSheet()->SetCellValue('L' . $rowCount, isset($row['purchase_rate']) ? $row['purchase_rate'] : 0);
+                $objPHPExcel->getActiveSheet()->SetCellValue('M' . $rowCount, isset($row['purchase_mrp']) ? $row['purchase_mrp'] : 0);
+                $objPHPExcel->getActiveSheet()->SetCellValue('N' . $rowCount, $amt);
+
+                $total_qty += $qty;
+                $total_amt += $amt;
+                $rowCount++;
+            }
+        }
+
+        // Summary Total Row
+        $objPHPExcel->getActiveSheet()->SetCellValue('A' . $rowCount, 'Total');
+        $objPHPExcel->getActiveSheet()->SetCellValue('J' . $rowCount, $total_qty);
+        $objPHPExcel->getActiveSheet()->SetCellValue('N' . $rowCount, $total_amt);
+
+        $filename = "daily_purchase_medicine_" . date("Y-m-d_H-i-s") . ".csv";
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'CSV');
+        $objWriter->save('php://output');
+        exit;
     }
 
     public function report_daily_wise() {
