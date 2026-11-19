@@ -163,59 +163,206 @@ class Payments extends MY_Controller {
         echo $this->generate_detail_view($entryData, $this->page_config);
     }
 
-    public function due_report() {
+    public function due_report()
+    {
+        $is_ajax = $this->input->is_ajax_request() || ($this->input->post('key') == 'ajax_resp') || $this->input->get('ajax');
 
-        $post_data = $this->input->post();
-        //pr($post_data);
-        $start = $this->input->post('start');
-        $end = $this->input->post('end');
-        $alldata = null;
-        $supplier = $this->db->query("SELECT * FROM suppliers")->result_array();
-        // pr($supplier_names,1);
+        $start         = $this->input->get_post('start');
+        $end           = $this->input->get_post('end');
+        $supplier_name = $this->input->get_post('supplier_name');
 
-        $sql = "select  suppliers.supplier_name,suppliers.supplier_id,sum(purchase_total) as purchase_total from purchases join suppliers on suppliers.supplier_id = purchases.purchase_supplier where 1 = 1";
-
-        if (!empty($start)) {
-            $sql .= " AND purchase_date >='" . $start . "'";
-        }
-        if (!empty($end)) {
-            $sql .= " AND purchase_date<='" . $end . "'";
+        if (empty($start) && empty($end) && !$this->input->post()) {
+            $start = date('Y-m-d', strtotime('-1 month'));
+            $end   = date('Y-m-d');
         }
 
-        $sql .= " GROUP BY suppliers.supplier_name";
+        $report_data = $this->_get_due_report_data($start, $end, $supplier_name);
+        $report_data['start']         = $start;
+        $report_data['end']           = $end;
+        $report_data['supplier_name'] = !empty($supplier_name) ? $supplier_name : '';
 
-        $purchase = $this->db->query($sql)->result_array();
-        // pr($purchase,1);
-
-        foreach ($purchase as $key => $var) {
-            $alldata[$var['supplier_id']] = $var;
-        }
-
-        $sql = "SELECT  suppliers.supplier_name,suppliers.supplier_id,sum(payment_paid_amount) as payment_paid_amount from payments join suppliers on suppliers.supplier_id = payments.payment_suppliers where 1 = 1 ";
-
-        if (!empty($start)) {
-            $sql .= " AND payment_date >='" . $start . "'";
-        }
-        if (!empty($end)) {
-            $sql .= " AND payment_date<='" . $end . "'";
-        }
-
-        $sql .= "GROUP BY suppliers.supplier_name";
-        // pr($sql);
-        $payment = $this->db->query($sql)->result_array();
-        // pr($payment);
-        foreach ($payment as $key => $val) {
-            $alldata[$val['supplier_id']] = array_merge(  $alldata[$val['supplier_id']],$val);
-        }
-       // pr($alldata, 1);
-
-       
-        if ($this->input->post()) {
-            // pr($alldata, 1);   
-            $this->load->view('console/payment/due_ajax_report_tpl', array('alldata' => $alldata,  'start' => $start, 'end' => $end, ));
+        if ($is_ajax) {
+            $this->load->view('console/payment/due_ajax_report_tpl', $report_data);
         } else {
-            $this->load->view('console/payment/due_report_tpl', array('alldata' => $alldata, 'start' => $start, 'end' => $end, ));
+            $this->render($report_data, 'due_report_tpl');
         }
+    }
+
+    private function _get_due_report_data($start = null, $end = null, $supplier_name = null)
+    {
+        // 1. Get purchases by supplier
+        $p_sql = "SELECT suppliers.supplier_id, suppliers.supplier_name, suppliers.supplier_contact, suppliers.supplier_gst, "
+               . "sum(purchases.purchase_total) as purchase_total "
+               . "FROM `purchases` "
+               . "JOIN `suppliers` ON suppliers.supplier_id = purchases.purchase_supplier "
+               . "WHERE (purchases.purchase_return = 0 OR purchases.purchase_return IS NULL) ";
+
+        if (!empty($start)) {
+            $p_sql .= " AND DATE_FORMAT(purchases.purchase_date, '%Y-%m-%d') >= " . $this->db->escape($start);
+        }
+        if (!empty($end)) {
+            $p_sql .= " AND DATE_FORMAT(purchases.purchase_date, '%Y-%m-%d') <= " . $this->db->escape($end);
+        }
+        if (!empty($supplier_name)) {
+            $p_sql .= " AND suppliers.supplier_name LIKE " . $this->db->escape('%' . $supplier_name . '%');
+        }
+        $p_sql .= " GROUP BY suppliers.supplier_id";
+
+        $purchases = $this->db->query($p_sql)->result_array();
+
+        // 2. Get payments by supplier
+        $pay_sql = "SELECT suppliers.supplier_id, suppliers.supplier_name, suppliers.supplier_contact, suppliers.supplier_gst, "
+                 . "sum(payments.payment_paid_amount) as payment_paid_amount "
+                 . "FROM `payments` "
+                 . "JOIN `suppliers` ON suppliers.supplier_id = payments.payment_suppliers "
+                 . "WHERE 1 = 1 ";
+
+        if (!empty($start)) {
+            $pay_sql .= " AND DATE_FORMAT(payments.payment_date, '%Y-%m-%d') >= " . $this->db->escape($start);
+        }
+        if (!empty($end)) {
+            $pay_sql .= " AND DATE_FORMAT(payments.payment_date, '%Y-%m-%d') <= " . $this->db->escape($end);
+        }
+        if (!empty($supplier_name)) {
+            $pay_sql .= " AND suppliers.supplier_name LIKE " . $this->db->escape('%' . $supplier_name . '%');
+        }
+        $pay_sql .= " GROUP BY suppliers.supplier_id";
+
+        $payments = $this->db->query($pay_sql)->result_array();
+
+        // Merge results keyed by supplier_id
+        $alldata = array();
+        $total_purchases = 0;
+        $total_paid = 0;
+        $total_due = 0;
+
+        if (!empty($purchases)) {
+            foreach ($purchases as $p) {
+                $sid = $p['supplier_id'];
+                $p_amt = (float)$p['purchase_total'];
+                $alldata[$sid] = array(
+                    'supplier_id'         => $sid,
+                    'supplier_name'       => $p['supplier_name'],
+                    'supplier_contact'    => isset($p['supplier_contact']) ? $p['supplier_contact'] : '',
+                    'supplier_gst'        => isset($p['supplier_gst']) ? $p['supplier_gst'] : '',
+                    'purchase_total'      => $p_amt,
+                    'payment_paid_amount' => 0,
+                    'due_amount'          => $p_amt,
+                );
+            }
+        }
+
+        if (!empty($payments)) {
+            foreach ($payments as $pay) {
+                $sid = $pay['supplier_id'];
+                $paid_amt = (float)$pay['payment_paid_amount'];
+                if (isset($alldata[$sid])) {
+                    $alldata[$sid]['payment_paid_amount'] = $paid_amt;
+                    $alldata[$sid]['due_amount'] = $alldata[$sid]['purchase_total'] - $paid_amt;
+                } else {
+                    $alldata[$sid] = array(
+                        'supplier_id'         => $sid,
+                        'supplier_name'       => $pay['supplier_name'],
+                        'supplier_contact'    => isset($pay['supplier_contact']) ? $pay['supplier_contact'] : '',
+                        'supplier_gst'        => isset($pay['supplier_gst']) ? $pay['supplier_gst'] : '',
+                        'purchase_total'      => 0,
+                        'payment_paid_amount' => $paid_amt,
+                        'due_amount'          => 0 - $paid_amt,
+                    );
+                }
+            }
+        }
+
+        // Calculate summary KPIs
+        $due_suppliers_count = 0;
+        $cleared_suppliers_count = 0;
+        foreach ($alldata as $row) {
+            $total_purchases += $row['purchase_total'];
+            $total_paid      += $row['payment_paid_amount'];
+            $total_due       += $row['due_amount'];
+            if ($row['due_amount'] > 0.01) {
+                $due_suppliers_count++;
+            } else {
+                $cleared_suppliers_count++;
+            }
+        }
+
+        return array(
+            'alldata'                 => $alldata,
+            'total_suppliers'         => count($alldata),
+            'total_purchases'         => $total_purchases,
+            'total_paid'              => $total_paid,
+            'total_due'               => $total_due,
+            'due_suppliers_count'     => $due_suppliers_count,
+            'cleared_suppliers_count' => $cleared_suppliers_count,
+        );
+    }
+
+    public function due_report_export()
+    {
+        $start         = $this->input->get('start');
+        $end           = $this->input->get('end');
+        $supplier_name = $this->input->get('supplier_name');
+
+        if (empty($start) && empty($end)) {
+            $start = date('Y-m-d', strtotime('-1 month'));
+            $end   = date('Y-m-d');
+        }
+
+        $rep = $this->_get_due_report_data($start, $end, $supplier_name);
+        $alldata = $rep['alldata'];
+
+        $objPHPExcel = new PHPExcel();
+        $objPHPExcel->setActiveSheetIndex(0);
+
+        // Header row
+        $objPHPExcel->getActiveSheet()->SetCellValue('A1', 'Sl');
+        $objPHPExcel->getActiveSheet()->SetCellValue('B1', 'Supplier Name');
+        $objPHPExcel->getActiveSheet()->SetCellValue('C1', 'Contact');
+        $objPHPExcel->getActiveSheet()->SetCellValue('D1', 'GSTIN');
+        $objPHPExcel->getActiveSheet()->SetCellValue('E1', 'Purchase Amount (₹)');
+        $objPHPExcel->getActiveSheet()->SetCellValue('F1', 'Paid Amount (₹)');
+        $objPHPExcel->getActiveSheet()->SetCellValue('G1', 'Due Amount (₹)');
+        $objPHPExcel->getActiveSheet()->SetCellValue('H1', 'Status');
+
+        $rowCount = 2;
+        $total_purchase = 0;
+        $total_paid = 0;
+        $total_due = 0;
+
+        if (!empty($alldata)) {
+            $counter = 1;
+            foreach ($alldata as $list) {
+                $status = ($list['due_amount'] > 0.01) ? 'Due' : (($list['due_amount'] < -0.01) ? 'Advance' : 'Cleared');
+                $objPHPExcel->getActiveSheet()->SetCellValue('A' . $rowCount, $counter++);
+                $objPHPExcel->getActiveSheet()->SetCellValue('B' . $rowCount, $list['supplier_name']);
+                $objPHPExcel->getActiveSheet()->SetCellValue('C' . $rowCount, $list['supplier_contact']);
+                $objPHPExcel->getActiveSheet()->SetCellValue('D' . $rowCount, $list['supplier_gst']);
+                $objPHPExcel->getActiveSheet()->SetCellValue('E' . $rowCount, (float)$list['purchase_total']);
+                $objPHPExcel->getActiveSheet()->SetCellValue('F' . $rowCount, (float)$list['payment_paid_amount']);
+                $objPHPExcel->getActiveSheet()->SetCellValue('G' . $rowCount, (float)$list['due_amount']);
+                $objPHPExcel->getActiveSheet()->SetCellValue('H' . $rowCount, $status);
+
+                $total_purchase += (float)$list['purchase_total'];
+                $total_paid     += (float)$list['payment_paid_amount'];
+                $total_due      += (float)$list['due_amount'];
+                $rowCount++;
+            }
+        }
+
+        // Footer total
+        $objPHPExcel->getActiveSheet()->SetCellValue('A' . $rowCount, 'TOTAL');
+        $objPHPExcel->getActiveSheet()->SetCellValue('E' . $rowCount, $total_purchase);
+        $objPHPExcel->getActiveSheet()->SetCellValue('F' . $rowCount, $total_paid);
+        $objPHPExcel->getActiveSheet()->SetCellValue('G' . $rowCount, $total_due);
+
+        $filename = "supplier_due_report_" . date("Y-m-d_H-i-s") . ".csv";
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'CSV');
+        $objWriter->save('php://output');
+        exit;
     }
 
 }
