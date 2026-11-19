@@ -1030,373 +1030,324 @@ class Sale extends MY_Controller
         $objWriter->save('php://output');
         exit;
     }
- public function report_gstin_wise_export()
+    public function report_gstin_wise_export()
     {
-        $post_data = $this->input->get();
-        $period_start = $this->input->get('start');
-        $period_end = $this->input->get('end');
-        #echo $package_name;
-        $sql = "SELECT customers.*,sales.sale_date,sales.sale_return,sales.sale_return_date,sales.sale_invoice,sum(sale_taxable) as sale_taxable,sum(sale_discount_percent) as sale_discount_percent,sum(sale_cgst) as sale_cgst,sum(sale_sgst) as sale_sgst,sum(sale_total) as sale_total  FROM `sales` join `customers` on sales.sale_customer=customers.customer_id  WHERE 1 = 1 ";
+        $period_start  = $this->input->get('start');
+        $period_end    = $this->input->get('end');
+        $customer_name = $this->input->get('customer_name');
+        $customer_gst  = $this->input->get('customer_gst') ? $this->input->get('customer_gst') : $this->input->get('gst');
 
-        if (!empty($period_start)) {
-            $sql .= "AND DATE_FORMAT(sale_date, '%Y-%m-%d') >='" . $period_start . "'";
+        if (empty($period_start)) {
+            $period_start = date('Y-m-d', strtotime('-1 month'));
         }
-        if (!empty($period_end)) {
-            $sql .= "AND DATE_FORMAT(sale_date, '%Y-%m-%d')<='" . $period_end . "'";
-        }
-        $sql .= "GROUP BY customer_name";
-       // $sql .= "GROUP BY customer_gst";
-        $sale = $this->db->query($sql)->result_array();
-        # pr($sale);
-        $customer_data = null;
-        foreach ($sale as $key => $invoice) {
-
-            $customer_data[$key]['customer_name'] = $invoice['customer_name'];
-            $customer_data[$key]['customer_gst'] = $invoice['customer_gst'];
-            $customer_data[$key]['sale_invoice'] = $invoice['sale_invoice'];
-            $customer_data[$key]['sale_date'] = $invoice['sale_date'];
-            $customer_data[$key]['sale_loose_quantity'] = $invoice['sale_loose_quantity'];
-            $customer_data[$key]['sale_strip_quantity'] = $invoice['sale_strip_quantity'];
-            $customer_data[$key]['sale_quantity'] = $invoice['sale_quantity'];
-            $customer_data[$key]['sale_batch'] = $invoice['sale_batch'];
-            $customer_data[$key]['sale_taxable'] = $invoice['sale_taxable'];
-            $customer_data[$key]['sale_discount_percent'] = $invoice['sale_discount_percent'];
-            $original_price = (100 * $invoice['sale_taxable']) / (100 - $invoice['sale_discount_percent']);
-            $customer_data[$key]['sale_discount'] = $original_price - $invoice['sale_taxable'];
-            $customer_data[$key]['sale_cgst'] = $invoice['sale_cgst'];
-            $customer_data[$key]['sale_sgst'] = $invoice['sale_sgst'];
-            $customer_data[$key]['sale_total'] = $invoice['sale_total'];
-            $customer_data[$key]['sale_return'] = $invoice['sale_return'];
-            $customer_data[$key]['sale_return_date'] = $invoice['sale_return_date'];
-        }
-         
-        
-        #$package=$this->packages_model->get_list();
-        $sql = "SELECT sales.sale_date,customers.customer_name,customers.customer_gst,sum(sale_total * sale_grand_discount / 100) as sale_grand_discount FROM `sales` join `customers` on sales.sale_customer=customers.customer_ID WHERE 1=1";
-        if (!empty($period_start)) {
-            $sql .= " AND DATE_FORMAT(sale_date, '%Y-%m-%d') >='" . $period_start . "'";
-        }
-        if (!empty($period_end)) {
-            $sql .= " AND DATE_FORMAT(sale_date, '%Y-%m-%d') <='" . $period_end . "'";
+        if (empty($period_end)) {
+            $period_end = date('Y-m-d');
         }
 
-       
-        $sale_grand_dis_data = $this->db->query($sql)->result_array();
+        $rep = $this->_get_gstin_wise_data($period_start, $period_end, $customer_name, $customer_gst);
+        $customer_data      = $rep['customer_data'];
+        $daily_gst_data     = $rep['daily_gst_data'];
+        $hsn_daily_gst_data = $rep['hsn_daily_gst_data'];
 
-        $sql = "SELECT sum(sale_cgst),sum(sale_sgst),sum(sales.sale_taxable) as sale_taxable,sale_cgst_percent,sale_sgst_percent FROM `sales` join `customers` on sales.sale_customer=customers.customer_ID WHERE 1=1";
-
-        if (!empty($period_start)) {
-            $sql .= " AND DATE_FORMAT(sale_date, '%Y-%m-%d') >='" . $period_start . "'";
-        }
-        if (!empty($period_end)) {
-            $sql .= " AND DATE_FORMAT(sale_date, '%Y-%m-%d')<='" . $period_end . "'";
-        }
-
-        
-        $sql .= " GROUP BY sale_cgst_percent";
-        // pr($sql);
-        $data = $this->db->query($sql)->result_array();
-        $daily_gst_data = null;
-        foreach ($data as $key => $val) {
-            // pr($data,1);
-            $daily_gst_data[$key]['sale_cgst'] = $val['sum(sale_cgst)'];
-            $daily_gst_data[$key]['sale_sgst'] = $val['sum(sale_sgst)'];
-            $daily_gst_data[$key]['sale_taxable'] = $val['sale_taxable'];
-            $daily_gst_data[$key]['sale_cgst_percent'] = $val['sale_cgst_percent'];
-            $daily_gst_data[$key]['sale_sgst_percent'] = $val['sale_sgst_percent'];
-            $daily_gst_data[$key]['total_sale_taxable'] += $val['sale_taxable'];
-        }
-
-        $sql = "SELECT medicines.medicine_hsn,sales.sale_strip_quantity as sale_strip_quantity ,sum(sales.sale_sgst) as sgst, sum(sales.sale_cgst) as cgst ,sum(sales.sale_rate) as sale_rate,sum(sales.sale_taxable) as sale_taxable,sales.sale_cgst_percent,sales.sale_discount_percent as sale_discount_percent FROM `sales` INNER JOIN medicines ON medicines.medicine_id = sales.sale_medicine_id WHERE 1=1";
-
-        if (!empty($period_start)) {
-            $sql .= " AND DATE_FORMAT(sale_date, '%Y-%m-%d') >='" . $period_start . "'";
-        }
-        if (!empty($period_end)) {
-            $sql .= " AND DATE_FORMAT(sale_date, '%Y-%m-%d') <='" . $period_end . "'";
-        }
-
-       
-        $sql .= " GROUP BY medicines.medicine_hsn";
-        // pr($sql);
-        $hsndata = $this->db->query($sql)->result_array();
-        $hsn_daily_gst_data = null;
-
-        foreach ($hsndata as $key => $val) {
-            // pr($hsndata,1);sale_strip_quantity
-            $hsn_daily_gst_data[$key]['sale_strip_quantity'] = $val['sale_strip_quantity'];
-            $hsn_daily_gst_data[$key]['sale_cgst'] = $val['cgst'];
-            $hsn_daily_gst_data[$key]['sale_sgst'] = $val['sgst'];
-            $hsn_daily_gst_data[$key]['sale_cgst_percent'] = $val['sale_cgst_percent'];
-            $hsn_daily_gst_data[$key]['sale_taxable'] = ($val['sale_taxable']);
-            $hsn_daily_gst_data[$key]['medicine_hsn'] = $val['medicine_hsn'];
-            $hsn_daily_gst_data[$key]['total_sale_taxable'] += ( $val['sale_taxable']);
-        }
-
-
-        
-            // $this->load->view('console/sale/report_gst_wise_tpl', array('hsn_daily_gst_data' => $hsn_daily_gst_data, 'daily_gst_data' => $daily_gst_data, 'customer_data' => $customer_data, 'sale_grand_dis_data' => $sale_grand_dis_data, 'start' => $period_start, 'end' => $period_end));
-            
-         $fileName = 'purchse-'.time().'.xlsx';  
-		// load excel library
-       
         $objPHPExcel = new PHPExcel();
         $objPHPExcel->setActiveSheetIndex(0);
-    //   $objPHPExcel->getActiveSheet()
-    // ->getStyle('A1:E1')
-    // ->getFill()
-    // ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
-    // ->getStartColor()
-    // ->setRGB('FF8080');
-       
-        // set Header//Purchase Batch
-        $objPHPExcel->getActiveSheet()->SetCellValue('A1', 'customer Name');
-        $objPHPExcel->getActiveSheet()->SetCellValue('B1', 'customer GST');
-        $objPHPExcel->getActiveSheet()->SetCellValue('C1', 'Sale Date');
-        $objPHPExcel->getActiveSheet()->SetCellValue('D1', 'Taxable');
-        $objPHPExcel->getActiveSheet()->SetCellValue('E1', 'CGST');
-        $objPHPExcel->getActiveSheet()->SetCellValue('F1', 'SGST');
-        $objPHPExcel->getActiveSheet()->SetCellValue('G1', 'Total');
-         
-      
-        // set Row
-        $rowCount = 2;
-       // pr($gst_data);
-        $totalCount = count($customer_data)+3;
-        $total_sale='';
-        foreach ($customer_data as $key =>$list) {
-            
-            $objPHPExcel->getActiveSheet()->SetCellValue('A' . $rowCount, $list['customer_name']);
-            $objPHPExcel->getActiveSheet()->SetCellValue('B' . $rowCount,$list['customer_gst']);
-            $objPHPExcel->getActiveSheet()->SetCellValue('C' . $rowCount,$list['sale_date']);
-            $objPHPExcel->getActiveSheet()->SetCellValue('D' . $rowCount, $list['sale_taxable']);
-            $objPHPExcel->getActiveSheet()->SetCellValue('E' . $rowCount, $list['sale_cgst']);
-            $objPHPExcel->getActiveSheet()->SetCellValue('F' . $rowCount, $list['sale_sgst']);
-            $objPHPExcel->getActiveSheet()->SetCellValue('G' . $rowCount, $list['sale_total']);
-            $total_sale_taxable+=$list['sale_taxable'];
-            $total_sale_cgst+=$list['sale_cgst'];
-            $total_sale_sgst+=$list['sale_sgst'];
-            $total_sale+=$list['sale_total'];
-            $rowCount++;
-        }
-        //total footer
-        $objPHPExcel->getActiveSheet()->SetCellValue('A' .$totalCount, 'TOTAL');
-        $objPHPExcel->getActiveSheet()->SetCellValue('D' . $totalCount, $total_sale_taxable);
-        $objPHPExcel->getActiveSheet()->SetCellValue('E' . $totalCount, $total_sale_cgst);
-        $objPHPExcel->getActiveSheet()->SetCellValue('F' . $totalCount,$total_sale_sgst);
-        $objPHPExcel->getActiveSheet()->SetCellValue('G' . $totalCount, $total_sale);
-        
-        
-        $rowCoun = 2;
-        
-        $objPHPExcel->getActiveSheet()->SetCellValue('I1', 'Quantity');
-        $objPHPExcel->getActiveSheet()->SetCellValue('J1', 'Sale Taxable');
-        $objPHPExcel->getActiveSheet()->SetCellValue('K1', 'HSN NUMBER');
-        $objPHPExcel->getActiveSheet()->SetCellValue('L1', 'Total HSN CGST');
-        $objPHPExcel->getActiveSheet()->SetCellValue('M1', 'HSN NUMBER');
-        $objPHPExcel->getActiveSheet()->SetCellValue('N1', 'Total HSN SGST');
-        $objPHPExcel->getActiveSheet()->SetCellValue('O1', 'GST Percent');
-        $totalCoun = count($hsn_daily_gst_data)+3;
-        
-        foreach ($hsn_daily_gst_data as $key =>$list) {
-            $objPHPExcel->getActiveSheet()->SetCellValue('I' . ($rowCoun), $list['sale_strip_quantity']);
-            $objPHPExcel->getActiveSheet()->SetCellValue('J' . ($rowCoun), $list['sale_taxable']);
-            $objPHPExcel->getActiveSheet()->SetCellValue('K' . ($rowCoun), $list['medicine_hsn']);
-            $objPHPExcel->getActiveSheet()->SetCellValue('L' . ($rowCoun), $list['sale_cgst']);
-            $objPHPExcel->getActiveSheet()->SetCellValue('M' . ($rowCoun), $list['medicine_hsn']);
-            $objPHPExcel->getActiveSheet()->SetCellValue('N' . ($rowCoun), $list['sale_sgst']);
-            $objPHPExcel->getActiveSheet()->SetCellValue('O' . ($rowCoun), $list['sale_cgst_percent']);
-            $total_h_sale_cgst+=$list['sale_cgst'];
-            $total_h_sale_sgst+=$list['sale_sgst'];
-            $total_h_sale_taxable+=$list['sale_taxable'];
-            $total_quantity+=$list['sale_strip_quantity'];
-            $rowCoun++;
-        }
-        //total footer
-            $objPHPExcel->getActiveSheet()->SetCellValue('I' . ($totalCoun),$total_quantity);
-            $objPHPExcel->getActiveSheet()->SetCellValue('J' . ($totalCoun),$total_h_sale_taxable);
-            $objPHPExcel->getActiveSheet()->SetCellValue('K' . ($totalCoun), 'Total ');
-            $objPHPExcel->getActiveSheet()->SetCellValue('L' . ($totalCoun),$total_h_sale_cgst);
-            $objPHPExcel->getActiveSheet()->SetCellValue('M' . ($totalCoun), 'Total ');
-            $objPHPExcel->getActiveSheet()->SetCellValue('N' . ($totalCoun),$total_h_sale_sgst);
-            $objPHPExcel->getActiveSheet()->SetCellValue('O' . ($totalCoun),'Total ');
-        
-        $rowCou = 2;
-        $objPHPExcel->getActiveSheet()->SetCellValue('Q1', 'Sale CGST Percent');
-        $objPHPExcel->getActiveSheet()->SetCellValue('R1', 'Total Purchase CGST');
-        $objPHPExcel->getActiveSheet()->SetCellValue('S1', 'Sale SGST Percent');
-        $objPHPExcel->getActiveSheet()->SetCellValue('T1', 'Total Sale SGST');
-        $objPHPExcel->getActiveSheet()->SetCellValue('U1', 'Total Sale Taxable');
-        $totalCou = count($daily_gst_data)+3;
-        
-      foreach ($daily_gst_data as $key =>$list) {
-            
-        $objPHPExcel->getActiveSheet()->SetCellValue('Q' . ($rowCou), $list['sale_cgst_percent']);
-        $objPHPExcel->getActiveSheet()->SetCellValue('R' . ($rowCou),$list['sale_cgst']);
-        $objPHPExcel->getActiveSheet()->SetCellValue('S' . ($rowCou), $list['sale_sgst_percent']);
-        $objPHPExcel->getActiveSheet()->SetCellValue('T' . ($rowCou),$list['sale_sgst']);
-        $objPHPExcel->getActiveSheet()->SetCellValue('U' . ($rowCou),$list['sale_taxable']);
-        $total_d_sale_cgst+=$list['sale_cgst'];
-        $total_d_sale_sgst+=$list['sale_sgst'];
-        $total_d_sale_taxable+=$list['total_sale_taxable'];
-        $rowCou++;
-        }
-        //FOTTER
-        $objPHPExcel->getActiveSheet()->SetCellValue('Q' . ($totalCou), 'Total cgst');
-        $objPHPExcel->getActiveSheet()->SetCellValue('R' . ($totalCou),'Total '+$total_d_sale_cgst);
-        $objPHPExcel->getActiveSheet()->SetCellValue('S' . ($totalCou), 'Total sgst');
-        $objPHPExcel->getActiveSheet()->SetCellValue('T' . ($totalCou),'Total '+$total_d_sale_sgst);
-        $objPHPExcel->getActiveSheet()->SetCellValue('U' . ($totalCou),'Total '+$total_d_sale_taxable);
-        
-       $objPHPExcel->getActiveSheet()->getStyle('A2')->applyFromArray(
-        array(
-            'fill' => array(
-                'type' => PHPExcel_Style_Fill::FILL_SOLID,
-                'color' => array('rgb' => 'E05CC2')
-            )
-        )
 
-);
-        $filename = "gstin_wise". date("Y-m-d-H-i-s").".csv";
-		header('Content-Type: application/vnd.ms-excel'); 
-		header('Content-Disposition: attachment;filename="'.$filename.'"');
-		header('Cache-Control: max-age=0'); 
-		$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'CSV');  
-		$objWriter->save('php://output'); 
-        
+        // Header for Customer GSTIN Records
+        $objPHPExcel->getActiveSheet()->SetCellValue('A1', 'Customer Name');
+        $objPHPExcel->getActiveSheet()->SetCellValue('B1', 'Customer GST');
+        $objPHPExcel->getActiveSheet()->SetCellValue('C1', 'Sale Date');
+        $objPHPExcel->getActiveSheet()->SetCellValue('D1', 'Taxable (₹)');
+        $objPHPExcel->getActiveSheet()->SetCellValue('E1', 'CGST (₹)');
+        $objPHPExcel->getActiveSheet()->SetCellValue('F1', 'SGST (₹)');
+        $objPHPExcel->getActiveSheet()->SetCellValue('G1', 'Total (₹)');
+
+        $rowCount = 2;
+        $total_sale_taxable = 0;
+        $total_sale_cgst = 0;
+        $total_sale_sgst = 0;
+        $total_sale = 0;
+
+        if (!empty($customer_data)) {
+            foreach ($customer_data as $list) {
+                $objPHPExcel->getActiveSheet()->SetCellValue('A' . $rowCount, $list['customer_name']);
+                $objPHPExcel->getActiveSheet()->SetCellValue('B' . $rowCount, $list['customer_gst']);
+                $objPHPExcel->getActiveSheet()->SetCellValue('C' . $rowCount, $list['sale_date']);
+                $objPHPExcel->getActiveSheet()->SetCellValue('D' . $rowCount, $list['sale_taxable']);
+                $objPHPExcel->getActiveSheet()->SetCellValue('E' . $rowCount, $list['sale_cgst']);
+                $objPHPExcel->getActiveSheet()->SetCellValue('F' . $rowCount, $list['sale_sgst']);
+                $objPHPExcel->getActiveSheet()->SetCellValue('G' . $rowCount, $list['sale_total']);
+                $total_sale_taxable += (float)$list['sale_taxable'];
+                $total_sale_cgst    += (float)$list['sale_cgst'];
+                $total_sale_sgst    += (float)$list['sale_sgst'];
+                $total_sale         += (float)$list['sale_total'];
+                $rowCount++;
+            }
+        }
+
+        // Totals Footer for Customer GSTIN
+        $objPHPExcel->getActiveSheet()->SetCellValue('A' . $rowCount, 'TOTAL');
+        $objPHPExcel->getActiveSheet()->SetCellValue('D' . $rowCount, $total_sale_taxable);
+        $objPHPExcel->getActiveSheet()->SetCellValue('E' . $rowCount, $total_sale_cgst);
+        $objPHPExcel->getActiveSheet()->SetCellValue('F' . $rowCount, $total_sale_sgst);
+        $objPHPExcel->getActiveSheet()->SetCellValue('G' . $rowCount, $total_sale);
+
+        // HSN Summary Header (Cols I to N)
+        $objPHPExcel->getActiveSheet()->SetCellValue('I1', 'Strip Quantity');
+        $objPHPExcel->getActiveSheet()->SetCellValue('J1', 'Sale Taxable (₹)');
+        $objPHPExcel->getActiveSheet()->SetCellValue('K1', 'HSN Code');
+        $objPHPExcel->getActiveSheet()->SetCellValue('L1', 'Total HSN CGST (₹)');
+        $objPHPExcel->getActiveSheet()->SetCellValue('M1', 'Total HSN SGST (₹)');
+        $objPHPExcel->getActiveSheet()->SetCellValue('N1', 'GST Percent');
+
+        $rowHsn = 2;
+        $total_h_taxable = 0;
+        $total_h_cgst = 0;
+        $total_h_sgst = 0;
+        $total_quantity = 0;
+
+        if (!empty($hsn_daily_gst_data)) {
+            foreach ($hsn_daily_gst_data as $list) {
+                $objPHPExcel->getActiveSheet()->SetCellValue('I' . $rowHsn, $list['sale_strip_quantity']);
+                $objPHPExcel->getActiveSheet()->SetCellValue('J' . $rowHsn, $list['sale_taxable']);
+                $objPHPExcel->getActiveSheet()->SetCellValue('K' . $rowHsn, $list['medicine_hsn']);
+                $objPHPExcel->getActiveSheet()->SetCellValue('L' . $rowHsn, $list['sale_cgst']);
+                $objPHPExcel->getActiveSheet()->SetCellValue('M' . $rowHsn, $list['sale_sgst']);
+                $objPHPExcel->getActiveSheet()->SetCellValue('N' . $rowHsn, $list['sale_cgst_percent']);
+                $total_quantity  += (float)$list['sale_strip_quantity'];
+                $total_h_taxable += (float)$list['sale_taxable'];
+                $total_h_cgst    += (float)$list['sale_cgst'];
+                $total_h_sgst    += (float)$list['sale_sgst'];
+                $rowHsn++;
+            }
+        }
+
+        $objPHPExcel->getActiveSheet()->SetCellValue('I' . $rowHsn, $total_quantity);
+        $objPHPExcel->getActiveSheet()->SetCellValue('J' . $rowHsn, $total_h_taxable);
+        $objPHPExcel->getActiveSheet()->SetCellValue('K' . $rowHsn, 'TOTAL');
+        $objPHPExcel->getActiveSheet()->SetCellValue('L' . $rowHsn, $total_h_cgst);
+        $objPHPExcel->getActiveSheet()->SetCellValue('M' . $rowHsn, $total_h_sgst);
+
+        // Rate Breakdown Header (Cols P to T)
+        $objPHPExcel->getActiveSheet()->SetCellValue('P1', 'CGST %');
+        $objPHPExcel->getActiveSheet()->SetCellValue('Q1', 'CGST Amount (₹)');
+        $objPHPExcel->getActiveSheet()->SetCellValue('R1', 'SGST %');
+        $objPHPExcel->getActiveSheet()->SetCellValue('S1', 'SGST Amount (₹)');
+        $objPHPExcel->getActiveSheet()->SetCellValue('T1', 'Taxable Amount (₹)');
+
+        $rowRate = 2;
+        $total_d_cgst = 0;
+        $total_d_sgst = 0;
+        $total_d_taxable = 0;
+
+        if (!empty($daily_gst_data)) {
+            foreach ($daily_gst_data as $list) {
+                $objPHPExcel->getActiveSheet()->SetCellValue('P' . $rowRate, $list['sale_cgst_percent']);
+                $objPHPExcel->getActiveSheet()->SetCellValue('Q' . $rowRate, $list['sale_cgst']);
+                $objPHPExcel->getActiveSheet()->SetCellValue('R' . $rowRate, $list['sale_sgst_percent']);
+                $objPHPExcel->getActiveSheet()->SetCellValue('S' . $rowRate, $list['sale_sgst']);
+                $objPHPExcel->getActiveSheet()->SetCellValue('T' . $rowRate, $list['sale_taxable']);
+                $total_d_cgst    += (float)$list['sale_cgst'];
+                $total_d_sgst    += (float)$list['sale_sgst'];
+                $total_d_taxable += (float)$list['sale_taxable'];
+                $rowRate++;
+            }
+        }
+
+        $objPHPExcel->getActiveSheet()->SetCellValue('P' . $rowRate, 'TOTAL');
+        $objPHPExcel->getActiveSheet()->SetCellValue('Q' . $rowRate, $total_d_cgst);
+        $objPHPExcel->getActiveSheet()->SetCellValue('R' . $rowRate, 'TOTAL');
+        $objPHPExcel->getActiveSheet()->SetCellValue('S' . $rowRate, $total_d_sgst);
+        $objPHPExcel->getActiveSheet()->SetCellValue('T' . $rowRate, $total_d_taxable);
+
+        $filename = "sale_gstin_wise_" . date("Y-m-d_H-i-s") . ".csv";
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'CSV');
+        $objWriter->save('php://output');
+        exit;
     }
     public function report_gstin_wise()
     {
-        $post_data = $this->input->post();
-        $period_start = $this->input->post('start');
-        $period_end = $this->input->post('end');
-        $customer_name = $this->input->post('customer_name');
-        $customer_gst = $this->input->post('customer_gst');
-        #echo $package_name;
-        $sql = "SELECT customers.*,sales.sale_date,sales.sale_return,sales.sale_return_date,sales.sale_invoice,sum(sale_taxable) as sale_taxable,sum(sale_discount_percent) as sale_discount_percent,sum(sale_cgst) as sale_cgst,sum(sale_sgst) as sale_sgst,sum(sale_total) as sale_total  FROM `sales` join `customers` on sales.sale_customer=customers.customer_id  WHERE 1 = 1 ";
+        $is_ajax = $this->input->is_ajax_request() || ($this->input->post('key') == 'ajax_resp') || $this->input->get('ajax');
+
+        $period_start  = $this->input->get_post('start');
+        $period_end    = $this->input->get_post('end');
+        $customer_name = $this->input->get_post('customer_name');
+        $customer_gst  = $this->input->get_post('customer_gst') ? $this->input->get_post('customer_gst') : $this->input->get_post('gst');
+
+        if (empty($period_start)) {
+            $period_start = date('Y-m-d', strtotime('-1 month'));
+        }
+        if (empty($period_end)) {
+            $period_end = date('Y-m-d');
+        }
+
+        $report_data = $this->_get_gstin_wise_data($period_start, $period_end, $customer_name, $customer_gst);
+        $report_data['start']         = $period_start;
+        $report_data['end']           = $period_end;
+        $report_data['customer_name'] = !empty($customer_name) ? $customer_name : '';
+        $report_data['customer_gst']  = !empty($customer_gst) ? $customer_gst : '';
+
+        if ($is_ajax) {
+            $this->load->view('console/sale/report_gst_wise_tpl', $report_data);
+        } else {
+            $this->render($report_data, 'report_gstin_wise_tpl');
+        }
+    }
+
+    private function _get_gstin_wise_data($period_start, $period_end, $customer_name = null, $customer_gst = null)
+    {
+        $sql = "SELECT customers.*, sales.sale_date, sales.sale_return, sales.sale_return_date, sales.sale_invoice, "
+             . "sum(sale_taxable) as sale_taxable, sum(sale_discount_percent) as sale_discount_percent, "
+             . "sum(sale_cgst) as sale_cgst, sum(sale_sgst) as sale_sgst, sum(sale_total) as sale_total "
+             . "FROM `sales` "
+             . "JOIN `customers` ON sales.sale_customer = customers.customer_id "
+             . "WHERE 1 = 1 ";
 
         if (!empty($period_start)) {
-            $sql .= "AND DATE_FORMAT(sale_date, '%Y-%m-%d') >='" . $period_start . "'";
+            $sql .= " AND DATE_FORMAT(sale_date, '%Y-%m-%d') >= " . $this->db->escape($period_start);
         }
         if (!empty($period_end)) {
-            $sql .= "AND DATE_FORMAT(sale_date, '%Y-%m-%d')<='" . $period_end . "'";
+            $sql .= " AND DATE_FORMAT(sale_date, '%Y-%m-%d') <= " . $this->db->escape($period_end);
         }
-
         if (!empty($customer_name)) {
-            $sql .= "AND customer_name like '%" . $customer_name . "%'";
+            $sql .= " AND customer_name LIKE " . $this->db->escape('%' . $customer_name . '%');
         }
         if (!empty($customer_gst)) {
-            $sql .= "AND customer_gst like '" . $customer_gst . "%'";
+            $sql .= " AND customer_gst LIKE " . $this->db->escape($customer_gst . '%');
         }
-         $sql .= "GROUP BY customer_name";
-        //$sql .= "GROUP BY customer_gst";
-        # $invoices = $this->db->query("SELECT * FROM `invoices` WHERE invoice_date >='" . $period_start . "' AND invoice_date<='" . $period_end . "'")->result_array();
+        $sql .= " GROUP BY customer_name";
+
         $sale = $this->db->query($sql)->result_array();
-        # pr($sale);
-        $customer_data = null;
-        foreach ($sale as $key => $invoice) {
+        $customer_data = array();
+        if (!empty($sale)) {
+            foreach ($sale as $key => $invoice) {
+                $taxable = (float)(isset($invoice['sale_taxable']) ? $invoice['sale_taxable'] : 0);
+                $disc_pct = (float)(isset($invoice['sale_discount_percent']) ? $invoice['sale_discount_percent'] : 0);
+                $orig_price = ($disc_pct < 100) ? ((100 * $taxable) / (100 - $disc_pct)) : $taxable;
+                $discount = $orig_price - $taxable;
 
-            $customer_data[$key]['customer_name'] = $invoice['customer_name'];
-            $customer_data[$key]['customer_gst'] = $invoice['customer_gst'];
-            $customer_data[$key]['sale_invoice'] = $invoice['sale_invoice'];
-            $customer_data[$key]['sale_date'] = $invoice['sale_date'];
-            $customer_data[$key]['sale_loose_quantity'] = $invoice['sale_loose_quantity'];
-            $customer_data[$key]['sale_strip_quantity'] = $invoice['sale_strip_quantity'];
-            $customer_data[$key]['sale_quantity'] = $invoice['sale_quantity'];
-            $customer_data[$key]['sale_batch'] = $invoice['sale_batch'];
-            $customer_data[$key]['sale_taxable'] = $invoice['sale_taxable'];
-            $customer_data[$key]['sale_discount_percent'] = $invoice['sale_discount_percent'];
-            $original_price = (100 * $invoice['sale_taxable']) / (100 - $invoice['sale_discount_percent']);
-            $customer_data[$key]['sale_discount'] = $original_price - $invoice['sale_taxable'];
-            $customer_data[$key]['sale_cgst'] = $invoice['sale_cgst'];
-            $customer_data[$key]['sale_sgst'] = $invoice['sale_sgst'];
-            $customer_data[$key]['sale_total'] = $invoice['sale_total'];
-            $customer_data[$key]['sale_return'] = $invoice['sale_return'];
-            $customer_data[$key]['sale_return_date'] = $invoice['sale_return_date'];
+                $customer_data[$key] = array(
+                    'customer_name'           => isset($invoice['customer_name']) ? $invoice['customer_name'] : '',
+                    'customer_gst'            => isset($invoice['customer_gst']) ? $invoice['customer_gst'] : '',
+                    'sale_invoice'            => isset($invoice['sale_invoice']) ? $invoice['sale_invoice'] : '',
+                    'sale_date'               => isset($invoice['sale_date']) ? $invoice['sale_date'] : '',
+                    'sale_loose_quantity'     => isset($invoice['sale_loose_quantity']) ? $invoice['sale_loose_quantity'] : 0,
+                    'sale_strip_quantity'     => isset($invoice['sale_strip_quantity']) ? $invoice['sale_strip_quantity'] : 0,
+                    'sale_quantity'           => isset($invoice['sale_quantity']) ? $invoice['sale_quantity'] : 0,
+                    'sale_batch'              => isset($invoice['sale_batch']) ? $invoice['sale_batch'] : '',
+                    'sale_taxable'            => $taxable,
+                    'sale_discount_percent'   => $disc_pct,
+                    'sale_discount'           => $discount,
+                    'sale_cgst'               => (float)(isset($invoice['sale_cgst']) ? $invoice['sale_cgst'] : 0),
+                    'sale_sgst'               => (float)(isset($invoice['sale_sgst']) ? $invoice['sale_sgst'] : 0),
+                    'sale_total'              => (float)(isset($invoice['sale_total']) ? $invoice['sale_total'] : 0),
+                    'sale_return'             => isset($invoice['sale_return']) ? $invoice['sale_return'] : 0,
+                    'sale_return_date'        => isset($invoice['sale_return_date']) ? $invoice['sale_return_date'] : '',
+                );
+            }
         }
-        
-        #pr($customer_data,1);
-        #$package=$this->packages_model->get_list();
-        $sql = "SELECT sales.sale_date,customers.customer_name,customers.customer_gst,sum(sale_total * sale_grand_discount / 100) as sale_grand_discount FROM `sales` join `customers` on sales.sale_customer=customers.customer_ID WHERE 1=1";
+
+        // Grand discount summary
+        $sql = "SELECT sales.sale_date, customers.customer_name, customers.customer_gst, "
+             . "sum(sale_total * sale_grand_discount / 100) as sale_grand_discount "
+             . "FROM `sales` "
+             . "JOIN `customers` ON sales.sale_customer = customers.customer_ID "
+             . "WHERE 1 = 1 ";
+
         if (!empty($period_start)) {
-            $sql .= " AND DATE_FORMAT(sale_date, '%Y-%m-%d') >='" . $period_start . "'";
+            $sql .= " AND DATE_FORMAT(sale_date, '%Y-%m-%d') >= " . $this->db->escape($period_start);
         }
         if (!empty($period_end)) {
-            $sql .= " AND DATE_FORMAT(sale_date, '%Y-%m-%d') <='" . $period_end . "'";
+            $sql .= " AND DATE_FORMAT(sale_date, '%Y-%m-%d') <= " . $this->db->escape($period_end);
         }
-
         if (!empty($customer_name)) {
-            $sql .= " AND customer_name like '%" . $customer_name . "%'";
+            $sql .= " AND customer_name LIKE " . $this->db->escape('%' . $customer_name . '%');
         }
         if (!empty($customer_gst)) {
-            $sql .= " AND customer_gst like '" . $customer_gst . "%'";
+            $sql .= " AND customer_gst LIKE " . $this->db->escape($customer_gst . '%');
         }
         $sale_grand_dis_data = $this->db->query($sql)->result_array();
 
-        $sql = "SELECT sum(sale_cgst),sum(sale_sgst),sum(sales.sale_taxable) as sale_taxable,sale_cgst_percent,sale_sgst_percent FROM `sales` join `customers` on sales.sale_customer=customers.customer_ID WHERE 1=1";
+        // GST Rate breakdown
+        $sql = "SELECT sum(sale_cgst) as cgst, sum(sale_sgst) as sgst, sum(sales.sale_taxable) as sale_taxable, "
+             . "sale_cgst_percent, sale_sgst_percent "
+             . "FROM `sales` "
+             . "JOIN `customers` ON sales.sale_customer = customers.customer_ID "
+             . "WHERE 1 = 1 ";
 
         if (!empty($period_start)) {
-            $sql .= " AND DATE_FORMAT(sale_date, '%Y-%m-%d') >='" . $period_start . "'";
+            $sql .= " AND DATE_FORMAT(sale_date, '%Y-%m-%d') >= " . $this->db->escape($period_start);
         }
         if (!empty($period_end)) {
-            $sql .= " AND DATE_FORMAT(sale_date, '%Y-%m-%d')<='" . $period_end . "'";
+            $sql .= " AND DATE_FORMAT(sale_date, '%Y-%m-%d') <= " . $this->db->escape($period_end);
         }
-
         if (!empty($customer_name)) {
-            $sql .= " AND customer_name like '%" . $customer_name . "%'";
+            $sql .= " AND customer_name LIKE " . $this->db->escape('%' . $customer_name . '%');
         }
         if (!empty($customer_gst)) {
-            $sql .= " AND customer_gst like '" . $customer_gst . "%'";
+            $sql .= " AND customer_gst LIKE " . $this->db->escape($customer_gst . '%');
         }
         $sql .= " GROUP BY sale_cgst_percent";
-        // pr($sql);
         $data = $this->db->query($sql)->result_array();
-        $daily_gst_data = null;
-        foreach ($data as $key => $val) {
-            // pr($data,1);
-            $daily_gst_data[$key]['sale_cgst'] = $val['sum(sale_cgst)'];
-            $daily_gst_data[$key]['sale_sgst'] = $val['sum(sale_sgst)'];
-            $daily_gst_data[$key]['sale_taxable'] = $val['sale_taxable'];
-            $daily_gst_data[$key]['sale_cgst_percent'] = $val['sale_cgst_percent'];
-            $daily_gst_data[$key]['sale_sgst_percent'] = $val['sale_sgst_percent'];
+        $daily_gst_data = array();
+        if (!empty($data)) {
+            foreach ($data as $key => $val) {
+                $daily_gst_data[$key] = array(
+                    'sale_cgst'         => (float)(isset($val['cgst']) ? $val['cgst'] : (isset($val['sum(sale_cgst)']) ? $val['sum(sale_cgst)'] : 0)),
+                    'sale_sgst'         => (float)(isset($val['sgst']) ? $val['sgst'] : (isset($val['sum(sale_sgst)']) ? $val['sum(sale_sgst)'] : 0)),
+                    'sale_taxable'      => (float)(isset($val['sale_taxable']) ? $val['sale_taxable'] : 0),
+                    'sale_cgst_percent' => isset($val['sale_cgst_percent']) ? $val['sale_cgst_percent'] : 0,
+                    'sale_sgst_percent' => isset($val['sale_sgst_percent']) ? $val['sale_sgst_percent'] : (isset($val['sale_cgst_percent']) ? $val['sale_cgst_percent'] : 0),
+                );
+            }
         }
 
-        $sql = "SELECT medicines.medicine_hsn,sales.sale_strip_quantity as sale_strip_quantity ,sum(sales.sale_sgst) as sgst, sum(sales.sale_cgst) as cgst ,sum(sales.sale_rate) as sale_rate,sum(sales.sale_taxable) as sale_taxable,sales.sale_cgst_percent,sales.sale_discount_percent as sale_discount_percent FROM `sales` INNER JOIN medicines ON medicines.medicine_id = sales.sale_medicine_id WHERE 1=1";
+        // HSN breakdown
+        $sql = "SELECT medicines.medicine_hsn, sales.sale_strip_quantity, "
+             . "sum(sales.sale_sgst) as sgst, sum(sales.sale_cgst) as cgst, "
+             . "sum(sales.sale_rate) as sale_rate, sum(sales.sale_taxable) as sale_taxable, "
+             . "sales.sale_cgst_percent, sales.sale_discount_percent "
+             . "FROM `sales` "
+             . "INNER JOIN medicines ON medicines.medicine_id = sales.sale_medicine_id "
+             . "LEFT JOIN customers ON sales.sale_customer = customers.customer_ID "
+             . "WHERE 1 = 1 ";
 
         if (!empty($period_start)) {
-            $sql .= " AND DATE_FORMAT(sale_date, '%Y-%m-%d') >='" . $period_start . "'";
+            $sql .= " AND DATE_FORMAT(sale_date, '%Y-%m-%d') >= " . $this->db->escape($period_start);
         }
         if (!empty($period_end)) {
-            $sql .= " AND DATE_FORMAT(sale_date, '%Y-%m-%d') <='" . $period_end . "'";
+            $sql .= " AND DATE_FORMAT(sale_date, '%Y-%m-%d') <= " . $this->db->escape($period_end);
         }
-
         if (!empty($customer_name)) {
-            $sql .= " AND customer_name like '%" . $customer_name . "%'";
+            $sql .= " AND customer_name LIKE " . $this->db->escape('%' . $customer_name . '%');
         }
         if (!empty($customer_gst)) {
-            $sql .= " AND customer_gst like '" . $customer_gst . "%'";
+            $sql .= " AND customer_gst LIKE " . $this->db->escape($customer_gst . '%');
         }
         $sql .= " GROUP BY medicines.medicine_hsn";
-        // pr($sql);
         $hsndata = $this->db->query($sql)->result_array();
-        $hsn_daily_gst_data = null;
-
-        foreach ($hsndata as $key => $val) {
-            // pr($hsndata,1);sale_strip_quantity
-            $hsn_daily_gst_data[$key]['sale_strip_quantity'] = $val['sale_strip_quantity'];
-            $hsn_daily_gst_data[$key]['sale_cgst'] = $val['cgst'];
-            $hsn_daily_gst_data[$key]['sale_sgst'] = $val['sgst'];
-            $hsn_daily_gst_data[$key]['sale_cgst_percent'] = $val['sale_cgst_percent'];
-            $hsn_daily_gst_data[$key]['sale_taxable'] =($val['sale_taxable']);
-            $hsn_daily_gst_data[$key]['medicine_hsn'] = $val['medicine_hsn'];
+        $hsn_daily_gst_data = array();
+        if (!empty($hsndata)) {
+            foreach ($hsndata as $key => $val) {
+                $hsn_daily_gst_data[$key] = array(
+                    'sale_strip_quantity' => isset($val['sale_strip_quantity']) ? $val['sale_strip_quantity'] : 0,
+                    'sale_cgst'           => (float)(isset($val['cgst']) ? $val['cgst'] : 0),
+                    'sale_sgst'           => (float)(isset($val['sgst']) ? $val['sgst'] : 0),
+                    'sale_cgst_percent'   => isset($val['sale_cgst_percent']) ? $val['sale_cgst_percent'] : 0,
+                    'sale_taxable'        => (float)(isset($val['sale_taxable']) ? $val['sale_taxable'] : 0),
+                    'medicine_hsn'        => isset($val['medicine_hsn']) ? $val['medicine_hsn'] : '',
+                );
+            }
         }
-//pr(count($customer_data),1);
-        if ($this->input->post('key')) {
-            $this->load->view('console/sale/report_gst_wise_tpl', array('hsn_daily_gst_data' => $hsn_daily_gst_data, 'daily_gst_data' => $daily_gst_data, 'customer_data' => $customer_data, 'sale_grand_dis_data' => $sale_grand_dis_data, 'start' => $period_start, 'end' => $period_end));
-        } else {
 
-            $this->load->view('console/sale/gst_record_tpl', array('hsn_daily_gst_data' => $hsn_daily_gst_data, 'daily_gst_data' => $daily_gst_data, 'customer_data' => $customer_data, 'sale_grand_dis_data' => $sale_grand_dis_data, 'start' => $period_start, 'end' => $period_end,));
-        }
+        return array(
+            'customer_data'       => $customer_data,
+            'sale_grand_dis_data' => $sale_grand_dis_data,
+            'daily_gst_data'      => $daily_gst_data,
+            'hsn_daily_gst_data'  => $hsn_daily_gst_data,
+        );
     }
     
     
