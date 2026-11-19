@@ -69,125 +69,28 @@ class Purchase extends MY_Controller {
             $this->render($data);
         }
     }
-      public function report_gstin_wise_export() {
-            $period_start =$this->input->get('start');
-            $period_end = $this->input->get('end');
-            $supplier_name = $this->input->get('supplier_name');
-            $supplier_gst =$this->input->get('supplier_gst');
-            $sql = "SELECT suppliers.*,purchases.purchase_date,purchases.purchase_return,purchases.purchase_return_date,purchases.purchase_invoice,"
-                    . "sum(purchase_taxable) as purchase_taxable,sum(purchase_discount_percent) as purchase_discount_percent,"
-                    . "sum(purchase_cgst) as purchase_cgst,sum(purchase_sgst) as purchase_sgst,sum(purchase_total) as purchase_total  "
-                    . "FROM `purchases` join `suppliers` on purchases.purchase_supplier=suppliers.supplier_id  WHERE 1 = 1 ";
+    public function report_gstin_wise_export() {
+        $period_start = $this->input->get('start');
+        $period_end   = $this->input->get('end');
+        $supplier_name = $this->input->get('supplier_name');
+        $supplier_gst  = $this->input->get('supplier_gst') ? $this->input->get('supplier_gst') : $this->input->get('gst');
 
-            if (!empty($period_start)) {
-                $sql .= "AND purchase_date >='" . $period_start . "'";
-            }
-            if (!empty($period_end)) {
-                $sql .= "AND purchase_date<='" . $period_end . "'";
-            }
+        if (empty($period_start)) {
+            $period_start = date('Y-m-d', strtotime('-1 month'));
+        }
+        if (empty($period_end)) {
+            $period_end = date('Y-m-d');
+        }
 
-            if (!empty($supplier_name)) {
-                $sql .= "AND supplier_name like '%" . $supplier_name . "%'";
-            }
-            if (!empty($supplier_gst)) {
-                $sql .= "AND supplier_gst like '" . $supplier_gst . "%'";
-            }
-            $sql .= "GROUP BY supplier_gst";
-            #echo $sql;
-            # $invoices = $this->db->query("SELECT * FROM `invoices` WHERE invoice_date >='" . $period_start . "' AND invoice_date<='" . $period_end . "'")->result_array();
-            $purchase = $this->db->query($sql)->result_array();
-            #pr($purchase);
-            $customer_data = null;
-            foreach ($purchase as $key => $invoice) {
-                #$customer_data[$key] = json_decode($invoice['invoice_meta'], true);
-                $customer_data[$key]['supplier_name'] = $invoice['supplier_name'];
-                $customer_data[$key]['supplier_gst'] = $invoice['supplier_gst'];
-                $customer_data[$key]['purchase_invoice'] = $invoice['purchase_invoice'];
-                $customer_data[$key]['purchase_date'] = $invoice['purchase_date'];
-                $customer_data[$key]['purchase_quantity'] = $invoice['purchase_quantity'];
-                $customer_data[$key]['purchase_batch'] = $invoice['purchase_batch'];
-                $customer_data[$key]['purchase_taxable'] = $invoice['purchase_taxable'];
-                $customer_data[$key]['purchase_discount_percent'] = $invoice['purchase_discount_percent'];
-                $original_price = (100 * $invoice['purchase_taxable']) / (100 - $invoice['purchase_discount_percent']);
-                $customer_data[$key]['purchase_discount'] = $original_price - $invoice['purchase_taxable'];
-                $customer_data[$key]['purchase_cgst'] = $invoice['purchase_cgst'];
-                $customer_data[$key]['purchase_sgst'] = $invoice['purchase_sgst'];
-                $customer_data[$key]['purchase_total'] = $invoice['purchase_total'];
-                $customer_data[$key]['purchase_return'] = $invoice['purchase_return'];
-                $customer_data[$key]['purchase_return_date'] = $invoice['purchase_return_date'];
-            }
-            #pr($customer_data,1);
-            #$package=$this->packages_model->get_list();
-            $sql = "SELECT sum(purchase_cgst),purchase_cgst_percent FROM `purchases` join `suppliers` on purchases.purchase_supplier=suppliers.supplier_id WHERE 1=1";
+        $rep = $this->_get_gstin_wise_data($period_start, $period_end, $supplier_name, $supplier_gst);
+        $customer_data = $rep['customer_data'];
+        $gst_data = $rep['gst_data'];
+        $hsn_daily_gst_data = $rep['hsn_daily_gst_data'];
 
-            if (!empty($period_start)) {
-                $sql .= " AND purchase_date >='" . $period_start . "'";
-            }
-            if (!empty($period_end)) {
-                $sql .= " AND purchase_date<='" . $period_end . "'";
-            }
-
-            if (!empty($supplier_name)) {
-                $sql .= " AND supplier_name like '%" . $supplier_name . "%'";
-            }
-            if (!empty($supplier_gst)) {
-                $sql .= " AND supplier_gst like '" . $supplier_gst . "%'";
-            }
-            $sql .= " GROUP BY purchase_cgst_percent";
-
-            $data = $this->db->query($sql)->result_array();
-            $gst_data = null;
-
-            foreach ($data as $key => $val) {
-                //pr($data,1);
-                $gst_data[$key]['purchase_cgst'] = $val['sum(purchase_cgst)'];
-                $gst_data[$key]['purchase_cgst_percent'] = $val['purchase_cgst_percent'];
-            }
-            //pr($gst_data,1);
-            $sql = "SELECT medicines.medicine_hsn,sum(purchases.purchase_sgst) as sgst, sum(purchases.purchase_cgst) as cgst FROM `purchases` "
-                    . "INNER JOIN medicines ON medicines.medicine_id = purchases.purchase_medicine_id "
-                    . "JOIN suppliers ON suppliers.supplier_id = purchases.purchase_supplier "
-                    . "WHERE 1=1";
-
-            if (!empty($period_start)) {
-                $sql .= " AND purchase_date >='" . $period_start . "'";
-            }
-            if (!empty($period_end)) {
-                $sql .= " AND purchase_date<='" . $period_end . "'";
-            }
-
-            if (!empty($supplier_name)) {
-                $sql .= " AND supplier_name like '%" . $supplier_name . "%'";
-            }
-            if (!empty($supplier_gst)) {
-                $sql .= " AND supplier_gst like '" . $supplier_gst . "%'";
-            }
-            $sql .= " GROUP BY medicines.medicine_hsn";
-            // pr($sql);
-            $hsndata = $this->db->query($sql)->result_array();
-            $hsn_daily_gst_data = null;
-
-            foreach ($hsndata as $key => $val) {
-                // pr($hsndata,1);
-                $hsn_daily_gst_data[$key]['purchase_cgst'] = $val['cgst'];
-                $hsn_daily_gst_data[$key]['medicine_hsn'] = $val['medicine_hsn'];
-            }
-            
-          // pr(array('hsn_daily_gst_data' => $hsn_daily_gst_data, 'gst_data' => $gst_data, 'customer_data' => $customer_data, 'start' => $period_start, 'end' => $period_end));
-           
-             $fileName = 'purchse-'.time().'.xlsx';  
-		// load excel library
-       
         $objPHPExcel = new PHPExcel();
         $objPHPExcel->setActiveSheetIndex(0);
-    //   $objPHPExcel->getActiveSheet()
-    // ->getStyle('A1:E1')
-    // ->getFill()
-    // ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
-    // ->getStartColor()
-    // ->setRGB('FF8080');
-       
-        // set Header//Purchase Batch
+
+        // Header
         $objPHPExcel->getActiveSheet()->SetCellValue('A1', 'Supplier Name');
         $objPHPExcel->getActiveSheet()->SetCellValue('B1', 'Supplier GST');
         $objPHPExcel->getActiveSheet()->SetCellValue('C1', 'Purchase Date');
@@ -195,70 +98,60 @@ class Purchase extends MY_Controller {
         $objPHPExcel->getActiveSheet()->SetCellValue('E1', 'CGST');
         $objPHPExcel->getActiveSheet()->SetCellValue('F1', 'SGST');
         $objPHPExcel->getActiveSheet()->SetCellValue('G1', 'Total');
-         
-      
-        // set Row
+
         $rowCount = 2;
-       // pr($gst_data);
-        foreach ($customer_data as $key =>$list) {
-            
-            $objPHPExcel->getActiveSheet()->SetCellValue('A' . $rowCount, $list['supplier_name']);
-            $objPHPExcel->getActiveSheet()->SetCellValue('B' . $rowCount,$list['supplier_gst']);
-            $objPHPExcel->getActiveSheet()->SetCellValue('C' . $rowCount,$list['purchase_date']);
-            $objPHPExcel->getActiveSheet()->SetCellValue('D' . $rowCount, $list['purchase_taxable']);
-            $objPHPExcel->getActiveSheet()->SetCellValue('E' . $rowCount, $list['purchase_cgst']);
-            $objPHPExcel->getActiveSheet()->SetCellValue('F' . $rowCount, $list['purchase_sgst']);
-            $objPHPExcel->getActiveSheet()->SetCellValue('G' . $rowCount, $list['purchase_total']);
-            $rowCount++;
+        if (!empty($customer_data)) {
+            foreach ($customer_data as $key => $list) {
+                $objPHPExcel->getActiveSheet()->SetCellValue('A' . $rowCount, isset($list['supplier_name']) ? $list['supplier_name'] : '');
+                $objPHPExcel->getActiveSheet()->SetCellValue('B' . $rowCount, isset($list['supplier_gst']) ? $list['supplier_gst'] : '');
+                $objPHPExcel->getActiveSheet()->SetCellValue('C' . $rowCount, isset($list['purchase_date']) ? $list['purchase_date'] : '');
+                $objPHPExcel->getActiveSheet()->SetCellValue('D' . $rowCount, isset($list['purchase_taxable']) ? $list['purchase_taxable'] : 0);
+                $objPHPExcel->getActiveSheet()->SetCellValue('E' . $rowCount, isset($list['purchase_cgst']) ? $list['purchase_cgst'] : 0);
+                $objPHPExcel->getActiveSheet()->SetCellValue('F' . $rowCount, isset($list['purchase_sgst']) ? $list['purchase_sgst'] : 0);
+                $objPHPExcel->getActiveSheet()->SetCellValue('G' . $rowCount, isset($list['purchase_total']) ? $list['purchase_total'] : 0);
+                $rowCount++;
+            }
         }
-       
-        $objPHPExcel->getActiveSheet()->SetCellValue('A'. $rowCount, 'HSN NUMBER');
-        $objPHPExcel->getActiveSheet()->SetCellValue('B'. $rowCount, 'Total HSN CGST');
-        $objPHPExcel->getActiveSheet()->SetCellValue('C'. $rowCount, 'HSN NUMBER');
-        $objPHPExcel->getActiveSheet()->SetCellValue('D'. $rowCount, 'Total HSN SGST');
-        
-        foreach ($hsn_daily_gst_data as $key =>$list) {
-            $objPHPExcel->getActiveSheet()->SetCellValue('A' . ($rowCount+1), $list['medicine_hsn']);
-            $objPHPExcel->getActiveSheet()->SetCellValue('B' . ($rowCount+1), $list['purchase_cgst']);
-            $objPHPExcel->getActiveSheet()->SetCellValue('C' . ($rowCount+1), $list['medicine_hsn']);
-            $objPHPExcel->getActiveSheet()->SetCellValue('D' . ($rowCount+1), $list['purchase_cgst']);
-            
-            $rowCount++;
+
+        $rowCount++;
+        $objPHPExcel->getActiveSheet()->SetCellValue('A' . $rowCount, 'HSN NUMBER');
+        $objPHPExcel->getActiveSheet()->SetCellValue('B' . $rowCount, 'Total HSN CGST');
+        $objPHPExcel->getActiveSheet()->SetCellValue('C' . $rowCount, 'HSN NUMBER');
+        $objPHPExcel->getActiveSheet()->SetCellValue('D' . $rowCount, 'Total HSN SGST');
+
+        if (!empty($hsn_daily_gst_data)) {
+            foreach ($hsn_daily_gst_data as $key => $list) {
+                $rowCount++;
+                $objPHPExcel->getActiveSheet()->SetCellValue('A' . $rowCount, isset($list['medicine_hsn']) ? $list['medicine_hsn'] : '');
+                $objPHPExcel->getActiveSheet()->SetCellValue('B' . $rowCount, isset($list['purchase_cgst']) ? $list['purchase_cgst'] : 0);
+                $objPHPExcel->getActiveSheet()->SetCellValue('C' . $rowCount, isset($list['medicine_hsn']) ? $list['medicine_hsn'] : '');
+                $objPHPExcel->getActiveSheet()->SetCellValue('D' . $rowCount, isset($list['purchase_sgst']) ? $list['purchase_sgst'] : 0);
+            }
         }
-        
+
+        $rowCount += 2;
         $objPHPExcel->getActiveSheet()->SetCellValue('A' . $rowCount, 'Purchase CGST Percent');
         $objPHPExcel->getActiveSheet()->SetCellValue('B' . $rowCount, 'Total Purchase CGST');
         $objPHPExcel->getActiveSheet()->SetCellValue('C' . $rowCount, 'Purchase SGST Percent');
         $objPHPExcel->getActiveSheet()->SetCellValue('D' . $rowCount, 'Total Purchase SGST');
-        
-       
-      foreach ($gst_data as $key =>$list) {
-            
-            $objPHPExcel->getActiveSheet()->SetCellValue('A' . ($rowCount+1), $list['purchase_cgst_percent']);
-            $objPHPExcel->getActiveSheet()->SetCellValue('B' . ($rowCount+1),$list['purchase_cgst']);
-            $objPHPExcel->getActiveSheet()->SetCellValue('C' . ($rowCount+1), $list['purchase_cgst_percent']);
-            $objPHPExcel->getActiveSheet()->SetCellValue('D' . ($rowCount+1),$list['purchase_cgst']);
-            $rowCount++;
+
+        if (!empty($gst_data)) {
+            foreach ($gst_data as $key => $list) {
+                $rowCount++;
+                $objPHPExcel->getActiveSheet()->SetCellValue('A' . $rowCount, isset($list['purchase_cgst_percent']) ? $list['purchase_cgst_percent'] : 0);
+                $objPHPExcel->getActiveSheet()->SetCellValue('B' . $rowCount, isset($list['purchase_cgst']) ? $list['purchase_cgst'] : 0);
+                $objPHPExcel->getActiveSheet()->SetCellValue('C' . $rowCount, isset($list['purchase_sgst_percent']) ? $list['purchase_sgst_percent'] : 0);
+                $objPHPExcel->getActiveSheet()->SetCellValue('D' . $rowCount, isset($list['purchase_sgst']) ? $list['purchase_sgst'] : 0);
+            }
         }
-       $objPHPExcel->getActiveSheet()->getStyle('A2')->applyFromArray(
-        array(
-            'fill' => array(
-                'type' => PHPExcel_Style_Fill::FILL_SOLID,
-                'color' => array('rgb' => 'E05CC2')
-            )
-        )
 
-);
-        $filename = "gstin_wise". date("Y-m-d-H-i-s").".csv";
-		header('Content-Type: application/vnd.ms-excel'); 
-		header('Content-Disposition: attachment;filename="'.$filename.'"');
-		header('Cache-Control: max-age=0'); 
-		$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'CSV');  
-		$objWriter->save('php://output'); 
-
-        
-
-        
+        $filename = "gstin_wise_" . date("Y-m-d_H-i-s") . ".csv";
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'CSV');
+        $objWriter->save('php://output');
+        exit;
     }
     
     public function generate_purchse() {
@@ -666,116 +559,132 @@ class Purchase extends MY_Controller {
     }
 
     public function report_gstin_wise() {
-        $post_data = $this->input->post();
-		if ($this->input->post('key')) {
-            $period_start = $this->input->post('start');
-            $period_end = $this->input->post('end');
-            $supplier_name = $this->input->post('supplier_name');
-            $supplier_gst = $this->input->post('supplier_gst');
-            #echo $package_name;
-            // pr($post_data);
-            $sql = "SELECT suppliers.*,purchases.purchase_date,purchases.purchase_return,purchases.purchase_return_date,purchases.purchase_invoice,"
-                    . "sum(purchase_taxable) as purchase_taxable,sum(purchase_discount_percent) as purchase_discount_percent,"
-                    . "sum(purchase_cgst) as purchase_cgst,sum(purchase_sgst) as purchase_sgst,sum(purchase_total) as purchase_total  "
-                    . "FROM `purchases` join `suppliers` on purchases.purchase_supplier=suppliers.supplier_id  WHERE 1 = 1 ";
+        $is_ajax = $this->input->is_ajax_request() || ($this->input->post('key') == 'ajax_resp') || $this->input->get('ajax');
 
-            if (!empty($period_start)) {
-                $sql .= "AND purchase_date >='" . $period_start . "'";
-            }
-            if (!empty($period_end)) {
-                $sql .= "AND purchase_date<='" . $period_end . "'";
-            }
+        $period_start  = $this->input->get_post('start');
+        $period_end    = $this->input->get_post('end');
+        $supplier_name = $this->input->get_post('supplier_name');
+        $supplier_gst  = $this->input->get_post('supplier_gst') ? $this->input->get_post('supplier_gst') : $this->input->get_post('gst');
 
-            if (!empty($supplier_name)) {
-                $sql .= "AND supplier_name like '%" . $supplier_name . "%'";
-            }
-            if (!empty($supplier_gst)) {
-                $sql .= "AND supplier_gst like '" . $supplier_gst . "%'";
-            }
-            $sql .= "GROUP BY supplier_gst";
-            #echo $sql;
-            # $invoices = $this->db->query("SELECT * FROM `invoices` WHERE invoice_date >='" . $period_start . "' AND invoice_date<='" . $period_end . "'")->result_array();
-            $purchase = $this->db->query($sql)->result_array();
-            #pr($purchase);
-            $customer_data = null;
-            foreach ($purchase as $key => $invoice) {
-                #$customer_data[$key] = json_decode($invoice['invoice_meta'], true);
-                $customer_data[$key]['supplier_name'] = $invoice['supplier_name'];
-                $customer_data[$key]['supplier_gst'] = $invoice['supplier_gst'];
-                $customer_data[$key]['purchase_invoice'] = $invoice['purchase_invoice'];
-                $customer_data[$key]['purchase_date'] = $invoice['purchase_date'];
-                $customer_data[$key]['purchase_quantity'] = $invoice['purchase_quantity'];
-                $customer_data[$key]['purchase_batch'] = $invoice['purchase_batch'];
-                $customer_data[$key]['purchase_taxable'] = $invoice['purchase_taxable'];
-                $customer_data[$key]['purchase_discount_percent'] = $invoice['purchase_discount_percent'];
-                $original_price = (100 * $invoice['purchase_taxable']) / (100 - $invoice['purchase_discount_percent']);
-                $customer_data[$key]['purchase_discount'] = $original_price - $invoice['purchase_taxable'];
-                $customer_data[$key]['purchase_cgst'] = $invoice['purchase_cgst'];
-                $customer_data[$key]['purchase_sgst'] = $invoice['purchase_sgst'];
-                $customer_data[$key]['purchase_total'] = $invoice['purchase_total'];
-                $customer_data[$key]['purchase_return'] = $invoice['purchase_return'];
-                $customer_data[$key]['purchase_return_date'] = $invoice['purchase_return_date'];
-            }
-            #pr($customer_data,1);
-            #$package=$this->packages_model->get_list();
-            $sql = "SELECT sum(purchase_cgst),purchase_cgst_percent FROM `purchases` join `suppliers` on purchases.purchase_supplier=suppliers.supplier_id WHERE 1=1";
-
-            if (!empty($period_start)) {
-                $sql .= " AND purchase_date >='" . $period_start . "'";
-            }
-            if (!empty($period_end)) {
-                $sql .= " AND purchase_date<='" . $period_end . "'";
-            }
-
-            if (!empty($supplier_name)) {
-                $sql .= " AND supplier_name like '%" . $supplier_name . "%'";
-            }
-            if (!empty($supplier_gst)) {
-                $sql .= " AND supplier_gst like '" . $supplier_gst . "%'";
-            }
-            $sql .= " GROUP BY purchase_cgst_percent";
-
-            $data = $this->db->query($sql)->result_array();
-            $gst_data = null;
-
-            foreach ($data as $key => $val) {
-                //pr($data,1);
-                $gst_data[$key]['purchase_cgst'] = $val['sum(purchase_cgst)'];
-                $gst_data[$key]['purchase_cgst_percent'] = $val['purchase_cgst_percent'];
-            }
-            //pr($gst_data,1);
-            $sql = "SELECT medicines.medicine_hsn,sum(purchases.purchase_sgst) as sgst, sum(purchases.purchase_cgst) as cgst FROM `purchases` "
-                    . "INNER JOIN medicines ON medicines.medicine_id = purchases.purchase_medicine_id "
-                    . "JOIN suppliers ON suppliers.supplier_id = purchases.purchase_supplier "
-                    . "WHERE 1=1";
-
-            if (!empty($period_start)) {
-                $sql .= " AND purchase_date >='" . $period_start . "'";
-            }
-            if (!empty($period_end)) {
-                $sql .= " AND purchase_date<='" . $period_end . "'";
-            }
-
-            if (!empty($supplier_name)) {
-                $sql .= " AND supplier_name like '%" . $supplier_name . "%'";
-            }
-            if (!empty($supplier_gst)) {
-                $sql .= " AND supplier_gst like '" . $supplier_gst . "%'";
-            }
-            $sql .= " GROUP BY medicines.medicine_hsn";
-            // pr($sql);
-            $hsndata = $this->db->query($sql)->result_array();
-            $hsn_daily_gst_data = null;
-
-            foreach ($hsndata as $key => $val) {
-                // pr($hsndata,1);
-                $hsn_daily_gst_data[$key]['purchase_cgst'] = $val['cgst'];
-                $hsn_daily_gst_data[$key]['medicine_hsn'] = $val['medicine_hsn'];
-            }
-            $this->load->view('console/purchase/report_gstin_wise_tpl', array('hsn_daily_gst_data' => $hsn_daily_gst_data, 'gst_data' => $gst_data, 'customer_data' => $customer_data, 'start' => $period_start, 'end' => $period_end));
-        } else {
-            $this->load->view('console/purchase/gst_record_tpl', array('hsn_daily_gst_data' => $hsn_daily_gst_data, 'gst_data' => $gst_data, 'customer_data' => $customer_data, 'start' => $period_start, 'end' => $period_end,));
+        if (empty($period_start)) {
+            $period_start = date('Y-m-d', strtotime('-1 month'));
         }
+        if (empty($period_end)) {
+            $period_end = date('Y-m-d');
+        }
+
+        $report_data = $this->_get_gstin_wise_data($period_start, $period_end, $supplier_name, $supplier_gst);
+        $report_data['start'] = $period_start;
+        $report_data['end'] = $period_end;
+        $report_data['supplier_name'] = !empty($supplier_name) ? $supplier_name : '';
+        $report_data['supplier_gst'] = !empty($supplier_gst) ? $supplier_gst : '';
+
+        if ($is_ajax) {
+            $this->load->view('console/purchase/report_gstin_wise_table_tpl', $report_data);
+        } else {
+            $this->render($report_data, 'report_gstin_wise_tpl');
+        }
+    }
+
+    private function _get_gstin_wise_data($period_start, $period_end, $supplier_name = null, $supplier_gst = null) {
+        $sql = "SELECT suppliers.*, purchases.purchase_date, purchases.purchase_return, purchases.purchase_return_date, purchases.purchase_invoice, "
+             . "sum(purchase_taxable) as purchase_taxable, sum(purchase_discount_percent) as purchase_discount_percent, "
+             . "sum(purchase_cgst) as purchase_cgst, sum(purchase_sgst) as purchase_sgst, sum(purchase_total) as purchase_total "
+             . "FROM `purchases` JOIN `suppliers` ON purchases.purchase_supplier = suppliers.supplier_id WHERE 1 = 1 ";
+
+        if (!empty($period_start)) {
+            $sql .= "AND purchase_date >= " . $this->db->escape($period_start) . " ";
+        }
+        if (!empty($period_end)) {
+            $sql .= "AND purchase_date <= " . $this->db->escape($period_end) . " ";
+        }
+        if (!empty($supplier_name)) {
+            $sql .= "AND supplier_name LIKE " . $this->db->escape('%' . $supplier_name . '%') . " ";
+        }
+        if (!empty($supplier_gst)) {
+            $sql .= "AND supplier_gst LIKE " . $this->db->escape($supplier_gst . '%') . " ";
+        }
+        $sql .= "GROUP BY supplier_gst";
+
+        $purchase = $this->db->query($sql)->result_array();
+        $customer_data = array();
+        foreach ($purchase as $key => $invoice) {
+            $customer_data[$key]['supplier_name'] = isset($invoice['supplier_name']) ? $invoice['supplier_name'] : '';
+            $customer_data[$key]['supplier_gst'] = isset($invoice['supplier_gst']) ? $invoice['supplier_gst'] : '';
+            $customer_data[$key]['purchase_invoice'] = isset($invoice['purchase_invoice']) ? $invoice['purchase_invoice'] : '';
+            $customer_data[$key]['purchase_date'] = isset($invoice['purchase_date']) ? $invoice['purchase_date'] : '';
+            $customer_data[$key]['purchase_quantity'] = isset($invoice['purchase_quantity']) ? $invoice['purchase_quantity'] : 0;
+            $customer_data[$key]['purchase_batch'] = isset($invoice['purchase_batch']) ? $invoice['purchase_batch'] : '';
+            $customer_data[$key]['purchase_taxable'] = isset($invoice['purchase_taxable']) ? $invoice['purchase_taxable'] : 0;
+            $customer_data[$key]['purchase_discount_percent'] = isset($invoice['purchase_discount_percent']) ? $invoice['purchase_discount_percent'] : 0;
+            $disc = (float)(isset($invoice['purchase_discount_percent']) ? $invoice['purchase_discount_percent'] : 0);
+            $taxable = (float)(isset($invoice['purchase_taxable']) ? $invoice['purchase_taxable'] : 0);
+            $orig = ($disc < 100) ? ((100 * $taxable) / (100 - $disc)) : $taxable;
+            $customer_data[$key]['purchase_discount'] = $orig - $taxable;
+            $customer_data[$key]['purchase_cgst'] = isset($invoice['purchase_cgst']) ? $invoice['purchase_cgst'] : 0;
+            $customer_data[$key]['purchase_sgst'] = isset($invoice['purchase_sgst']) ? $invoice['purchase_sgst'] : 0;
+            $customer_data[$key]['purchase_total'] = isset($invoice['purchase_total']) ? $invoice['purchase_total'] : 0;
+            $customer_data[$key]['purchase_return'] = isset($invoice['purchase_return']) ? $invoice['purchase_return'] : 0;
+            $customer_data[$key]['purchase_return_date'] = isset($invoice['purchase_return_date']) ? $invoice['purchase_return_date'] : '';
+        }
+
+        $sql = "SELECT sum(purchase_cgst), sum(purchase_sgst), purchase_cgst_percent FROM `purchases` "
+             . "JOIN `suppliers` ON purchases.purchase_supplier = suppliers.supplier_id WHERE 1=1 ";
+        if (!empty($period_start)) {
+            $sql .= "AND purchase_date >= " . $this->db->escape($period_start) . " ";
+        }
+        if (!empty($period_end)) {
+            $sql .= "AND purchase_date <= " . $this->db->escape($period_end) . " ";
+        }
+        if (!empty($supplier_name)) {
+            $sql .= "AND supplier_name LIKE " . $this->db->escape('%' . $supplier_name . '%') . " ";
+        }
+        if (!empty($supplier_gst)) {
+            $sql .= "AND supplier_gst LIKE " . $this->db->escape($supplier_gst . '%') . " ";
+        }
+        $sql .= "GROUP BY purchase_cgst_percent";
+
+        $data = $this->db->query($sql)->result_array();
+        $gst_data = array();
+        foreach ($data as $key => $val) {
+            $cg = isset($val['sum(purchase_cgst)']) ? $val['sum(purchase_cgst)'] : 0;
+            $sg = isset($val['sum(purchase_sgst)']) ? $val['sum(purchase_sgst)'] : $cg;
+            $gst_data[$key]['purchase_cgst'] = $cg;
+            $gst_data[$key]['purchase_sgst'] = $sg;
+            $gst_data[$key]['purchase_cgst_percent'] = isset($val['purchase_cgst_percent']) ? $val['purchase_cgst_percent'] : 0;
+            $gst_data[$key]['purchase_sgst_percent'] = isset($val['purchase_cgst_percent']) ? $val['purchase_cgst_percent'] : 0;
+        }
+
+        $sql = "SELECT medicines.medicine_hsn, sum(purchases.purchase_sgst) as sgst, sum(purchases.purchase_cgst) as cgst FROM `purchases` "
+             . "INNER JOIN medicines ON medicines.medicine_id = purchases.purchase_medicine_id "
+             . "JOIN suppliers ON suppliers.supplier_id = purchases.purchase_supplier WHERE 1=1 ";
+        if (!empty($period_start)) {
+            $sql .= "AND purchase_date >= " . $this->db->escape($period_start) . " ";
+        }
+        if (!empty($period_end)) {
+            $sql .= "AND purchase_date <= " . $this->db->escape($period_end) . " ";
+        }
+        if (!empty($supplier_name)) {
+            $sql .= "AND supplier_name LIKE " . $this->db->escape('%' . $supplier_name . '%') . " ";
+        }
+        if (!empty($supplier_gst)) {
+            $sql .= "AND supplier_gst LIKE " . $this->db->escape($supplier_gst . '%') . " ";
+        }
+        $sql .= "GROUP BY medicines.medicine_hsn";
+
+        $hsndata = $this->db->query($sql)->result_array();
+        $hsn_daily_gst_data = array();
+        foreach ($hsndata as $key => $val) {
+            $hsn_daily_gst_data[$key]['purchase_cgst'] = isset($val['cgst']) ? $val['cgst'] : 0;
+            $hsn_daily_gst_data[$key]['purchase_sgst'] = isset($val['sgst']) ? $val['sgst'] : 0;
+            $hsn_daily_gst_data[$key]['medicine_hsn'] = isset($val['medicine_hsn']) ? $val['medicine_hsn'] : '';
+        }
+
+        return array(
+            'customer_data'      => $customer_data,
+            'gst_data'           => $gst_data,
+            'hsn_daily_gst_data' => $hsn_daily_gst_data
+        );
     }
 
     public function daily_purchase_medicine() {
