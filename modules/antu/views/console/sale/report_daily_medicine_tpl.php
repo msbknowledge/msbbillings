@@ -1,889 +1,343 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" >
-    <head>
-        <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1">
-                <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-                    <link rel="stylesheet" href="/resources/demos/style.css">
-                        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-                        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-                        <!-- <script src="http://www.nikesh.me/js/mootools-1.2.4-core-nc.js" type="text/javascript" ></script> -->
-                        <!--link rel="stylesheet" href="http://www.nikesh.me/demo/main.css" type="text/css" /-->
-                        <!-- <link rel="stylesheet" href="http://www.nikesh.me/demo/loading.css" type="text/css" /> -->
-                        <!-- <script src="http://www.nikesh.me/demo/browserCheck.js" type="text/javascript" ></script>
- -->
-                        <script>
-                            $(function () {
-                                $(".datepicker").datepicker({dateFormat: 'yy-mm-dd'});
-                            });
-                        </script>
-                        <script>
-                             $(document).ready(function () {
-                               
-
-                                $('div#container').hide();
-
-
-                                $('#start_date,#end_date').on("change", function () {
-                                    $('div#container').show();
-                                    $.post("", {medicine_name: $('.medicine_name').val(),sale_invoice: $('.sale_invoice').val(), start: $('#start_date').val(), end: $('#end_date').val(), key: 'ajax_resp'}, function (resp) {
-                                        $(".ajax_resp").html(resp);
-                                        $('div#container').hide();
-                                    });
-
-                                });
-                               
-                                $('.medicine_name').on("keyup", function () {
-                                    $('div#container').show();
-                                    $.post("", {medicine_name: $('.medicine_name').val(),sale_invoice: $('.sale_invoice').val(), start: $('#start_date').val(), end: $('#end_date').val(), key: 'ajax_resp'}, function (resp) {
-                                       // console.log(resp);
-                                        $(".ajax_resp").html(resp);
-                                        $('div#container').hide();
-                                    });
-
-                                });
-                                $('.sale_invoice').on("keyup", function () {
-                                    $('div#container').show();
-                                    $.post("", {medicine_name: $('.medicine_name').val(),sale_invoice: $('.sale_invoice').val(), start: $('#start_date').val(), end: $('#end_date').val(), key: 'ajax_resp'}, function (resp) {
-                                        $(".ajax_resp").html(resp);
-                                        $('div#container').hide();
-                                    });
-
-                                });
-
-                            });
-
-
-
-                        </script>
-
-                        <title>Medicine Record</title>
-                        </head>
-
-                        <body>
-                            <style>
-
-
-                                body {
-                                    background: #FFFFFF;
-                                }
-                                body, td, th, input, select, textarea, option, optgroup {
-                                    font-family: Verdana, Arial, Helvetica, sans-serif;
-                                    font-size: 12px;
-                                    color: #000000;
-                                }
-                                h1 {
-                                    text-transform: uppercase;
-                                    color: #CCCCCC;
-                                    text-align: right;
-                                    font-size: 24px;
-                                    font-weight: normal;
-                                    padding-bottom: 5px;
-                                    margin-top: 0px;
-                                    margin-bottom: 15px;
-                                    border-bottom: 1px solid black;
-                                }
-                                .store {
-                                    width: 100%;
-                                    margin-bottom: 20px;
-                                }
-                                .div2 {
-                                    float: left;
-                                    display: inline-block;
-                                }
-                                .div3 {
-                                    float: right;
-                                    display: inline-block;
-                                    padding: 5px;
-                                }
-                                .heading td {
-                                    background: #E7EFEF;
-                                }
-                                .address, .product {
-                                    border-collapse: collapse;
-                                }
-                                .address {
-                                    width: 100%;
-                                    margin-bottom: 20px;
-                                    border-top: 1px solid black;
-                                    border-right: 1px solid black;
-                                }
-                                .address th, .address td {
-                                    border-left: 1px solid black;
-                                    border-bottom: 1px solid black;
-                                    padding: 5px;
-                                    vertical-align: text-bottom;
-                                }
-                                .address td {
-                                    width: 50%;
-                                }
-                                .product {
-                                    width: 100%;
-                                    margin-bottom: 20px;
-                                    border-top: 1px solid black;
-                                    border-right: 1px solid black;
-                                }
-                                .product td {
-                                    border-left: 1px solid black;
-                                    border-bottom: 1px solid black;
-                                    padding: 5px;
-                                }
-                            </style>
-                            <style media="print">
-                                body {
-                                    background-color: #FFF;
-                                    background-image: none;
-                                }
-
-                                .delete, .button, #addrow, #head, #actions {
-                                    display: none;
-                                }
-
-                                #main {
-                                    border: none;
-                                    height: auto;
-                                }
-
-                                table tr td textarea {
-                                    margin-top: 0;
-                                }
-
-                                body {
-                                    margin-top: -50px;
-                                }
-
-                                textarea {
-                                    background: #FFF;
-                                }
-
-                                input {
-                                    background: #FFF;
-                                }
-
-                                .sub-total {
-                                    border-top: 1px dashed #CCC;
-                                    border-bottom: 1px dashed #CCC;
-                                }
-                            </style>
-                            <style>	
-                                /* http://meyerweb.com/eric/tools/css/reset/ 
-                                   v2.0 | 20110126
-                                   License: none (public domain)
-                                */
-
-                                html, body, div, span, applet, object, iframe,
-                                h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-                                a, abbr, acronym, address, big, cite, code,
-                                del, dfn, em, img, ins, kbd, q, s, samp,
-                                small, strike, strong, sub, sup, tt, var,
-                                b, u, i, center,
-                                dl, dt, dd, ol, ul, li,
-                                fieldset, form, label, legend,
-                                table, caption, tbody, tfoot, thead, tr, th, td,
-                                article, aside, canvas, details, embed, 
-                                figure, figcaption, footer, header, hgroup, 
-                                menu, nav, output, ruby, section, summary,
-                                time, mark, audio, video {
-                                    margin: 0;
-                                    padding: 0;
-                                    border: 0;
-                                    font-size: 100%;
-                                    font: inherit;
-                                    vertical-align: baseline;
-                                }
-                                /* HTML5 display-role reset for older browsers */
-                                article, aside, details, figcaption, figure, 
-                                footer, header, hgroup, menu, nav, section {
-                                    display: block;
-                                }
-                                body {
-                                    line-height: 1;
-                                }
-                                ol, ul {
-                                    list-style: none;
-                                }
-                                blockquote, q {
-                                    quotes: none;
-                                }
-                                blockquote:before, blockquote:after,
-                                q:before, q:after {
-                                    content: '';
-                                    content: none;
-                                }
-                                table {
-                                    border-collapse: collapse;
-                                    border-spacing: 0;
-                                }
-
-                                /*__________________________________________________Universal
-                                Universal
-                                */
-
-                                body {
-                                    background-color: #F0F0F0;
-                                    background-image:url('../images/bg.png');
-                                    background-repeat:repeat;
-                                    font-size: 100%;
-                                    color: #000;
-                                    font-family: Arial, Helvetica, sans-serif;
-                                }
-
-                                .left {
-                                    float: left;
-                                }
-
-                                .right {
-                                    float: right;
-                                }
-
-                                .clear {
-                                    clear: both;
-                                }
-
-                                input, textarea {
-                                    margin: 0;
-                                    padding: 0;
-                                    border: none;
-                                    outline: none;
-                                    background: transparent;
-                                    font-family: Arial, Helvetica, sans-serif;
-                                }
-
-                                p, input {
-                                    font-size: 1em;
-                                    padding: 2px 0;
-                                }
-
-                                textarea {
-                                    display: block;
-                                    background: #E3FAFA;
-                                }
-
-                                input {
-                                    background: #E3FAFA;
-                                    height: 24px;
-                                    width: 220px;
-                                    border: 1px solid lightgray;
-                                    border-radius: 3px;
-                                    padding: 7px;
-                                    margin: 5px;
-                                }
-
-                                input:hover, textarea:hover {
-                                    background: #FFFFCC;
-                                }
-
-                                input:focus, textarea:focus {
-                                    border: 1px solid #666;
-                                }
-
-                                .price:hover {
-                                    background: #FFF;
-                                }
-
-                                .price:focus {
-                                    border: none;
-                                }
-
-                                .button {
-                                    display: inline;
-                                    padding: 4px 8px; 
-                                    background: url(../images/button-bg.png) repeat-x; 
-                                    color: #666;
-                                    border: 1px solid #ccc; 
-                                    font: bold .95em Helvetica; 
-                                    text-decoration: none;
-                                }
-
-                                .button:hover { 
-                                    color: #333;
-                                    border: 1px solid #666;
-                                    background: url(../images/button-bg.png) repeat-x; 
-                                }
-
-                                .button:active {
-                                    background: url(../images/button-bg.png) repeat-x; 
-                                    background-position: bottom left;
-                                }
-
-                                /*__________________________________________________Head
-                                Head
-                                */
-
-                                #head {
-                                    margin: 0 auto;
-                                    padding-top: 10px;
-                                    margin-bottom: 20px;
-                                    width: 864px;
-                                }
-
-                                h1 {
-                                    padding-bottom: 10px;
-                                    color: #EEE;
-                                    font-weight: normal;
-                                    font-size: 2em;
-                                }
-
-                                #about-head {
-                                    margin-bottom: 4px;
-                                }
-
-                                h3 {
-                                    color: #333;
-                                    font-size: 1.4em;
-                                    display: inline;
-                                }
-
-                                #about, #how-to {
-                                    padding: 5px;
-                                    background: #EEE;
-                                    color: #333;
-                                    border: 1px solid #666;
-                                }
-
-                                #about p, #how-to p {
-                                    padding-bottom: 8px;
-                                }
-
-                                strong {
-                                    font-weight: bold;
-                                }	
-
-                                /*__________________________________________________Banner Ad
-                                Banner AD
-                                */
-
-                                #banner-ad {
-                                    margin-bottom: 20px;
-                                }
-
-                                /*__________________________________________________Actions
-                                Actions
-                                */
-
-                                #actions {
-                                    margin: 0 auto;
-                                    padding-top: 10px;
-                                    margin-bottom: -20px;
-                                    width: 864px;
-                                }
-
-                                /*__________________________________________________Main
-                                Main
-                                */
-
-                                #main {
-                                    margin: 30px auto;
-                                    padding: 32px;
-                                    width: 800px;
-                                    height: 1040px;
-                                    background: #FFF;
-                                    border: 1px solid #808080;
-                                }
-                                .main {
-                                    margin: 30px auto;
-                                    padding: 32px;
-                                    /*width: 800px;*/
-                                    height: 1040px;
-                                    background: #FFF;
-                                    border: 1px solid #808080;
-                                    page-break-after: always;
-                                }
-
-                                /*__________________________________________________Invoice
-                                Invoice
-                                */
-
-                                #title {
-                                    font-weight: bold;
-                                    text-align: center;
-                                    padding-bottom: 16px;
-                                }
-
-                                #title h1 {
-                                    padding: 0;
-                                    margin: 0;
-                                    font-size: 1.25em;
-                                    color: #000;
-                                }
-
-                                #title h2 {
-                                    font-size: 1em;
-                                    color: #000;
-                                }
-
-
-                                #invHeader {
-                                    padding-bottom: 16px;
-                                    margin-bottom: 16px;
-                                    border-bottom: 1px solid #CCC;
-                                }
-
-                                #headLeft, #signatureLeft {
-                                    float: left;
-                                    width: 392px;
-                                    border-bottom: 1px solid #CCC;
-                                }
-
-                                #headLeft p, #headRight p, #signatureLeft p, #signatureRight p {
-                                    font-weight: bold;
-                                    font-size: .85em;
-                                }
-
-                                #legal {
-                                    padding: 4px;
-                                    margin-bottom: 4px;
-                                    border: 1px solid #CCC;
-                                    font-size: .70em;
-                                }
-
-                                #legal ul {
-                                    list-style-type: circle;
-                                }
-
-                                #legal ul li {
-                                    padding: 4px 0;
-                                    margin-left: 2em;
-                                }
-
-                                #signature p {
-                                    padding-left: 4px;
-                                }
-
-                                #headLeft div {
-                                    padding: 4px;
-                                    border-top: 1px solid #CCC;
-                                    border-left: 1px solid #CCC;
-                                    border-right: 1px solid #CCC;
-                                }
-
-                                #signatureLeft div {
-                                    padding: 1px 4px;
-                                    border-top: 1px solid #CCC;
-                                    border-left: 1px solid #CCC;
-                                    border-right: 1px solid #CCC;
-                                }
-
-                                #signatureRight div {
-                                    padding: 1px 4px;
-                                }
-
-                                #signatureRightRight {
-                                    border-left: none !important;
-                                }
-
-                                #headLeft textarea {
-                                    font-size: 1.2em;
-                                    text-align: left;
-                                    width: 100%;
-                                    height: 96px;
-                                }
-
-                                #headRight {
-                                    margin-left: 12px;
-                                    float: left;
-                                    width: 392px;
-                                    border: 1px solid #CCC;
-                                }
-
-                                #signatureRight {
-                                    float: left;
-                                    width: 402px;
-                                    border-bottom: 1px solid #CCC;
-                                }
-
-                                #headRightRight div, #headRightLeft div {
-                                    padding: 0 4px;
-                                }
-
-                                #headRight p {
-                                    padding-left: 4px;
-                                }
-
-                                #headLeft input, #headRight input, #signatureLeft input, #signatureRight input {
-                                    margin-bottom: 8px;
-                                    width: 100%;
-                                    display: block;
-                                }
-
-                                #headRightLeft, #headRightRight {
-                                    padding-top: 32px;
-                                    padding-bottom: 60px;
-                                    float: left;
-                                    width: 192px;
-                                }
-
-                                #signatureRightLeft, #signatureRightRight {
-                                    float: left;
-                                    width: 192px;
-                                }
-
-                                #headRight textarea {
-                                    font-size: 1em;
-                                    text-align: left;
-                                    width: 100%;
-                                    height: 72px;
-                                }
-
-                                #headRightBottom {
-                                    padding: 4px;
-                                    border-top: 1px solid #CCC;
-                                    width: 374px;
-                                }
-
-                                #headRightBottom textarea {
-                                    font-size: 1.2em;
-                                    text-align: left;
-                                    width: 100%;
-                                    height: 96px;
-                                }
-
-                                table {
-                                    width: 800px;
-                                }
-
-                                table { border-collapse: collapse; }
-                                table td, table th { padding: 5px; }
-
-                                table th {
-                                    text-align: left;
-                                    font-weight: bold;
-                                    border-bottom: 1px solid #CCC;
-                                }
-
-                                table th input {
-                                    font-weight: bold;
-                                    display: inline;
-                                    width: 32px;
-                                }
-
-                                table tr td input {
-                                    width: 100%;
-                                }
-
-                                table tr td textarea {
-                                    margin-top: -16px;
-                                    width: 100%;
-                                    height: 24px;
-                                    font-size: 16px;
-                                }
-
-                                .item-name {
-                                    width: 432px;
-                                }
-
-
-                                .hsNo {
-                                    width: 80px;
-                                }
-
-                                .NC {
-                                    width: 80px;
-                                }
-
-                                .mfr {
-                                    width: 80px;
-                                }
-
-                                .pref {
-                                    width: 80px;
-                                }
-
-                                .country {
-                                    width: 80px;
-                                }
-
-                                .countryInpt {
-                                    width: 80px;
-                                }
-
-                                .delete-wpr input {
-                                    display: inline;
-                                    width: 432px;
-                                }
-
-                                .delete {
-                                    text-decoration: none;
-                                    font-weight: bold;
-                                    color: red;
-                                    padding-right: 3px;
-                                    margin-right: 3px;
-                                    margin-left: -19px;
-                                    border-right: 1px solid #000;
-                                }
-
-                                #addrow {
-                                    text-decoration: none;
-                                    color: green;
-                                }
-                                .total-line,  .total-weight, .total-qty, .total-value {
-                                    font-weight: bold;
-                                }
-
-                                .sub-total {
-                                    background: #DDD;
-                                }
-
-                                #signature {
-                                    margin-top: 32px;
-                                }
-                                /**default*/
-
-                                .main h1 {
-                                    text-transform: uppercase;
-                                    color: #CCCCCC;
-                                    text-align: right;
-                                    font-size: 24px;
-                                    font-weight: normal;
-                                    padding-bottom: 5px;
-                                    margin-top: 0px;
-                                    margin-bottom: 15px;
-                                    border-bottom: 1px solid #CDDDDD;
-                                }
-                                .main .store {
-                                    width: 100%;
-                                    margin-bottom: 20px;
-                                }
-                                .main .div2 {
-                                    float: left;
-                                    display: inline-block;
-                                }
-                                .main .div3 {
-                                    float: right;
-                                    display: inline-block;
-                                    padding: 5px;
-                                }
-                                .main .heading td {
-                                    background: #E7EFEF;
-                                }
-                                .main .address,.main .product {
-                                    border-collapse: collapse;
-                                }
-                                .main .address {
-                                    width: 100%;
-                                    margin-bottom: 20px;
-                                    border-top: 1px solid #CDDDDD;
-                                    border-right: 1px solid #CDDDDD;
-                                }
-                                .main .address th,.main.address td {
-                                    border-left: 1px solid #CDDDDD;
-                                    border-bottom: 1px solid #CDDDDD;
-                                    padding: 5px;
-                                    vertical-align: text-bottom;
-                                }
-                                .main .address td {
-                                    width: 50%;
-                                }
-                                .main .product {
-                                    width: 100%;
-                                    margin-bottom: 20px;
-                                    border-top: 1px solid #CDDDDD;
-                                    border-right: 1px solid #CDDDDD;
-                                }
-                                .main .product td {
-                                    border-left: 1px solid #CDDDDD;
-                                    border-bottom: 1px solid #CDDDDD;
-                                    padding: 5px;
-                                }
-                                textarea, input[type=text]
-                                {
-                                    font-size:13px!important;
-                                }
-                                .main
-                                {
-                                    border:none!important;
-                                    /* height: 1095px;*/
-                                    margin: 0 auto;
-                                }
-                                .main .calculation {
-                                    border-top: 1px solid black;
-                                    border-right: 1px solid black;
-                                }
-                                .main .calculation th, .calculation td {
-                                    border: 1px solid black;
-                                    border: 1px solid black;
-                                }
-                                .main .address {
-                                    width: 100%;
-                                    margin-bottom: 20px;
-                                    border-top: 1px solid black;
-                                    border-right: 1px solid black;
-                                }
-                                .main h1 {
-                                    border-bottom: 1px solid black;
-                                }
-                                @page {
-                                    size: A4 portrait;
-                                    margin:0.1in 0.1in 0in 0in;
-                                }
-                                @media print {
-                                    h1{
-                                    margin-left: 200px;
-                                    margin-bottom:50px;
-                                    line-height:1.2;
-                                    font-weight: bold;
-                                         /* border-color: black;
-                                         border-width: 2px;
-                                         background:#fff; */
-                                     }
-                                }
-                                .main+.main {
-                                    page-break-before:always;
-                                }
-                            </style>
-                            <style>
-                                .address th, .address td {
-                                    border-left: 0px solid #000;
-                                    border-bottom: 1px solid #000;
-                                    padding: 5px;
-                                    vertical-align: text-bottom;
-                                }
-                                .main .address {
-                                    width: 100%;
-                                    margin-bottom: 20px;
-                                    border-top: 1px solid #000;
-                                    border-right: 0px solid #000;
-                                }
-
-                                .main .calculation {
-                                    border-top: 1px solid #000;
-                                    border-right: 0px solid #000;
-                                }
-                                .main .calculation th, .calculation td {
-                                    border: 1px solid #000;
-                                    border-top-width: 1px;
-                                    border-right-width: 0px;
-                                    border-bottom-width: 1px;
-                                    border-left-width: 1px;
-                                    border-top-style: solid;
-                                    border-right-style: solid;
-                                    border-bottom-style: solid;
-                                    border-left-style: solid;
-                                    border-top-color: #000;
-                                    border-right-color: #000;
-                                    border-bottom-color: #000;
-                                    border-left-color: #000;
-                                    -moz-border-top-colors: none;
-                                    -moz-border-right-colors: none;
-                                    -moz-border-bottom-colors: none;
-                                    -moz-border-left-colors: none;
-                                    border-image-source: none;
-                                    border-image-slice: 100% 100% 100% 100%;
-                                    border-image-width: 1 1 1 1;
-                                    border-image-outset: 0 0 0 0;
-                                    border-image-repeat: stretch stretch;
-                                }
-
-                            </style>
-                            <style>
-                                .main {
-                                    border: medium none !important;
-                                    height: auto;
-                                    display: block;
-                                }
-                                .main .calculation {
-                                    border-top: 1px solid black;
-                                    border-right: 1px solid black;
-                                    width: 100%;
-                                    border-spacing: 0px;
-                                    border-collapse: collapse;
-                                }
-                                .main .calculation th, .calculation td {
-                                    border: 1px solid black;
-                                    border: 1px solid black;
-                                }
-                                .main .address {
-                                    width: 100%;
-                                    margin-bottom: 20px;
-                                    border-top: 1px solid black;
-                                    border-right: 1px solid black;
-                                }
-                                .main h1 {
-                                    border-bottom: 1px solid black;
-                                }
-                                td{font-size: 10px;}
-                                @media print{
-                                    .form_div{
-                                        display:none;
-                                    }
-                                }
-                            </style>
-
-                            <div class="main" style="page-break-after: always;">
-                           <?php
-                                $MonthArray = array();
-                                $month = array('January-', 'February-', 'March-', 'April-', 'May-', 'June-', 'July-', 'August-', 'September-', 'October-', 'November-', 'December-');
-                                for ($i = 17; $i < 18; $i++) {
-
-                                    for ($j = 0; $j < 12; $j++) {
-                                        if (($i == 17) && ($j > 5)) {
-                                            $MonthArray[] = $month[$j] . $i;
-                                        }
-                                    }
-                                }
-                                ?>
-                                <h1 style="color:black; text-align:center;">Medicine Daily Report Sheet</h1>
-                                <a href="/console/" >
-                                    <img src="/msb/msbbillingslogo.png" style="position: absolute;top: 0;background-color: white; height: 50px">
-                                    </a>
-                                <div class="form_div form-group" style="margin-bottom: 10px;text-align: center;">
-                                    <form method="post">
-                                       <label for="medicine_name">Name:</label>
-                                        <input type="text" name="medicine_name" placeholder="medicine name" class="medicine_name form-control">
-
-                                        <label for="sale_invoice">Invoice:</label>
-                                        <input type="text" name="sale_invoice" placeholder="sale invoice " class="sale_invoice form-control">
-
-                                        <label for="datepicker">Start Date:</label>
-                                        <input typex="text" type="date-local" value="<?=  date('Y-m-d',strtotime("-1 month")) ?>" id="start_date" name="start" class="datepicker form-control" required>
-
-                                        <label for="end_date">End Date:</label>
-                                        <input typex="text" type="date-local" value="<?=  date('Y-m-d') ?>" id="end_date" name="end" class="datepicker form-control" required>
-
-                                    </form>
-                                </div>
-                                <div class="ajax_resp">
-                                    <div id='container'>
-
-                                        <div id='loading'>
-                                            <div id='Gen' style="margin-left:550px" class='marginLeft'>
-                                                <div class='block' id='rotate_01'></div>
-                                                <div class='block' id='rotate_02'></div>
-                                                <div class='block' id='rotate_03'></div>
-                                                <div class='block' id='rotate_04'></div>
-                                                <div class='block' id='rotate_05'></div>
-                                                <div class='block' id='rotate_06'></div>
-                                               
-                                                <div class='clearfix'></div>
-                                            </div>
-
-
-                                        </div>
-
-                                    </div>
-                                    <div class="ajax_resp">
-                    
-                                </div>
-                                </div>
-                            </div>
-                          
-                        </body>
-                        </html>
-<div class="container-fluid" style="padding-right: 20px; padding-left: 20px;">
-<hr style="border-top: 1px solid #f5f5f5; border-bottom: 1px solid #cccccc;">                            
-<footer style="text-shadow: 0px 1px 9px #99B8C4;font-weight: bold;font-size: smaller;">
-<div class="row-fluid" style="margin-top: 20px">
-    <div class="span4"style="margin-bottom: -15px">© <?=date('Y')?> MsbBillings - All Rights Reserved</div>
-    <div class="span4" style="text-align: center;margin-bottom: -70px"><p class="center">Powered By <br> <a target="_blank" href="https://www.msbbillings.in"><img style="height: 50px;" src="<?= cdn_url() ?>msb/msbbillingslogo.png"/></a></p></div>
-    <!-- <div id="google_translate_element" class="span4" style="text-align: right;"></div> -->
-</div>
-
-<!-- <script type="text/javascript">
-function googleTranslateElementInit() {
-  new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+<style>
+/* Modern styling for Daily Sale Medicine Report in AdminLTE Console Layout */
+.report-header-card {
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    margin-bottom: 16px;
+    border: 1px solid #e2e8f0;
 }
-</script>
+.report-title {
+    font-size: 17px !important;
+    font-weight: 700 !important;
+    color: #0f172a;
+    margin: 0 0 4px 0 !important;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.report-filter-bar {
+    background: #f8fafc;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    padding: 14px 16px 6px 16px;
+    margin-bottom: 18px;
+}
+.filter-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #475569;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+    display: block;
+}
+.kpi-card {
+    background: #fff;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    padding: 14px 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.kpi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+.kpi-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    margin-right: 14px;
+    flex-shrink: 0;
+}
+.kpi-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+}
+.kpi-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.2;
+}
 
-<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script> -->
-</footer>
+/* Table Card */
+.table-card {
+    background: #fff;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+.table-card-header {
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.table-card-title {
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    color: #1e293b;
+    margin: 0 !important;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.gst-table th {
+    background: #f1f5f9 !important;
+    color: #334155 !important;
+    font-weight: 700 !important;
+    font-size: 11px !important;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    border-top: none !important;
+    padding: 10px 12px !important;
+    vertical-align: middle !important;
+}
+.gst-table td {
+    font-size: 12px !important;
+    padding: 9px 12px !important;
+    vertical-align: middle !important;
+    color: #1e293b;
+}
+.gst-table tbody tr:hover {
+    background-color: #f8fafc !important;
+}
+.gst-table tfoot td {
+    background: #e2e8f0 !important;
+    font-weight: 700 !important;
+    font-size: 12px !important;
+    color: #0f172a !important;
+    border-top: 2px solid #cbd5e1 !important;
+    padding: 10px 12px !important;
+}
+
+/* Print Styles */
+@media print {
+    body, .wrapper, .content-wrapper, .content, #content {
+        background: #fff !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+    }
+    .main-header, .main-sidebar, .content-header, .main-footer, .breadcrumb,
+    .report-filter-bar, .report-actions, .no-print {
+        display: none !important;
+    }
+    .print-only {
+        display: block !important;
+    }
+    .table-card, .kpi-card {
+        border: 1px solid #cbd5e1 !important;
+        box-shadow: none !important;
+        margin-bottom: 12px !important;
+    }
+    .table-responsive {
+        overflow: visible !important;
+    }
+    .gst-table th, .gst-table td {
+        border: 1px solid #94a3b8 !important;
+        font-size: 10px !important;
+        padding: 4px 6px !important;
+    }
+}
+.print-only {
+    display: none;
+}
+</style>
+
+<!-- Print-Only Header -->
+<div class="print-only" style="text-align: center; margin-bottom: 20px; border-bottom: 2px solid #0f172a; padding-bottom: 10px;">
+    <h2 style="font-size: 20px; font-weight: bold; margin: 0 0 5px 0; color: #0f172a;">Daily Sale Medicine Report</h2>
+    <p style="font-size: 12px; color: #475569; margin: 0;">Period: <strong class="print-start-date"><?= !empty($start) ? htmlspecialchars($start) : '-' ?></strong> to <strong class="print-end-date"><?= !empty($end) ? htmlspecialchars($end) : '-' ?></strong></p>
 </div>
+
+<!-- Main Report Container -->
+<div class="report-wrapper">
+    <!-- Top Header Card -->
+    <div class="report-header-card" style="padding: 14px 18px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+            <div>
+                <h1 class="report-title">
+                    <i class="fa fa-medkit text-success"></i> Daily Sale Medicine Report
+                </h1>
+                <span style="font-size: 12px; color: #64748b; display: inline-block;">
+                    Detailed breakdown of medicine sales by date, batch, quantities (strip & loose), rate, and invoice
+                </span>
+            </div>
+            <div class="report-actions" style="display: flex; gap: 8px; align-items: center;">
+                <a href="<?= console_url('sale/daily_sale_medicine_export'); ?>?start=<?= !empty($start) ? urlencode($start) : '' ?>&end=<?= !empty($end) ? urlencode($end) : '' ?>&medicine_name=<?= !empty($medicine_name) ? urlencode($medicine_name) : '' ?>&sale_invoice=<?= !empty($sale_invoice) ? urlencode($sale_invoice) : '' ?>&customer_name=<?= !empty($customer_name) ? urlencode($customer_name) : '' ?>&sale_batch=<?= !empty($sale_batch) ? urlencode($sale_batch) : '' ?>" 
+                   id="btn_export_excel" class="btn btn-success btn-sm" style="font-weight: 600; border-radius: 4px;">
+                    <i class="fa fa-file-excel-o"></i> Export to Excel
+                </a>
+                <button type="button" onclick="window.print();" class="btn btn-default btn-sm" style="font-weight: 600; border-radius: 4px; border-color: #cbd5e1;">
+                    <i class="fa fa-print"></i> Print Report
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Bar Card -->
+    <div class="report-filter-bar no-print">
+        <form id="saleMedicineFilterForm" method="post" action="<?= console_url('sale/daily_sale_medicine') ?>" style="margin: 0;">
+            <div class="row">
+                <div class="col-md-3 col-sm-6" style="margin-bottom: 10px;">
+                    <label class="filter-label">Medicine Name</label>
+                    <div class="input-group" style="width: 100%;">
+                        <span class="input-group-addon" style="background: #fff; border-color: #cbd5e1;"><i class="fa fa-medkit"></i></span>
+                        <input type="text" name="medicine_name" id="medicine_name" value="<?= !empty($medicine_name) ? htmlspecialchars($medicine_name) : '' ?>" class="form-control input-sm" placeholder="Search medicine..." style="border-color: #cbd5e1;">
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6" style="margin-bottom: 10px;">
+                    <label class="filter-label">Sale Invoice #</label>
+                    <div class="input-group" style="width: 100%;">
+                        <span class="input-group-addon" style="background: #fff; border-color: #cbd5e1;"><i class="fa fa-file-text-o"></i></span>
+                        <input type="text" name="sale_invoice" id="sale_invoice" value="<?= !empty($sale_invoice) ? htmlspecialchars($sale_invoice) : '' ?>" class="form-control input-sm" placeholder="Invoice #..." style="border-color: #cbd5e1;">
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6" style="margin-bottom: 10px;">
+                    <label class="filter-label">Customer Name</label>
+                    <div class="input-group" style="width: 100%;">
+                        <span class="input-group-addon" style="background: #fff; border-color: #cbd5e1;"><i class="fa fa-user"></i></span>
+                        <input type="text" name="customer_name" id="customer_name" value="<?= !empty($customer_name) ? htmlspecialchars($customer_name) : '' ?>" class="form-control input-sm" placeholder="Customer..." style="border-color: #cbd5e1;">
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6" style="margin-bottom: 10px;">
+                    <label class="filter-label">Batch Number</label>
+                    <div class="input-group" style="width: 100%;">
+                        <span class="input-group-addon" style="background: #fff; border-color: #cbd5e1;"><i class="fa fa-barcode"></i></span>
+                        <input type="text" name="sale_batch" id="sale_batch" value="<?= !empty($sale_batch) ? htmlspecialchars($sale_batch) : '' ?>" class="form-control input-sm" placeholder="Batch #..." style="border-color: #cbd5e1;">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 col-sm-6" style="margin-bottom: 10px;">
+                    <label class="filter-label">Start Date</label>
+                    <div class="input-group" style="width: 100%;">
+                        <span class="input-group-addon" style="background: #fff; border-color: #cbd5e1;"><i class="fa fa-calendar"></i></span>
+                        <input type="date" name="start" id="start_date" value="<?= !empty($start) ? $start : date('Y-m-d', strtotime('-1 month')) ?>" class="form-control input-sm" style="border-color: #cbd5e1;">
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6" style="margin-bottom: 10px;">
+                    <label class="filter-label">End Date</label>
+                    <div class="input-group" style="width: 100%;">
+                        <span class="input-group-addon" style="background: #fff; border-color: #cbd5e1;"><i class="fa fa-calendar"></i></span>
+                        <input type="date" name="end" id="end_date" value="<?= !empty($end) ? $end : date('Y-m-d') ?>" class="form-control input-sm" style="border-color: #cbd5e1;">
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-12" style="margin-bottom: 10px;">
+                    <label class="filter-label" style="opacity: 0;">Actions</label>
+                    <div style="display: flex; gap: 8px;">
+                        <button type="submit" id="btn_filter" class="btn btn-primary btn-sm" style="font-weight: 600; width: 50%; border-radius: 4px;" title="Apply Filter">
+                            <i class="fa fa-search"></i> Filter
+                        </button>
+                        <button type="button" id="btn_reset" class="btn btn-default btn-sm" style="font-weight: 600; width: 50%; border-radius: 4px; border-color: #cbd5e1;" title="Reset filters">
+                            <i class="fa fa-refresh"></i> Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Results Container (loaded with initial data and updated via AJAX) -->
+    <div id="report_results_container">
+        <?php $this->load->view('console/sale/report_daily_medicine'); ?>
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    var exportBaseUrl = '<?= console_url("sale/daily_sale_medicine_export"); ?>';
+    var ajaxUrl = '<?= console_url("sale/daily_sale_medicine"); ?>';
+
+    function updateExportLink() {
+        var start = $('#start_date').val();
+        var end = $('#end_date').val();
+        var medicine_name = $('#medicine_name').val();
+        var sale_invoice = $('#sale_invoice').val();
+        var customer_name = $('#customer_name').val();
+        var sale_batch = $('#sale_batch').val();
+
+        var params = [];
+        if (start) params.push('start=' + encodeURIComponent(start));
+        if (end) params.push('end=' + encodeURIComponent(end));
+        if (medicine_name) params.push('medicine_name=' + encodeURIComponent(medicine_name));
+        if (sale_invoice) params.push('sale_invoice=' + encodeURIComponent(sale_invoice));
+        if (customer_name) params.push('customer_name=' + encodeURIComponent(customer_name));
+        if (sale_batch) params.push('sale_batch=' + encodeURIComponent(sale_batch));
+
+        var fullUrl = exportBaseUrl + (params.length ? '?' + params.join('&') : '');
+        $('#btn_export_excel').attr('href', fullUrl);
+        $('.print-start-date').text(start || '-');
+        $('.print-end-date').text(end || '-');
+    }
+
+    function doFilter() {
+        updateExportLink();
+        var $container = $('#report_results_container');
+        $container.html('<div style="text-align: center; padding: 45px;"><i class="fa fa-spinner fa-spin fa-2x text-primary" style="color: #35aa47;"></i><p style="margin-top: 12px; color: #64748b; font-size: 13px; font-weight: 500;">Loading medicine sales records, please wait...</p></div>');
+
+        var postData = {
+            key: 'ajax_resp',
+            start: $('#start_date').val(),
+            end: $('#end_date').val(),
+            medicine_name: $('#medicine_name').val(),
+            sale_invoice: $('#sale_invoice').val(),
+            customer_name: $('#customer_name').val(),
+            sale_batch: $('#sale_batch').val()
+        };
+
+        $.post(ajaxUrl, postData, function(response) {
+            $container.html(response);
+        }).fail(function() {
+            $container.html('<div class="alert alert-danger" style="margin: 20px 0;"><i class="fa fa-exclamation-triangle"></i> Failed to load medicine records. Please check connection and try again.</div>');
+        });
+    }
+
+    $('#saleMedicineFilterForm').on('submit', function(e) {
+        e.preventDefault();
+        doFilter();
+    });
+
+    $('#start_date, #end_date').on('change', function() {
+        doFilter();
+    });
+
+    var debounceTimer = null;
+    $('#medicine_name, #sale_invoice, #customer_name, #sale_batch').on('keyup', function() {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(function() {
+            doFilter();
+        }, 400);
+    });
+
+    $('#btn_reset').on('click', function() {
+        $('#medicine_name').val('');
+        $('#sale_invoice').val('');
+        $('#customer_name').val('');
+        $('#sale_batch').val('');
+        $('#start_date').val('<?= date("Y-m-d", strtotime("-1 month")) ?>');
+        $('#end_date').val('<?= date("Y-m-d") ?>');
+        doFilter();
+    });
+});
+</script>
