@@ -228,53 +228,240 @@ class Return_sale extends MY_Controller
 
     public function sale_report()
     {
-        $data = $this->input->post();
-        $customer_ID = $this->input->post('customer_ID');
-        $customer_name = $this->input->post('customer_name');
-        $return_sale_medicine = $this->input->post('return_sale_medicine');
-        $start = $this->input->post('start');
-        $end = $this->input->post('end');
-        $return_sale_Batch = $this->input->post('return_sale_Batch');
-        $return_sale_ref = $this->input->post('return_sale_ref');
-        if (!empty($data)) {
-            $sql = "SELECT * FROM `returns_sales` "
-                . "join `customers` on returns_sales.return_sale_customer=customers.customer_ID where 1=1 ";
+        $is_ajax = $this->input->is_ajax_request() || ($this->input->post('key') == 'ajax_resp') || $this->input->get('ajax');
 
-            if (!empty($customer_name)) {
-                $sql .= "AND customer_name like '%" . $customer_name . "%'";
-            }
-            if ((!empty($start)) || (!empty($end))) {
-                $sql .= "AND return_sale_date between '" . $data['start'] . "' and '" . $data['end'] . "'";
-            }
-            if (!empty($return_sale_medicine)) {
-                $sql .= "AND return_sale_medicine like '%" . $return_sale_medicine . "%'";
-            }
-            if (!empty($return_sale_Batch)) {
-                $sql .= "AND return_sale_Batch like '%" . $return_sale_Batch . "%'";
-            }
-            if (!empty($return_sale_ref)) {
-                $sql .= "AND return_sale_ref like '%" . $return_sale_ref . "%'";
-            }
-            $collections = $this->db->query($sql)->result_array();
+        $period_start             = $this->input->get_post('start');
+        $period_end               = $this->input->get_post('end');
+        $customer_name            = $this->input->get_post('customer_name');
+        $return_sale_medicine     = $this->input->get_post('return_sale_medicine');
+        $return_sale_Batch        = $this->input->get_post('return_sale_Batch');
+        $return_sale_ref          = $this->input->get_post('return_sale_ref');
+        $return_sale_invoice      = $this->input->get_post('return_sale_invoice');
+        $return_sale_entry_number = $this->input->get_post('return_sale_entry_number');
 
-            $return_sale_data = null;
-            foreach ($collections as $key => $var) {
-                $return_sale_data[$key]['customer_ID'] = $var['customer_ID'];
-                $return_sale_data[$key]['customer_name'] = $var['customer_name'];
-                $return_sale_data[$key]['return_sale_medicine'] = $var['return_sale_medicine'];
-                $return_sale_data[$key]['return_sale_Batch'] = $var['return_sale_Batch'];
-                $return_sale_data[$key]['return_sale_date'] = $var['return_sale_date'];
-                $return_sale_data[$key]['return_sale_ref'] = $var['return_sale_ref'];
-                $return_sale_data[$key]['return_sale_total'] = $var['return_sale_total'];
-            }
+        // Default to past 1 month if GET without dates
+        if ($period_start === NULL && $period_end === NULL && !$this->input->post()) {
+            $period_start = date('Y-m-d', strtotime('-1 month'));
+            $period_end   = date('Y-m-d');
         }
-        $customer = $this->customers_model->get_list();
-        if ($this->input->post()) {
 
-            $this->load->view('console/return_sale/sale_ajax_report_tpl', array('return_sale_data' => $return_sale_data, 'start' => $start, 'end' => $end));
+        $report_data = $this->_get_sale_report_data(
+            $period_start,
+            $period_end,
+            $customer_name,
+            $return_sale_medicine,
+            $return_sale_Batch,
+            $return_sale_ref,
+            $return_sale_invoice,
+            $return_sale_entry_number
+        );
+
+        $report_data['start']                    = $period_start;
+        $report_data['end']                      = $period_end;
+        $report_data['customer_name']            = !empty($customer_name) ? $customer_name : '';
+        $report_data['return_sale_medicine']     = !empty($return_sale_medicine) ? $return_sale_medicine : '';
+        $report_data['return_sale_Batch']        = !empty($return_sale_Batch) ? $return_sale_Batch : '';
+        $report_data['return_sale_ref']          = !empty($return_sale_ref) ? $return_sale_ref : '';
+        $report_data['return_sale_invoice']      = !empty($return_sale_invoice) ? $return_sale_invoice : '';
+        $report_data['return_sale_entry_number'] = !empty($return_sale_entry_number) ? $return_sale_entry_number : '';
+        $report_data['customer']                 = $this->customers_model->get_list();
+
+        if ($is_ajax) {
+            $this->load->view('console/return_sale/sale_ajax_report_tpl', $report_data);
         } else {
-            $this->load->view('console/return_sale/sale_report_tpl', array('return_sale_data' => $return_sale_data, 'start' => $start, 'end' => $end, 'customer' => $customer));
+            $this->render($report_data, 'sale_report_tpl');
         }
+    }
+
+    private function _get_sale_report_data($start = null, $end = null, $customer_name = null, $medicine = null, $batch = null, $ref = null, $invoice = null, $entry_number = null)
+    {
+        $sql = "SELECT returns_sales.*, customers.customer_name, customers.customer_contact, customers.customer_address "
+             . "FROM `returns_sales` "
+             . "LEFT JOIN `customers` ON returns_sales.return_sale_customer = customers.customer_ID "
+             . "WHERE 1 = 1 ";
+
+        if (!empty($start) && !empty($end)) {
+            $sql .= " AND returns_sales.return_sale_date BETWEEN " . $this->db->escape($start) . " AND " . $this->db->escape($end);
+        } elseif (!empty($start)) {
+            $sql .= " AND returns_sales.return_sale_date >= " . $this->db->escape($start);
+        } elseif (!empty($end)) {
+            $sql .= " AND returns_sales.return_sale_date <= " . $this->db->escape($end);
+        }
+
+        if (!empty($customer_name)) {
+            $sql .= " AND customers.customer_name LIKE " . $this->db->escape('%' . $customer_name . '%');
+        }
+        if (!empty($medicine)) {
+            $sql .= " AND returns_sales.return_sale_medicine LIKE " . $this->db->escape('%' . $medicine . '%');
+        }
+        if (!empty($batch)) {
+            $sql .= " AND returns_sales.return_sale_Batch LIKE " . $this->db->escape('%' . $batch . '%');
+        }
+        if (!empty($ref)) {
+            $sql .= " AND returns_sales.return_sale_ref LIKE " . $this->db->escape('%' . $ref . '%');
+        }
+        if (!empty($invoice)) {
+            $sql .= " AND returns_sales.return_sale_invoice LIKE " . $this->db->escape('%' . $invoice . '%');
+        }
+        if (!empty($entry_number)) {
+            $sql .= " AND returns_sales.return_sale_entry_number LIKE " . $this->db->escape('%' . $entry_number . '%');
+        }
+
+        $sql .= " ORDER BY returns_sales.return_sale_date DESC, returns_sales.return_sale_entry_number DESC, returns_sales.return_sale_ID DESC";
+
+        $collections = $this->db->query($sql)->result_array();
+
+        $return_sale_data = array();
+        $total_amount = 0;
+        $total_quantity = 0;
+        $unique_customers = array();
+        $unique_invoices = array();
+        $unique_entries = array();
+
+        if (!empty($collections)) {
+            foreach ($collections as $key => $var) {
+                $amount = (float)(isset($var['return_sale_total']) ? $var['return_sale_total'] : 0);
+                $qty = (int)(isset($var['return_sale_strip']) ? $var['return_sale_strip'] : 0);
+
+                $total_amount += $amount;
+                $total_quantity += $qty;
+
+                if (!empty($var['customer_name'])) {
+                    $unique_customers[$var['customer_name']] = true;
+                }
+                if (!empty($var['return_sale_invoice'])) {
+                    $unique_invoices[$var['return_sale_invoice']] = true;
+                }
+                if (!empty($var['return_sale_entry_number'])) {
+                    $unique_entries[$var['return_sale_entry_number']] = true;
+                }
+
+                $return_sale_data[$key] = array(
+                    'return_sale_ID'           => isset($var['return_sale_ID']) ? $var['return_sale_ID'] : '',
+                    'return_sale_invoice'      => isset($var['return_sale_invoice']) ? $var['return_sale_invoice'] : '',
+                    'return_sale_entry_number' => isset($var['return_sale_entry_number']) ? $var['return_sale_entry_number'] : '',
+                    'customer_ID'              => isset($var['customer_ID']) ? $var['customer_ID'] : '',
+                    'customer_name'            => isset($var['customer_name']) ? $var['customer_name'] : '',
+                    'customer_contact'         => isset($var['customer_contact']) ? $var['customer_contact'] : '',
+                    'return_sale_medicine'     => isset($var['return_sale_medicine']) ? $var['return_sale_medicine'] : '',
+                    'return_sale_Batch'        => isset($var['return_sale_Batch']) ? $var['return_sale_Batch'] : '',
+                    'return_sale_expire_month' => isset($var['return_sale_expire_month']) ? $var['return_sale_expire_month'] : '',
+                    'return_sale_expire_year'  => isset($var['return_sale_expire_year']) ? $var['return_sale_expire_year'] : '',
+                    'return_sale_mrp'          => isset($var['return_sale_mrp']) ? $var['return_sale_mrp'] : 0,
+                    'return_sale_strip'        => $qty,
+                    'return_sale_date'         => isset($var['return_sale_date']) ? $var['return_sale_date'] : '',
+                    'return_sale_ref'          => isset($var['return_sale_ref']) ? $var['return_sale_ref'] : '',
+                    'return_sale_total'        => $amount,
+                    'return_sale_HSN'          => isset($var['return_sale_HSN']) ? $var['return_sale_HSN'] : '',
+                );
+            }
+        }
+
+        return array(
+            'return_sale_data'    => $return_sale_data,
+            'total_return_amount' => $total_amount,
+            'total_quantity'      => $total_quantity,
+            'total_items'         => count($return_sale_data),
+            'total_customers'     => count($unique_customers),
+            'total_invoices'      => count($unique_invoices),
+            'total_entries'       => count($unique_entries),
+        );
+    }
+
+    public function sale_report_export()
+    {
+        $period_start             = $this->input->get('start');
+        $period_end               = $this->input->get('end');
+        $customer_name            = $this->input->get('customer_name');
+        $return_sale_medicine     = $this->input->get('return_sale_medicine');
+        $return_sale_Batch        = $this->input->get('return_sale_Batch');
+        $return_sale_ref          = $this->input->get('return_sale_ref');
+        $return_sale_invoice      = $this->input->get('return_sale_invoice');
+        $return_sale_entry_number = $this->input->get('return_sale_entry_number');
+
+        if (empty($period_start) && empty($period_end)) {
+            $period_start = date('Y-m-d', strtotime('-1 month'));
+            $period_end   = date('Y-m-d');
+        }
+
+        $rep = $this->_get_sale_report_data(
+            $period_start,
+            $period_end,
+            $customer_name,
+            $return_sale_medicine,
+            $return_sale_Batch,
+            $return_sale_ref,
+            $return_sale_invoice,
+            $return_sale_entry_number
+        );
+
+        $return_sale_data = $rep['return_sale_data'];
+
+        $objPHPExcel = new PHPExcel();
+        $objPHPExcel->setActiveSheetIndex(0);
+
+        // Header row
+        $objPHPExcel->getActiveSheet()->SetCellValue('A1', 'Sl');
+        $objPHPExcel->getActiveSheet()->SetCellValue('B1', 'Return Date');
+        $objPHPExcel->getActiveSheet()->SetCellValue('C1', 'Return Entry #');
+        $objPHPExcel->getActiveSheet()->SetCellValue('D1', 'Sale Invoice #');
+        $objPHPExcel->getActiveSheet()->SetCellValue('E1', 'Customer Name');
+        $objPHPExcel->getActiveSheet()->SetCellValue('F1', 'Customer Contact');
+        $objPHPExcel->getActiveSheet()->SetCellValue('G1', 'Medicine Name');
+        $objPHPExcel->getActiveSheet()->SetCellValue('H1', 'HSN');
+        $objPHPExcel->getActiveSheet()->SetCellValue('I1', 'Batch');
+        $objPHPExcel->getActiveSheet()->SetCellValue('J1', 'Exp Date (MM/YY)');
+        $objPHPExcel->getActiveSheet()->SetCellValue('K1', 'Quantity (Strips)');
+        $objPHPExcel->getActiveSheet()->SetCellValue('L1', 'MRP');
+        $objPHPExcel->getActiveSheet()->SetCellValue('M1', 'Reference');
+        $objPHPExcel->getActiveSheet()->SetCellValue('N1', 'Total (INR)');
+
+        $rowCount = 2;
+        $sl = 1;
+        $total_qty = 0;
+        $total_amt = 0;
+
+        if (!empty($return_sale_data)) {
+            foreach ($return_sale_data as $row) {
+                $exp = (!empty($row['return_sale_expire_month']) || !empty($row['return_sale_expire_year']))
+                    ? sprintf('%02d/%s', (int)$row['return_sale_expire_month'], $row['return_sale_expire_year'])
+                    : '';
+                $qty = (int)$row['return_sale_strip'];
+                $amt = (float)$row['return_sale_total'];
+
+                $objPHPExcel->getActiveSheet()->SetCellValue('A' . $rowCount, $sl++);
+                $objPHPExcel->getActiveSheet()->SetCellValue('B' . $rowCount, isset($row['return_sale_date']) ? $row['return_sale_date'] : '');
+                $objPHPExcel->getActiveSheet()->SetCellValue('C' . $rowCount, isset($row['return_sale_entry_number']) ? $row['return_sale_entry_number'] : '');
+                $objPHPExcel->getActiveSheet()->SetCellValue('D' . $rowCount, isset($row['return_sale_invoice']) ? $row['return_sale_invoice'] : '');
+                $objPHPExcel->getActiveSheet()->SetCellValue('E' . $rowCount, isset($row['customer_name']) ? $row['customer_name'] : '');
+                $objPHPExcel->getActiveSheet()->SetCellValue('F' . $rowCount, isset($row['customer_contact']) ? $row['customer_contact'] : '');
+                $objPHPExcel->getActiveSheet()->SetCellValue('G' . $rowCount, isset($row['return_sale_medicine']) ? $row['return_sale_medicine'] : '');
+                $objPHPExcel->getActiveSheet()->SetCellValue('H' . $rowCount, isset($row['return_sale_HSN']) ? $row['return_sale_HSN'] : '');
+                $objPHPExcel->getActiveSheet()->SetCellValue('I' . $rowCount, isset($row['return_sale_Batch']) ? $row['return_sale_Batch'] : '');
+                $objPHPExcel->getActiveSheet()->SetCellValue('J' . $rowCount, $exp);
+                $objPHPExcel->getActiveSheet()->SetCellValue('K' . $rowCount, $qty);
+                $objPHPExcel->getActiveSheet()->SetCellValue('L' . $rowCount, isset($row['return_sale_mrp']) ? $row['return_sale_mrp'] : 0);
+                $objPHPExcel->getActiveSheet()->SetCellValue('M' . $rowCount, isset($row['return_sale_ref']) ? $row['return_sale_ref'] : '');
+                $objPHPExcel->getActiveSheet()->SetCellValue('N' . $rowCount, $amt);
+
+                $total_qty += $qty;
+                $total_amt += $amt;
+                $rowCount++;
+            }
+        }
+
+        // Summary Total Row
+        $objPHPExcel->getActiveSheet()->SetCellValue('A' . $rowCount, 'Total');
+        $objPHPExcel->getActiveSheet()->SetCellValue('K' . $rowCount, $total_qty);
+        $objPHPExcel->getActiveSheet()->SetCellValue('N' . $rowCount, $total_amt);
+
+        $filename = "sale_return_report_" . date("Y-m-d_H-i-s") . ".csv";
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'CSV');
+        $objWriter->save('php://output');
+        exit;
     }
     public function fetch_invoice_details()
     {
