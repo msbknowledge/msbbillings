@@ -1,5 +1,6 @@
 <?php
-$server_name = isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : 'localhost';
+$server_name = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : (isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : 'localhost');
+$server_name = preg_replace('/:\d+$/', '', $server_name);
 $nodeSegment = explode('.', $server_name);
 $sub = $nodeSegment[0];
 if (isset($_GET['node']) && !empty($_GET['node'])) {

@@ -25,6 +25,28 @@ $looseLeft = 0;
 
 $med_id = (!empty($_GET['term']) && is_numeric($_GET['term'])) ? intval($_GET['term']) : 0;
 
+if ($med_id <= 0 && !empty($_GET['term'])) {
+    try {
+        $db_host_lookup = (defined('DB_SERVER') && DB_SERVER === 'localhost') ? '127.0.0.1' : (defined('DB_SERVER') ? DB_SERVER : '127.0.0.1');
+        $conn_lookup = new PDO("mysql:host=" . $db_host_lookup . ";port=3306;dbname=" . DB_NAME, DB_USER, DB_PASSWORD, array(
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+        ));
+        $term_str = trim($_GET['term']);
+        $n_stmt = $conn_lookup->prepare('SELECT medicine_id FROM medicines WHERE medicine_name = :n LIMIT 1');
+        $n_stmt->execute(array('n' => $term_str));
+        if ($n_row = $n_stmt->fetch()) {
+            $med_id = intval($n_row['medicine_id']);
+        } else {
+            $l_stmt = $conn_lookup->prepare('SELECT medicine_id FROM medicines WHERE medicine_name LIKE :n LIMIT 1');
+            $l_stmt->execute(array('n' => '%' . $term_str . '%'));
+            if ($l_row = $l_stmt->fetch()) {
+                $med_id = intval($l_row['medicine_id']);
+            }
+        }
+    } catch (Exception $e) {}
+}
+
 if ($med_id > 0) {
     try {
         $db_host = (defined('DB_SERVER') && DB_SERVER === 'localhost') ? '127.0.0.1' : (defined('DB_SERVER') ? DB_SERVER : '127.0.0.1');

@@ -90,6 +90,11 @@ class medicine_stock extends MY_Controller
     }
     public function medicine_history()
     {
+        $this->output->set_header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+        $this->output->set_header("Cache-Control: post-check=0, pre-check=0", false);
+        $this->output->set_header("Pragma: no-cache");
+        $this->output->cache(0);
+
         $data = $this->input->post();
 
         if (!empty($data)) {
@@ -122,23 +127,27 @@ class medicine_stock extends MY_Controller
             if (empty($medicine_id)) {
                 $medicine_id = $this->input->get('medicine_id');
             }
-            if (empty($medicine_id)) {
-                // Auto-detect the most recent transacted medicine so page opens with live data immediately
-                $recent_sale = $this->db->query("SELECT sale_medicine_id FROM sales ORDER BY sale_id DESC LIMIT 1")->row_array();
-                if (!empty($recent_sale['sale_medicine_id'])) {
-                    $medicine_id = $recent_sale['sale_medicine_id'];
-                } else {
-                    $recent_purchase = $this->db->query("SELECT purchase_medicine_id FROM purchases ORDER BY purchase_id DESC LIMIT 1")->row_array();
-                    if (!empty($recent_purchase['purchase_medicine_id'])) {
-                        $medicine_id = $recent_purchase['purchase_medicine_id'];
-                    } else {
-                        $first_med = $this->db->query("SELECT medicine_id FROM medicines ORDER BY medicine_id ASC LIMIT 1")->row_array();
-                        if (!empty($first_med['medicine_id'])) {
-                            $medicine_id = $first_med['medicine_id'];
-                        }
-                    }
+
+            // Fetch top 6 recently transacted medicines so user has instant one-click access
+            $recent_medicines = array();
+            try {
+                $recent_query = $this->db->query("
+                    SELECT m.medicine_id, m.medicine_name, m.medicine_unit, m.medicine_manufacturer, m.medicine_category, m.medicine_hsn, m.medicine_storage 
+                    FROM (SELECT sale_medicine_id FROM sales ORDER BY sale_id DESC LIMIT 40) s 
+                    JOIN medicines m ON s.sale_medicine_id = m.medicine_id 
+                    GROUP BY m.medicine_id 
+                    LIMIT 6
+                ");
+                if ($recent_query && $recent_query->num_rows() > 0) {
+                    $recent_medicines = $recent_query->result_array();
                 }
+            } catch (Exception $e) {}
+
+            // Auto-detect the most recent transacted medicine if none explicitly requested
+            if (empty($medicine_id) && !empty($recent_medicines[0]['medicine_id'])) {
+                $medicine_id = $recent_medicines[0]['medicine_id'];
             }
+
             $med_data = null;
             if (!empty($medicine_id)) {
                 $med_list = $this->medicines_model->get_list(array("medicine_id" => $medicine_id));
@@ -146,7 +155,11 @@ class medicine_stock extends MY_Controller
                     $med_data = $med_list[0];
                 }
             }
-            $this->render(array('preloaded_medicine' => $med_data), 'medicine_history_tpl');
+
+            $this->render(array(
+                'preloaded_medicine' => $med_data,
+                'recent_medicines'   => $recent_medicines
+            ), 'medicine_history_tpl');
         }
     }
 

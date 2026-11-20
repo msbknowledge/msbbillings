@@ -1,4 +1,8 @@
 <?php
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+
 $preloaded = isset($preloaded_medicine) ? $preloaded_medicine : null;
 $pre_id    = !empty($preloaded['medicine_id']) ? $preloaded['medicine_id'] : '';
 $pre_name  = !empty($preloaded['medicine_name']) ? $preloaded['medicine_name'] : '';
@@ -7,6 +11,7 @@ $pre_cat   = !empty($preloaded['medicine_category']) ? $preloaded['medicine_cate
 $pre_hsn   = !empty($preloaded['medicine_hsn']) ? $preloaded['medicine_hsn'] : '';
 $pre_unit  = !empty($preloaded['medicine_unit']) ? $preloaded['medicine_unit'] : '';
 $pre_store = !empty($preloaded['medicine_storage']) ? $preloaded['medicine_storage'] : '';
+$recent_meds = !empty($recent_medicines) && is_array($recent_medicines) ? $recent_medicines : array();
 ?>
 
 <style>
@@ -83,19 +88,48 @@ $pre_store = !empty($preloaded['medicine_storage']) ? $preloaded['medicine_stora
     line-height: 1.2;
 }
 
+/* Quick Select Pills */
+.quick-med-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #fff;
+    border: 1px solid #cbd5e1;
+    color: #1e293b;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+    margin-right: 6px;
+    margin-bottom: 6px;
+}
+.quick-med-pill:hover {
+    background: #eff6ff;
+    border-color: #3b82f6;
+    color: #2563eb;
+    transform: translateY(-1px);
+}
+.quick-med-pill.active {
+    background: #3b82f6;
+    border-color: #2563eb;
+    color: #fff;
+}
+
 /* Medicine Profile Info Strip */
 .med-profile-card {
     background: #fff;
     border: 1px solid #e2e8f0;
     border-radius: 6px;
     padding: 12px 16px;
-    margin-top: 12px;
+    margin-top: 14px;
     display: none;
 }
 .med-profile-pill {
     display: inline-flex;
     flex-direction: column;
-    margin-right: 20px;
+    margin-right: 22px;
     margin-bottom: 4px;
 }
 .med-profile-pill .pill-label {
@@ -263,33 +297,55 @@ $pre_store = !empty($preloaded['medicine_storage']) ? $preloaded['medicine_stora
     <div class="report-filter-bar no-print">
         <div class="medicine_chooser">
             <div class="row" style="margin-left: -6px; margin-right: -6px;">
-                <div class="col-md-7 col-sm-8" style="padding-left: 6px; padding-right: 6px; margin-bottom: 6px;">
+                <div class="col-md-8 col-sm-12" style="padding-left: 6px; padding-right: 6px; margin-bottom: 6px;">
                     <label class="filter-label" for="search_medicine_name">Search Medicine Name</label>
                     <div class="input-group" style="width: 100%;">
-                        <span class="input-group-addon" style="background: #fff; border-color: #cbd5e1;"><i class="fa fa-search text-muted"></i></span>
+                        <span class="input-group-addon" style="background: #fff; border-color: #cbd5e1;"><i class="fa fa-medkit text-muted"></i></span>
                         <input type="text" 
                                name="medicine_name" 
                                id="search_medicine_name" 
                                value="<?= htmlspecialchars($pre_name) ?>" 
-                               class="form-control input-sm" 
-                               placeholder="Type medicine name to search (e.g. Paracetamol, Pantop, Azithromycin)..." 
+                               class="form-control" 
+                               placeholder="Type medicine name (e.g. Digene, Pantop, Calpol, Azithral) and press Enter..." 
                                autocomplete="off"
-                               style="border-color: #cbd5e1; font-weight: 600;" />
-                        <span class="input-group-addon" id="btn_clear_med" style="cursor: pointer; background: #fff; border-color: #cbd5e1;" title="Clear Search">
-                            <i class="fa fa-times text-muted"></i>
+                               style="border-color: #cbd5e1; font-weight: 600; height: 34px;" />
+                        <span class="input-group-btn">
+                            <button class="btn btn-primary" type="button" id="btn_search_submit" style="font-weight: 600; height: 34px; padding: 0 16px;">
+                                <i class="fa fa-search"></i> Search
+                            </button>
+                            <button class="btn btn-default" type="button" id="btn_clear_med" title="Clear Search" style="border-color: #cbd5e1; height: 34px; padding: 0 12px;">
+                                <i class="fa fa-times text-danger"></i> Clear
+                            </button>
                         </span>
                     </div>
                 </div>
 
-                <div class="col-md-5 col-sm-4" style="padding-left: 6px; padding-right: 6px; margin-bottom: 6px;">
+                <div class="col-md-4 col-sm-12" style="padding-left: 6px; padding-right: 6px; margin-bottom: 6px;">
                     <label class="filter-label">&nbsp;</label>
-                    <div style="font-size: 11px; color: #64748b; line-height: 28px;">
-                        <i class="fa fa-info-circle text-primary"></i> Start typing to see instant matching medicines
+                    <div style="font-size: 11px; color: #64748b; line-height: 34px;">
+                        <i class="fa fa-info-circle text-primary"></i> Type name & press Enter, or choose from suggestions
                     </div>
                 </div>
             </div>
 
-            <!-- Hidden Inputs to Store Medicine Attributes -->
+            <!-- Quick Select Pills Bar -->
+            <?php if (!empty($recent_meds)) : ?>
+                <div style="margin-top: 10px; display: flex; align-items: center; flex-wrap: wrap; gap: 4px;">
+                    <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-right: 4px;">
+                        <i class="fa fa-bolt text-warning"></i> Recent:
+                    </span>
+                    <?php foreach ($recent_meds as $rm) : ?>
+                        <button type="button" 
+                                class="quick-med-pill <?= (!empty($pre_id) && $pre_id == $rm['medicine_id']) ? 'active' : '' ?>" 
+                                data-json='<?= htmlspecialchars(json_encode($rm), ENT_QUOTES, 'UTF-8') ?>'
+                                title="Click to view <?= htmlspecialchars($rm['medicine_name']) ?>">
+                            <i class="fa fa-tag text-muted"></i> <?= htmlspecialchars($rm['medicine_name']) ?>
+                        </button>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+
+            <!-- Hidden Inputs to Store Active Medicine Attributes -->
             <input type="hidden" name="medicine_id" id="val_medicine_id" value="<?= htmlspecialchars($pre_id) ?>">
             <input type="hidden" name="medicine_manufacturer" id="val_medicine_manufacturer" value="<?= htmlspecialchars($pre_mfg) ?>">
             <input type="hidden" name="medicine_category" id="val_medicine_category" value="<?= htmlspecialchars($pre_cat) ?>">
@@ -338,7 +394,7 @@ $pre_store = !empty($preloaded['medicine_storage']) ? $preloaded['medicine_stora
             <i class="fa fa-search" style="font-size: 42px; color: #94a3b8; margin-bottom: 14px; display: inline-block;"></i>
             <h3 style="font-size: 16px; font-weight: 700; color: #1e293b; margin: 0 0 6px 0;">No Medicine Selected</h3>
             <p style="font-size: 12px; color: #64748b; max-width: 450px; margin: 0 auto;">
-                Use the search bar above to select a medicine and view its complete stock audit trail, sales, purchases, and current balance.
+                Use the search bar above or click any recent medicine to view its complete stock audit trail, sales, purchases, and live balance.
             </p>
         </div>
 
@@ -350,11 +406,14 @@ $pre_store = !empty($preloaded['medicine_storage']) ? $preloaded['medicine_stora
 <script>
 $(document).ready(function () {
     var fastEditBaseUrl = "<?= console_url('medicine_stock/fast_update/'); ?>";
+    var purchaseSearchUrl = "<?= base_url('purchase_sale_medicine_search.php'); ?>?table_purchase=purchases&table_sale=sales&table_medicine_stock=medicine_stocks&table_return_sale=returns_sales&table_return_purchase=return_purchases";
+    var autocompleteSourceUrl = "<?= base_url('search.php'); ?>?table=medicines&fieldToSearch=medicine_name";
 
     function updateProfileCard(item) {
         if (!item) {
             $('#med_profile_display').hide();
             $('#btn_fast_edit').hide();
+            $('.print-med-name').text('Selected Medicine');
             return;
         }
 
@@ -375,22 +434,99 @@ $(document).ready(function () {
         $('#med_profile_display').slideDown(200);
     }
 
+    function applyMedicine(med) {
+        if (!med || !med.medicine_id) return;
+
+        $('#search_medicine_name').val(med.medicine_name || '');
+        $('#val_medicine_id').val(med.medicine_id);
+        $('#val_medicine_manufacturer').val(med.medicine_manufacturer || '');
+        $('#val_medicine_category').val(med.medicine_category || '');
+        $('#val_medicine_hsn').val(med.medicine_hsn || '');
+        $('#val_medicine_unit').val(med.medicine_unit || '');
+        $('#val_medicine_storage').val(med.medicine_storage || '');
+
+        // Update active quick select pill styling
+        $('.quick-med-pill').removeClass('active');
+        $('.quick-med-pill').filter(function() {
+            var data = $(this).data('json');
+            return data && String(data.medicine_id) === String(med.medicine_id);
+        }).addClass('active');
+
+        updateProfileCard(med);
+        loadMedicineHistory(med.medicine_id, 1, 50);
+    }
+
     function loadMedicineHistory(medId, page, perPage) {
         if (!medId) return;
         page = page || 1;
         perPage = perPage || $('.history-per-page-select').val() || 50;
 
         $('#history_placeholder').hide();
-        $('#history_content').html('<div style="text-align: center; padding: 50px 20px;"><i class="fa fa-spinner fa-spin" style="font-size: 32px; color: #3b82f6;"></i><p style="margin-top: 10px; font-size: 13px; color: #64748b; font-weight: 600;">Loading stock movement history...</p></div>');
+        $('#history_content').html('<div style="text-align: center; padding: 60px 20px;"><i class="fa fa-spinner fa-spin" style="font-size: 34px; color: #3b82f6;"></i><p style="margin-top: 12px; font-size: 13px; color: #64748b; font-weight: 600;">Loading stock movement & transaction ledger...</p></div>');
 
-        var searchUrl = '/purchase_sale_medicine_search.php?table_purchase=purchases&table_sale=sales&table_medicine_stock=medicine_stocks&table_return_sale=returns_sales&table_return_purchase=return_purchases';
-
-        $.get(searchUrl, { term: medId, page: page, per_page: perPage }, function (resp) {
+        $.get(purchaseSearchUrl, { term: medId, page: page, per_page: perPage }, function (resp) {
             $('#history_content').html(resp);
         }).fail(function () {
             $('#history_content').html('<div class="alert alert-danger" style="margin: 20px 0;"><i class="fa fa-exclamation-circle"></i> Failed to load medicine transaction history. Please try again.</div>');
         });
     }
+
+    function searchMedicineByName(term) {
+        term = $.trim(term);
+        if (!term) {
+            alert('Please enter a medicine name to search.');
+            $('#search_medicine_name').focus();
+            return;
+        }
+
+        var btn = $('#btn_search_submit');
+        btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i>');
+
+        $.getJSON(autocompleteSourceUrl, { term: term }, function (data) {
+            btn.prop('disabled', false).html('<i class="fa fa-search"></i> Search');
+            if (data && data.length > 0) {
+                var matched = data[0].complete;
+                for (var i = 0; i < data.length; i++) {
+                    if (data[i].value && data[i].value.toLowerCase() === term.toLowerCase()) {
+                        matched = data[i].complete;
+                        break;
+                    }
+                }
+                applyMedicine(matched);
+            } else {
+                alert('No medicines found matching "' + term + '". Please check the spelling.');
+            }
+        }).fail(function () {
+            btn.prop('disabled', false).html('<i class="fa fa-search"></i> Search');
+            alert('Error searching for medicine. Please try again.');
+        });
+    }
+
+    // Submit search button
+    $('#btn_search_submit').on('click', function (e) {
+        e.preventDefault();
+        searchMedicineByName($('#search_medicine_name').val());
+    });
+
+    // Enter key handler on search input
+    $('#search_medicine_name').on('keypress', function (e) {
+        if (e.which === 13) {
+            e.preventDefault();
+            if ($('#search_medicine_name').data('ui-autocomplete')) {
+                $('#search_medicine_name').autocomplete('close');
+            }
+            searchMedicineByName($(this).val());
+        }
+    });
+
+    // Quick Select Pill Click
+    $(document).on('click', '.quick-med-pill', function (e) {
+        e.preventDefault();
+        var itemData = $(this).data('json');
+        if (itemData) {
+            applyMedicine(itemData);
+        }
+    });
 
     // Pagination Click for Medicine History (Bottom Pagination)
     $(document).on('click', '.history-page-link', function(e) {
@@ -419,28 +555,24 @@ $(document).ready(function () {
         }
     });
 
-    // Autocomplete Setup
-    $('[name^="medicine_name"]').autocomplete({
-        source: '/search.php?table=medicines&fieldToSearch=medicine_name',
-        search: function (event, ui) {
-            // Keep user typed value
-        },
-        minLength: 1,
-        select: function (event, ui) {
-            var med = ui.item.complete;
-            if (med) {
-                $('#val_medicine_id').val(med.medicine_id);
-                $('#val_medicine_manufacturer').val(med.medicine_manufacturer);
-                $('#val_medicine_category').val(med.medicine_category);
-                $('#val_medicine_hsn').val(med.medicine_hsn);
-                $('#val_medicine_unit').val(med.medicine_unit);
-                $('#val_medicine_storage').val(med.medicine_storage);
-
-                updateProfileCard(med);
-                loadMedicineHistory(med.medicine_id);
-            }
+    // Safe Autocomplete Initialization
+    function initAutocomplete() {
+        if (typeof $.fn.autocomplete === 'function') {
+            $('#search_medicine_name').autocomplete({
+                source: autocompleteSourceUrl,
+                minLength: 1,
+                select: function (event, ui) {
+                    var med = ui.item.complete;
+                    if (med) {
+                        applyMedicine(med);
+                    }
+                }
+            });
+        } else {
+            setTimeout(initAutocomplete, 100);
         }
-    });
+    }
+    initAutocomplete();
 
     // Clear Button
     $('#btn_clear_med').on('click', function () {
@@ -452,23 +584,17 @@ $(document).ready(function () {
         $('#val_medicine_unit').val('');
         $('#val_medicine_storage').val('');
 
+        $('.quick-med-pill').removeClass('active');
         $('#med_profile_display').slideUp(150);
         $('#btn_fast_edit').hide();
         $('#history_content').empty();
         $('#history_placeholder').show();
+        $('.print-med-name').text('Selected Medicine');
     });
 
     // Auto load if preloaded medicine is present
-    <?php if (!empty($pre_id)) : ?>
-        var preloadedMed = {
-            medicine_id: "<?= addslashes($pre_id) ?>",
-            medicine_name: "<?= addslashes($pre_name) ?>",
-            medicine_manufacturer: "<?= addslashes($pre_mfg) ?>",
-            medicine_category: "<?= addslashes($pre_cat) ?>",
-            medicine_hsn: "<?= addslashes($pre_hsn) ?>",
-            medicine_unit: "<?= addslashes($pre_unit) ?>",
-            medicine_storage: "<?= addslashes($pre_store) ?>"
-        };
+    <?php if (!empty($preloaded)) : ?>
+        var preloadedMed = <?= json_encode($preloaded) ?>;
         updateProfileCard(preloadedMed);
         loadMedicineHistory(preloadedMed.medicine_id);
     <?php endif; ?>
