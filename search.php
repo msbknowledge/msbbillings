@@ -9,7 +9,8 @@ $responce = array();
 
 if (isset($_GET['term']) && isset($_REQUEST['table']) && isset($_REQUEST['fieldToSearch'])) {
     try {
-        $conn = new PDO("mysql:host=" . DB_SERVER . ";port=3306;dbname=" . DB_NAME, DB_USER, DB_PASSWORD);
+        $db_host = (defined('DB_SERVER') && DB_SERVER === 'localhost') ? '127.0.0.1' : (defined('DB_SERVER') ? DB_SERVER : '127.0.0.1');
+        $conn = new PDO("mysql:host=" . $db_host . ";port=3306;dbname=" . DB_NAME, DB_USER, DB_PASSWORD);
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         $table = preg_replace('/[^a-zA-Z0-9_]/', '', $_REQUEST['table']);

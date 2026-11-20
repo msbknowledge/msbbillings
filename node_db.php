@@ -14,7 +14,7 @@ $is_local = (
 
 if ($is_local) {
     $node = ($sub === 'localhost' || $sub === '127' || $sub === 'msbbiling') ? 'node' : $sub;
-    if (!defined('DB_SERVER')) define('DB_SERVER', 'localhost');
+    if (!defined('DB_SERVER')) define('DB_SERVER', '127.0.0.1');
     if (!defined('DB_USER')) define('DB_USER', 'root');
     if (!defined('DB_PASSWORD')) define('DB_PASSWORD', '');
     if (!defined('DB_NAME')) define('DB_NAME', $node);

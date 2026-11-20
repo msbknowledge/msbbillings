@@ -1,1125 +1,377 @@
-
-    <!-- <script>
-                                $(function () {
-                                    $(".datepicker").datepicker({dateFormat: 'yy-mm-dd'});
-                                });
-                            </script> -->
-    <!--  <script>
-                                var reqst = null;
-                                $(document).ready(function () {
-                                    $('#report_sub').click(function () {
-                                        reqst = $.post("<?= base_url() ?>console/medicine_stock/stock/", $('form').serialize(), function (resp) {
-                                            $(".ajax_resp").html(resp);
-                                            $('div#container').hide();
-                                        });
-                                    });
-                                    $('div#container').hide();
-                                   
-                                });
-                            </script> -->
-
-
-    <style>
-        body {
-            background: #FFFFFF;
-        }
-
-        body,
-        td,
-        th,
-        input,
-        select,
-        textarea,
-        option,
-        optgroup {
-            font-family: Verdana, Arial, Helvetica, sans-serif;
-            font-size: 12px;
-            color: #000000;
-        }
-
-        h1 {
-            text-transform: uppercase;
-            color: #CCCCCC;
-            text-align: right;
-            font-size: 24px;
-            font-weight: normal;
-            padding-bottom: 5px;
-            margin-top: 0px;
-            margin-bottom: 15px;
-            border-bottom: 1px solid black;
-        }
-
-        .store {
-            width: 100%;
-            margin-bottom: 20px;
-        }
-
-        .div2 {
-            float: left;
-            display: inline-block;
-        }
-
-        .div3 {
-            float: right;
-            display: inline-block;
-            padding: 5px;
-        }
-
-        .heading td {
-            background: #E7EFEF;
-        }
-
-        .address,
-        .product {
-            border-collapse: collapse;
-        }
-
-        .address {
-            width: 100%;
-            margin-bottom: 20px;
-            border-top: 1px solid black;
-            border-right: 1px solid black;
-        }
-
-        .address th,
-        .address td {
-            border-left: 1px solid black;
-            border-bottom: 1px solid black;
-            padding: 5px;
-            vertical-align: text-bottom;
-        }
-
-        .address td {
-            width: 50%;
-        }
-
-        .product {
-            width: 100%;
-            margin-bottom: 20px;
-            border-top: 1px solid black;
-            border-right: 1px solid black;
-        }
-
-        .product td {
-            border-left: 1px solid black;
-            border-bottom: 1px solid black;
-            padding: 5px;
-        }
-    </style>
-    <style media="print">
-        body {
-            background-color: #FFF;
-            background-image: none;
-        }
-
-        .delete,
-        .button,
-        #addrow,
-        #head,
-        #actions {
-            display: none;
-        }
-
-        #main {
-            border: none;
-            height: auto;
-        }
-
-        table tr td textarea {
-            margin-top: 0;
-        }
-
-        body {
-            margin-top: -50px;
-        }
-
-        textarea {
-            background: #FFF;
-        }
-
-        input {
-            background: #FFF;
-        }
-
-        .sub-total {
-            border-top: 1px dashed #CCC;
-            border-bottom: 1px dashed #CCC;
-        }
-    </style>
-    <style>
-        /* http://meyerweb.com/eric/tools/css/reset/ 
-                                       v2.0 | 20110126
-                                       License: none (public domain)
-                                    */
-
-        html,
-        body,
-        div,
-        span,
-        applet,
-        object,
-        iframe,
-        h1,
-        h2,
-        h3,
-        h4,
-        h5,
-        h6,
-        p,
-        blockquote,
-        pre,
-        a,
-        abbr,
-        acronym,
-        address,
-        big,
-        cite,
-        code,
-        del,
-        dfn,
-        em,
-        img,
-        ins,
-        kbd,
-        q,
-        s,
-        samp,
-        small,
-        strike,
-        strong,
-        sub,
-        sup,
-        tt,
-        var,
-        b,
-        u,
-        i,
-        center,
-        dl,
-        dt,
-        dd,
-        ol,
-        ul,
-        li,
-        fieldset,
-        form,
-        label,
-        legend,
-        table,
-        caption,
-        tbody,
-        tfoot,
-        thead,
-        tr,
-        th,
-        td,
-        article,
-        aside,
-        canvas,
-        details,
-        embed,
-        figure,
-        figcaption,
-        footer,
-        header,
-        hgroup,
-        menu,
-        nav,
-        output,
-        ruby,
-        section,
-        summary,
-        time,
-        mark,
-        audio,
-        video {
-            margin: 0;
-            padding: 0;
-            border: 0;
-            font-size: 100%;
-            font: inherit;
-            vertical-align: baseline;
-        }
-
-        /* HTML5 display-role reset for older browsers */
-        article,
-        aside,
-        details,
-        figcaption,
-        figure,
-        footer,
-        header,
-        hgroup,
-        menu,
-        nav,
-        section {
-            display: block;
-        }
-
-        body {
-            line-height: 1;
-        }
-
-        ol,
-        ul {
-            list-style: none;
-        }
-
-        blockquote,
-        q {
-            quotes: none;
-        }
-
-        blockquote:before,
-        blockquote:after,
-        q:before,
-        q:after {
-            content: '';
-            content: none;
-        }
-
-        table {
-            border-collapse: collapse;
-            border-spacing: 0;
-        }
-
-        /*__________________________________________________Universal
-                                    Universal
-                                    */
-
-        body {
-            background-color: #F0F0F0;
-            background-repeat: repeat;
-            font-size: 100%;
-            color: #000;
-            font-family: Arial, Helvetica, sans-serif;
-        }
-
-        .left {
-            float: left;
-        }
-
-        .right {
-            float: right;
-        }
-
-        .clear {
-            clear: both;
-        }
-
-        input,
-        textarea {
-            margin: 0;
-            padding: 0;
-            border: none;
-            outline: none;
-            background: transparent;
-            font-family: Arial, Helvetica, sans-serif;
-        }
-
-        p,
-        input {
-            font-size: 1em;
-            padding: 2px 0;
-        }
-
-        textarea {
-            display: block;
-            background: #E3FAFA;
-        }
-
-        input {
-            background: #E3FAFA;
-        }
-
-        input:hover,
-        textarea:hover {
-            background: #FFFFCC;
-        }
-
-        input:focus,
-        textarea:focus {
-            border: 1px solid #666;
-        }
-
-        .price:hover {
-            background: #FFF;
-        }
-
-        .price:focus {
-            border: none;
-        }
-
-        .button {
-            display: inline;
-            padding: 4px 8px;
-            background: url(../images/button-bg.png) repeat-x;
-            color: #666;
-            border: 1px solid #ccc;
-            font: bold .95em Helvetica;
-            text-decoration: none;
-        }
-
-        .button:hover {
-            color: #333;
-            border: 1px solid #666;
-            background: url(../images/button-bg.png) repeat-x;
-        }
-
-        .button:active {
-            background: url(../images/button-bg.png) repeat-x;
-            background-position: bottom left;
-        }
-
-        /*__________________________________________________Head
-                                    Head
-                                    */
-
-        #head {
-            margin: 0 auto;
-            padding-top: 10px;
-            margin-bottom: 20px;
-            width: 864px;
-        }
-
-        h1 {
-            padding-bottom: 10px;
-            color: #EEE;
-            font-weight: normal;
-            font-size: 2em;
-        }
-
-        #about-head {
-            margin-bottom: 4px;
-        }
-
-        h3 {
-            color: #333;
-            font-size: 1.4em;
-            display: inline;
-        }
-
-        #about,
-        #how-to {
-            padding: 5px;
-            background: #EEE;
-            color: #333;
-            border: 1px solid #666;
-        }
-
-        #about p,
-        #how-to p {
-            padding-bottom: 8px;
-        }
-
-        strong {
-            font-weight: bold;
-        }
-
-        /*__________________________________________________Banner Ad
-                                    Banner AD
-                                    */
-
-        #banner-ad {
-            margin-bottom: 20px;
-        }
-
-        /*__________________________________________________Actions
-                                    Actions
-                                    */
-
-        #actions {
-            margin: 0 auto;
-            padding-top: 10px;
-            margin-bottom: -20px;
-            width: 864px;
-        }
-
-        /*__________________________________________________Main
-                                    Main
-                                    */
-
-        #main {
-            margin: 30px auto;
-            padding: 32px;
-            width: 800px;
-            height: 1040px;
-            background: #FFF;
-            border: 1px solid #808080;
-        }
-
-        .main {
-            margin: 30px auto;
-            padding: 32px;
-            /*width: 800px;*/
-            height: 1040px;
-            background: #FFF;
-            border: 1px solid #808080;
-            page-break-after: always;
-        }
-
-        /*__________________________________________________Invoice
-                                    Invoice
-                                    */
-
-        #title {
-            font-weight: bold;
-            text-align: center;
-            padding-bottom: 16px;
-        }
-
-        #title h1 {
-            padding: 0;
-            margin: 0;
-            font-size: 1.25em;
-            color: #000;
-        }
-
-        #title h2 {
-            font-size: 1em;
-            color: #000;
-        }
-
-
-        #invHeader {
-            padding-bottom: 16px;
-            margin-bottom: 16px;
-            border-bottom: 1px solid #CCC;
-        }
-
-        #headLeft,
-        #signatureLeft {
-            float: left;
-            width: 392px;
-            border-bottom: 1px solid #CCC;
-        }
-
-        #headLeft p,
-        #headRight p,
-        #signatureLeft p,
-        #signatureRight p {
-            font-weight: bold;
-            font-size: .85em;
-        }
-
-        #legal {
-            padding: 4px;
-            margin-bottom: 4px;
-            border: 1px solid #CCC;
-            font-size: .70em;
-        }
-
-        #legal ul {
-            list-style-type: circle;
-        }
-
-        #legal ul li {
-            padding: 4px 0;
-            margin-left: 2em;
-        }
-
-        #signature p {
-            padding-left: 4px;
-        }
-
-        #headLeft div {
-            padding: 4px;
-            border-top: 1px solid #CCC;
-            border-left: 1px solid #CCC;
-            border-right: 1px solid #CCC;
-        }
-
-        #signatureLeft div {
-            padding: 1px 4px;
-            border-top: 1px solid #CCC;
-            border-left: 1px solid #CCC;
-            border-right: 1px solid #CCC;
-        }
-
-        #signatureRight div {
-            padding: 1px 4px;
-        }
-
-        #signatureRightRight {
-            border-left: none !important;
-        }
-
-        #headLeft textarea {
-            font-size: 1.2em;
-            text-align: left;
-            width: 100%;
-            height: 96px;
-        }
-
-        #headRight {
-            margin-left: 12px;
-            float: left;
-            width: 392px;
-            border: 1px solid #CCC;
-        }
-
-        #signatureRight {
-            float: left;
-            width: 402px;
-            border-bottom: 1px solid #CCC;
-        }
-
-        #headRightRight div,
-        #headRightLeft div {
-            padding: 0 4px;
-        }
-
-        #headRight p {
-            padding-left: 4px;
-        }
-
-        #headLeft input,
-        #headRight input,
-        #signatureLeft input,
-        #signatureRight input {
-            margin-bottom: 8px;
-            width: 100%;
-            display: block;
-        }
-
-        #headRightLeft,
-        #headRightRight {
-            padding-top: 32px;
-            padding-bottom: 60px;
-            float: left;
-            width: 192px;
-        }
-
-        #signatureRightLeft,
-        #signatureRightRight {
-            float: left;
-            width: 192px;
-        }
-
-        #headRight textarea {
-            font-size: 1em;
-            text-align: left;
-            width: 100%;
-            height: 72px;
-        }
-
-        #headRightBottom {
-            padding: 4px;
-            border-top: 1px solid #CCC;
-            width: 374px;
-        }
-
-        #headRightBottom textarea {
-            font-size: 1.2em;
-            text-align: left;
-            width: 100%;
-            height: 96px;
-        }
-
-        table {
-            width: 800px;
-        }
-
-        table {
-            border-collapse: collapse;
-        }
-
-        table td,
-        table th {
-            padding: 5px;
-        }
-
-        table th {
-            text-align: left;
-            font-weight: bold;
-            border-bottom: 1px solid #CCC;
-        }
-
-        table th input {
-            font-weight: bold;
-            display: inline;
-            width: 32px;
-        }
-
-        table tr td input {
-            width: 100%;
-        }
-
-        table tr td textarea {
-            margin-top: -16px;
-            width: 100%;
-            height: 24px;
-            font-size: 16px;
-        }
-
-        .item-name {
-            width: 432px;
-        }
-
-
-        .hsNo {
-            width: 80px;
-        }
-
-        .NC {
-            width: 80px;
-        }
-
-        .mfr {
-            width: 80px;
-        }
-
-        .pref {
-            width: 80px;
-        }
-
-        .country {
-            width: 80px;
-        }
-
-        .countryInpt {
-            width: 80px;
-        }
-
-        .delete-wpr input {
-            display: inline;
-            width: 432px;
-        }
-
-        .delete {
-            text-decoration: none;
-            font-weight: bold;
-            color: red;
-            padding-right: 3px;
-            margin-right: 3px;
-            margin-left: -19px;
-            border-right: 1px solid #000;
-        }
-
-        #addrow {
-            text-decoration: none;
-            color: green;
-        }
-
-        .total-line,
-        .total-weight,
-        .total-qty,
-        .total-value {
-            font-weight: bold;
-        }
-
-        .sub-total {
-            background: #DDD;
-        }
-
-        #signature {
-            margin-top: 32px;
-        }
-
-        /**default*/
-
-        .main h1 {
-            text-transform: uppercase;
-            color: #CCCCCC;
-            text-align: right;
-            font-size: 24px;
-            font-weight: normal;
-            padding-bottom: 5px;
-            margin-top: 0px;
-            margin-bottom: 15px;
-            border-bottom: 1px solid #CDDDDD;
-        }
-
-        .main .store {
-            width: 100%;
-            margin-bottom: 20px;
-        }
-
-        .main .div2 {
-            float: left;
-            display: inline-block;
-        }
-
-        .main .div3 {
-            float: right;
-            display: inline-block;
-            padding: 5px;
-        }
-
-        .main .heading td {
-            background: #E7EFEF;
-        }
-
-        .main .address,
-        .main .product {
-            border-collapse: collapse;
-        }
-
-        .main .address {
-            width: 100%;
-            margin-bottom: 20px;
-            border-top: 1px solid #CDDDDD;
-            border-right: 1px solid #CDDDDD;
-        }
-
-        .main .address th,
-        .main.address td {
-            border-left: 1px solid #CDDDDD;
-            border-bottom: 1px solid #CDDDDD;
-            padding: 5px;
-            vertical-align: text-bottom;
-        }
-
-        .main .address td {
-            width: 50%;
-        }
-
-        .main .product {
-            width: 100%;
-            margin-bottom: 20px;
-            border-top: 1px solid #CDDDDD;
-            border-right: 1px solid #CDDDDD;
-        }
-
-        .main .product td {
-            border-left: 1px solid #CDDDDD;
-            border-bottom: 1px solid #CDDDDD;
-            padding: 5px;
-        }
-
-        textarea,
-        input[type=text] {
-            font-size: 13px !important;
-        }
-
-        .main {
-            border: none !important;
-            /* height: 1095px;*/
-            margin: 0 auto;
-        }
-
-        .main .calculation {
-            border-top: 1px solid black;
-            border-right: 1px solid black;
-        }
-
-        .main .calculation th,
-        .calculation td {
-            border: 1px solid black;
-            border: 1px solid black;
-        }
-
-        .main .address {
-            width: 100%;
-            margin-bottom: 20px;
-            border-top: 1px solid black;
-            border-right: 1px solid black;
-        }
-
-        .main h1 {
-            border-bottom: 1px solid black;
-        }
-
-        @page {
-            size: A4 portrait;
-            margin: 0.1in 0.1in 0in 0in;
-        }
-
-        @media print {
-            /* td{
-                                             border-color: black;
-                                             border-width: 2px;
-                                             background:#fff;
-                                         }
-                                        */
-        }
-
-        .main+.main {
-            page-break-before: always;
-        }
-    </style>
-    <style>
-        .address th,
-        .address td {
-            border-left: 0px solid #000;
-            border-bottom: 1px solid #000;
-            padding: 5px;
-            vertical-align: text-bottom;
-        }
-
-        .main .address {
-            width: 100%;
-            margin-bottom: 20px;
-            border-top: 1px solid #000;
-            border-right: 0px solid #000;
-        }
-
-        .main .calculation {
-            border-top: 1px solid #000;
-            border-right: 0px solid #000;
-        }
-
-        .main .calculation th,
-        .calculation td {
-            border: 1px solid #000;
-            border-top-width: 1px;
-            border-right-width: 0px;
-            border-bottom-width: 1px;
-            border-left-width: 1px;
-            border-top-style: solid;
-            border-right-style: solid;
-            border-bottom-style: solid;
-            border-left-style: solid;
-            border-top-color: #000;
-            border-right-color: #000;
-            border-bottom-color: #000;
-            border-left-color: #000;
-            -moz-border-top-colors: none;
-            -moz-border-right-colors: none;
-            -moz-border-bottom-colors: none;
-            -moz-border-left-colors: none;
-            border-image-source: none;
-            border-image-slice: 100% 100% 100% 100%;
-            border-image-width: 1 1 1 1;
-            border-image-outset: 0 0 0 0;
-            border-image-repeat: stretch stretch;
-        }
-    </style>
-    <style>
-        .main {
-            border: medium none !important;
-            height: auto;
-            display: block;
-        }
-
-        .main .calculation {
-            border-top: 1px solid black;
-            border-right: 1px solid black;
-            width: 100%;
-            border-spacing: 0px;
-            border-collapse: collapse;
-        }
-
-        .main .calculation th,
-        .calculation td {
-            border: 1px solid black;
-            border: 1px solid black;
-        }
-
-        .main .address {
-            width: 100%;
-            margin-bottom: 20px;
-            border-top: 1px solid black;
-            border-right: 1px solid black;
-        }
-
-        .main h1 {
-            border-bottom: 1px solid black;
-        }
-
-        td {
-            font-size: 10px;
-        }
-
-        @media print {
-            .form_div {
-                display: none;
-            }
-
-            .display_print {
-                display: none;
-            }
-
-            .container-fluid {
-                display: none;
-            }
-
-            a[href]:after {
-                content: none !important;
-            }
-            .tfoot {
-                display: none;
-            }
-
-            table thead {
-                display: table;
-                width: 100%;
-                background-color: lightblue;
-                position: fixed;
-            }
-        }
-
-        .ajax_resp {
-            text-align: center
-        }
-    </style>
-
-
-        <div class="index-wrapper">
-         <div class="row-fluid sortable search_box ui-sortable">
-            <div class="box span12">
-                <div class="box-header well" data-original-title="">
-                    <h2><i class="icon-search"></i>Medicine Shortage</h2>
-                    <div class="box-icon">
-                        <a href="#" class="btn btn-minimize btn-round"><i class="icon-chevron-up"></i></a>
-                        <a href="#" class="btn btn-close btn-round"><i class="icon-remove"></i></a>
+<style>
+/* Modern styling for Medicine Stock Shortage Report in AdminLTE Console Layout */
+.report-header-card {
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    margin-bottom: 16px;
+    border: 1px solid #e2e8f0;
+}
+.report-title {
+    font-size: 17px !important;
+    font-weight: 700 !important;
+    color: #0f172a;
+    margin: 0 0 4px 0 !important;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.report-filter-bar {
+    background: #f8fafc;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    padding: 14px 16px 8px 16px;
+    margin-bottom: 18px;
+}
+.filter-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #475569;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+    display: block;
+}
+.kpi-card {
+    background: #fff;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    padding: 14px 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.kpi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+.kpi-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    margin-right: 14px;
+    flex-shrink: 0;
+}
+.kpi-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+}
+.kpi-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.2;
+}
+
+/* Table Card */
+.table-card {
+    background: #fff;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+.table-card-header {
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.table-card-title {
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    color: #1e293b;
+    margin: 0 !important;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.gst-table th {
+    background: #f1f5f9 !important;
+    color: #334155 !important;
+    font-weight: 700 !important;
+    font-size: 11px !important;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    border-top: none !important;
+    padding: 10px 12px !important;
+    vertical-align: middle !important;
+}
+.gst-table td {
+    font-size: 12px !important;
+    padding: 9px 12px !important;
+    vertical-align: middle !important;
+    color: #1e293b;
+}
+.gst-table tbody tr:hover {
+    background-color: #f8fafc !important;
+}
+.gst-table tfoot td {
+    background: #e2e8f0 !important;
+    font-weight: 700 !important;
+    font-size: 12px !important;
+    color: #0f172a !important;
+    border-top: 2px solid #cbd5e1 !important;
+    padding: 10px 12px !important;
+}
+
+/* Print Styles */
+@media print {
+    body, .wrapper, .content-wrapper, .content, #content {
+        background: #fff !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+    }
+    .main-header, .main-sidebar, .content-header, .main-footer, .breadcrumb,
+    .report-filter-bar, .report-actions, .no-print {
+        display: none !important;
+    }
+    .print-only {
+        display: block !important;
+    }
+    .table-card, .kpi-card {
+        border: 1px solid #cbd5e1 !important;
+        box-shadow: none !important;
+        margin-bottom: 12px !important;
+    }
+    .table-responsive {
+        overflow: visible !important;
+    }
+    .gst-table th, .gst-table td {
+        border: 1px solid #94a3b8 !important;
+        font-size: 10px !important;
+        padding: 4px 6px !important;
+    }
+}
+.print-only {
+    display: none;
+}
+</style>
+
+<!-- Print-Only Header -->
+<div class="print-only" style="text-align: center; margin-bottom: 20px; border-bottom: 2px solid #0f172a; padding-bottom: 10px;">
+    <h2 style="font-size: 20px; font-weight: bold; margin: 0 0 5px 0; color: #0f172a;">Medicine Stock Shortage Report</h2>
+    <p style="font-size: 12px; color: #475569; margin: 0;">
+        Stock Reorder Threshold: Current Available Stock &le; <strong class="print-threshold"><?= isset($threshold) ? (int)$threshold : 2 ?></strong> Strips
+        (Printed on: <?= date('d M Y, h:i A') ?>)
+    </p>
+</div>
+
+<!-- Main Report Container -->
+<div class="report-wrapper">
+    <!-- Top Header Card -->
+    <div class="report-header-card" style="padding: 14px 18px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+            <div>
+                <h1 class="report-title">
+                    <i class="fa fa-exclamation-triangle text-warning"></i> Medicine Stock Shortage Report
+                </h1>
+                <span style="font-size: 12px; color: #64748b; display: inline-block;">
+                    Identify medicines running low or out of stock to reorder from suppliers and avoid inventory stockouts
+                </span>
+            </div>
+            <div class="report-actions" style="display: flex; gap: 8px; align-items: center;">
+                <a href="<?= console_url('medicine_stock/shortage_export'); ?>?threshold=<?= isset($threshold) ? (int)$threshold : 2 ?>&medicine_name=<?= !empty($medicine_name) ? urlencode($medicine_name) : '' ?>&storage=<?= !empty($storage) ? urlencode($storage) : '' ?>" 
+                   id="btn_export_excel" class="btn btn-success btn-sm" style="font-weight: 600; border-radius: 4px;">
+                    <i class="fa fa-file-excel-o"></i> Export to Excel
+                </a>
+                <button type="button" onclick="window.print();" class="btn btn-default btn-sm" style="font-weight: 600; border-radius: 4px; border-color: #cbd5e1;">
+                    <i class="fa fa-print"></i> Print Report
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Bar Card -->
+    <div class="report-filter-bar no-print">
+        <form id="shortageFilterForm" method="post" action="<?= console_url('medicine_stock/shortage_view') ?>" style="margin: 0;">
+            <input type="hidden" name="page" id="filter_page" value="<?= isset($page) ? (int)$page : 1 ?>">
+            <div class="row" style="margin-left: -6px; margin-right: -6px;">
+                <!-- Medicine Name / Manufacturer -->
+                <div class="col-md-3 col-sm-6" style="padding-left: 6px; padding-right: 6px; margin-bottom: 8px;">
+                    <label class="filter-label" for="filter_medicine_name">Medicine / Manufacturer</label>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-addon" style="background: #fff; border-color: #cbd5e1;"><i class="fa fa-search text-muted"></i></span>
+                        <input type="text" 
+                               name="medicine_name" 
+                               id="filter_medicine_name" 
+                               value="<?= !empty($medicine_name) ? htmlspecialchars($medicine_name) : '' ?>" 
+                               class="form-control" 
+                               placeholder="Search medicine or company..." 
+                               autocomplete="off"
+                               style="border-color: #cbd5e1;" />
                     </div>
                 </div>
-                <div class="box-content">
-        <div class="display_print">
-            <!-- <div class="form_div form-group" style="margin-bottom: 10px;text-align: center;"> -->
-            <div class="container">
-                <div class="row form-group">
-                    <form action="<?= base_url() ?>console/medicine_stock/shortage" id="searchform" role="form" method="post" onsubmit="return false">
-                        <div class="form-row">
-                            <div class="form-group col-sm-3">
-                                <label for="medicine_name">Medicine:</label>
-                                <input type="text" name="medicine_name" id="medicine_name" placeholder="medicine name" class="form-control" />
-                            </div>
-                            <div class="form-group col-sm-3">
-                                <button type="submit" id="search" class="btn btn-info">SEARCH</button>
-                            </div>
-                        </div>
-                    </form>
+
+                <!-- Stock Threshold Dropdown -->
+                <div class="col-md-3 col-sm-6" style="padding-left: 6px; padding-right: 6px; margin-bottom: 8px;">
+                    <label class="filter-label" for="filter_threshold">Stock Shortage Threshold</label>
+                    <div class="input-group input-group-sm" style="width: 100%;">
+                        <select name="threshold" id="filter_threshold" class="form-control" style="border-color: #cbd5e1; font-weight: 600;">
+                            <option value="2" <?= (isset($threshold) && $threshold == 2) ? 'selected' : '' ?>>&le; 2 Strips (Critical Shortage / Default)</option>
+                            <option value="0" <?= (isset($threshold) && $threshold == 0) ? 'selected' : '' ?>>&le; 0 Strips (Out of Stock Only)</option>
+                            <option value="5" <?= (isset($threshold) && $threshold == 5) ? 'selected' : '' ?>>&le; 5 Strips (Low Stock)</option>
+                            <option value="10" <?= (isset($threshold) && $threshold == 10) ? 'selected' : '' ?>>&le; 10 Strips (Moderate Shortage)</option>
+                            <option value="20" <?= (isset($threshold) && $threshold == 20) ? 'selected' : '' ?>>&le; 20 Strips (Broad Reorder)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Storage / Rack -->
+                <div class="col-md-2 col-sm-6" style="padding-left: 6px; padding-right: 6px; margin-bottom: 8px;">
+                    <label class="filter-label" for="filter_storage">Storage / Rack</label>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-addon" style="background: #fff; border-color: #cbd5e1;"><i class="fa fa-archive text-muted"></i></span>
+                        <input type="text" 
+                               name="storage" 
+                               id="filter_storage" 
+                               value="<?= !empty($storage) ? htmlspecialchars($storage) : '' ?>" 
+                               class="form-control" 
+                               placeholder="e.g. Rack A-1..." 
+                               autocomplete="off"
+                               style="border-color: #cbd5e1;" />
+                    </div>
+                </div>
+
+                <!-- Per Page -->
+                <div class="col-md-2 col-sm-6" style="padding-left: 6px; padding-right: 6px; margin-bottom: 8px;">
+                    <label class="filter-label" for="filter_per_page">Per Page</label>
+                    <div class="input-group input-group-sm" style="width: 100%;">
+                        <select name="per_page" id="filter_per_page" class="form-control" style="border-color: #cbd5e1; font-weight: 600;">
+                            <option value="25" <?= (!isset($per_page) || $per_page == 25) ? 'selected' : '' ?>>25 per page</option>
+                            <option value="50" <?= (isset($per_page) && $per_page == 50) ? 'selected' : '' ?>>50 per page</option>
+                            <option value="100" <?= (isset($per_page) && $per_page == 100) ? 'selected' : '' ?>>100 per page</option>
+                            <option value="all" <?= (isset($per_page) && $per_page == 0) ? 'selected' : '' ?>>All records</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Filter Actions -->
+                <div class="col-md-2 col-sm-12" style="padding-left: 6px; padding-right: 6px; margin-bottom: 8px;">
+                    <label class="filter-label">&nbsp;</label>
+                    <div style="display: flex; gap: 6px;">
+                        <button type="submit" id="btn_apply_filter" class="btn btn-primary btn-sm btn-block" style="font-weight: 600; border-radius: 4px;">
+                            <i class="fa fa-filter"></i> Filter
+                        </button>
+                        <button type="button" id="btn_reset_filter" class="btn btn-default btn-sm" title="Reset Filters" style="border-radius: 4px; border-color: #cbd5e1;">
+                            <i class="fa fa-refresh"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
-            <div class="ajax_resp">Choose Filter To Generate Data</div>
-        </div>
-        <br>
-        <style>
-            @media print {
-
-                html,
-                body {
-                    display: block;
-                    font-family: "Calibri";
-                    margin: 0;
-                }
-
-                @page {
-                    size: 21.59cm 13.97cm;
-                }
-
-                .logo {
-                    width: 30%;
-                }
-            }
-
-            .btn-block {
-                color: blue;
-                background-color: #337ab7;
-                border-color: #2e6da4;
-            }
-        </style>
-
-        <div class="row" style=" margin: 0px; overflow-x: scroll;">
-            <table class="table table-bordered table-striped table-condensed">
-                <!-- <caption><h3>Shortage List</h3></caption> -->
-                <tr>
-                    <th>Sl No.</th>
-                    <th>Medicine Name</th>
-                    <th>Medicine Mfg</th>
-                    <th>Medicine Unit</th>
-                    <th>Medicine Stock</th>
-                    <th>Medicine Loose</th>
-                    <th>Medicine Storage</th>
-                </tr>
-                <tbody id="searchResult">
-
-                </tbody>
-                <tfoot class="tfoot">
-                    <tr>
-                        <!-- <td colspan=9></td> -->
-                    </tr>
-                </tfoot>
-            </table>
-
-        </div>
+        </form>
     </div>
-  </div>
+
+    <!-- Results Container (Table & KPIs) -->
+    <div id="report_results_container" style="position: relative; min-height: 200px;">
+        <?php $this->load->view('console/medicine_stock/shortage_table_tpl'); ?>
     </div>
-      </div>
+</div>
+
 <script>
-    var pageCount = 1;
+$(document).ready(function() {
+    var searchTimer = null;
 
-    function search() {
-        if (pageCount == 1) {
-            $('#searchResult').html("<tr><td colspan=9>Searching Results...</td></tr>");
-        }
-
-        $.post($('#searchform').attr("action") + "?page=" + pageCount, $('#searchform').serialize(), function(resp) {
-          console.log(Object.keys(resp.result).length);
-            if (resp.status == "found") {
-                if (resp.status == "found") {
-                    $('#excelexport').removeAttr('disabled');
-                }
-
-                if (pageCount == 1) {
-                    $('#searchResult').html("");
-                }
-               
-                if (Object.keys(resp.result).length  < 100) {
-                    $('tfoot').html("<tr><td colspan=9 class=\"coveo-result-row\"> No More Result Found </td></tr>");
-                } else {
-                    $('tfoot').html("<tr><td colspan=9><button class='btn btn-block' onclick='search()' id='loadmore'>Load More</button></td></tr>");
-                }
-                //var perpage = objresp.count;
-                if (pageCount == 1) {
-                    var counter = pageCount;
-                } else {
-                    $getper = localStorage.getItem("previousCount");
-                    var counter = parseInt($getper);
-                    // var count = (pageCount - 1) * perpage; 
-                    // var counter = count + 1;
-                }
-
-                $.each(resp.result, function(k, v) {
-                    if (v.left_strip < 3) {
-
-                        var medicine_id = btoa(v.medicine_id);
-
-                        var tr_des = $("<tr/>");
-
-                        var count_td = $("<td/>").append(counter);
-                        $(tr_des).append(count_td);
-
-                        var name_td = $("<td/>").append(v.medicine_name);
-                        $(tr_des).append(name_td);
-
-                        var manufacturer_td = $("<td/>").append(v.medicine_manufacturer);
-                        $(tr_des).append(manufacturer_td);
-
-                        var unit_td = $("<td/>").append(v.medicine_unit);
-                        $(tr_des).append(unit_td);
-
-                        var stock_td = $('<td/>').append(v.left_strip);
-                        $(tr_des).append(stock_td);
-
-                        var loose_td = $("<td/>").append(v.left_loose);
-                        $(tr_des).append(loose_td);
-
-                        var storage_td = $("<td/>").append(v.medicine_storage);
-                        $(tr_des).append(storage_td);
-
-                        $('#searchResult').append(tr_des);
-
-                        counter++;
-                        localStorage.setItem("previousCount", counter);
-                    }
-                })
-                pageCount = pageCount + 1;
-            }else{
-                $('#searchResult').hide();
-                $('tfoot').html("<tr><td colspan=9 class=\"coveo-result-row\">No Result Found</td></tr>");
-            }
-        })
+    function updateExportUrl() {
+        var baseExportUrl = "<?= console_url('medicine_stock/shortage_export'); ?>";
+        var params = $('#shortageFilterForm').serialize();
+        $('#btn_export_excel').attr('href', baseExportUrl + '?' + params);
     }
 
-    $(document).ready(function() {
-        $("#searchform").submit(function() {
-            pageCount = 1;
-            search();
+    function fetchReportData() {
+        var form = $('#shortageFilterForm');
+        var formData = form.serialize() + '&ajax_resp=1';
+        var container = $('#report_results_container');
+
+        // Loading overlay
+        container.css('opacity', '0.5');
+
+        $.ajax({
+            url: form.attr('action'),
+            type: 'POST',
+            data: formData,
+            success: function(resp) {
+                container.html(resp);
+                container.css('opacity', '1');
+                updateExportUrl();
+
+                // Update print header
+                var threshold = $('#filter_threshold').val();
+                $('.print-threshold').text(threshold);
+            },
+            error: function(xhr, status, error) {
+                container.css('opacity', '1');
+                alert("Failed to load report data. Please try again.");
+            }
         });
-        $('#searchform').trigger(search());
+    }
+
+    // Intercept form submit (resets to page 1)
+    $('#shortageFilterForm').on('submit', function(e) {
+        e.preventDefault();
+        $('#filter_page').val('1');
+        fetchReportData();
     });
+
+    // Auto reload on threshold or per_page change
+    $('#filter_threshold, #filter_per_page').on('change', function() {
+        $('#filter_page').val('1');
+        fetchReportData();
+    });
+
+    // Debounced search on typing
+    $('#filter_medicine_name, #filter_storage').on('keyup input', function() {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(function() {
+            $('#filter_page').val('1');
+            fetchReportData();
+        }, 350);
+    });
+
+    // Pagination link click handler
+    $(document).on('click', '#shortage_pagination .page-link', function(e) {
+        e.preventDefault();
+        var parentLi = $(this).parent();
+        if (parentLi.hasClass('disabled') || parentLi.hasClass('active')) {
+            return;
+        }
+        var targetPage = $(this).data('page');
+        if (targetPage) {
+            $('#filter_page').val(targetPage);
+            fetchReportData();
+            $('html, body').animate({
+                scrollTop: $("#report_results_container").offset().top - 70
+            }, 200);
+        }
+    });
+
+    // Reset button
+    $('#btn_reset_filter').on('click', function() {
+        $('#filter_medicine_name').val('');
+        $('#filter_storage').val('');
+        $('#filter_threshold').val('2');
+        $('#filter_per_page').val('25');
+        $('#filter_page').val('1');
+        fetchReportData();
+    });
+
+    // Initial sync
+    updateExportUrl();
+});
 </script>
