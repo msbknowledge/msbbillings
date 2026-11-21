@@ -524,6 +524,11 @@ class medicine_stock extends MY_Controller
 
     public function stock_amount()
     {
+        $this->output->set_header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+        $this->output->set_header("Cache-Control: post-check=0, pre-check=0", false);
+        $this->output->set_header("Pragma: no-cache");
+        $this->output->cache(0);
+
         $medicine_name         = $this->input->get_post('medicine_name', true);
         $medicine_manufacturer = $this->input->get_post('medicine_manufacturer', true);
         $storage               = $this->input->get_post('storage', true);
@@ -688,10 +693,10 @@ class medicine_stock extends MY_Controller
                     SELECT p1.purchase_medicine_id, p1.purchase_mrp, p1.purchase_rate, p1.purchase_batch, p1.purchase_date
                     FROM purchases p1
                     INNER JOIN (
-                        SELECT purchase_medicine_id, MAX(purchase_id) AS max_pid
+                        SELECT purchase_medicine_id, MAX(purchase_ID) AS max_pid
                         FROM purchases
                         GROUP BY purchase_medicine_id
-                    ) p2 ON p1.purchase_id = p2.max_pid
+                    ) p2 ON p1.purchase_ID = p2.max_pid
                 ) latest_p ON latest_p.purchase_medicine_id = m.medicine_id
                 WHERE {$where_sql}
                 ORDER BY m.medicine_name ASC";
@@ -708,19 +713,25 @@ class medicine_stock extends MY_Controller
         if (!empty($rows)) {
             foreach ($rows as $row) {
                 $base_left_strip = floatval($row['total_purchased']) - floatval($row['total_sold']) - floatval($row['ret_purchased']) + floatval($row['ret_sold']) + floatval($row['init_strip']);
-                $balanced_loose  = floatval($row['init_loose']) - floatval($row['total_sold_loose']);
+                $diff_loose      = floatval($row['init_loose']) - floatval($row['total_sold_loose']);
 
                 $unit = !empty($row['medicine_unit']) ? floatval($row['medicine_unit']) : 10;
                 if ($unit <= 0) $unit = 10;
 
                 $fromStrip = 0;
                 $looseLeft = 0;
-                if ($balanced_loose > 0) {
-                    $fromStrip = ceil($balanced_loose / $unit);
-                    $looseLeft = ($fromStrip * $unit) - $balanced_loose;
-                } elseif ($balanced_loose < 0) {
-                    $fromStrip = floor($balanced_loose / $unit);
-                    $looseLeft = $balanced_loose - ($fromStrip * $unit);
+                if ($unit > 0) {
+                    if ($diff_loose < 0) {
+                        $strips_needed = (int)ceil(abs($diff_loose) / $unit);
+                        $fromStrip = -$strips_needed;
+                        $looseLeft = ($strips_needed * $unit) + $diff_loose;
+                    } else {
+                        $extra_strips = (int)floor($diff_loose / $unit);
+                        $fromStrip = $extra_strips;
+                        $looseLeft = fmod($diff_loose, $unit);
+                    }
+                } else {
+                    $looseLeft = $diff_loose;
                 }
 
                 $left_strip = $base_left_strip + $fromStrip;

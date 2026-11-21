@@ -1,3 +1,9 @@
+<?php
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+?>
+
 <style>
 /* Modern styling for Medicine Stock Valuation / Amount Report in AdminLTE Console Layout */
 .report-header-card {
@@ -130,6 +136,46 @@
     padding: 10px 12px !important;
 }
 
+/* Bottom Pagination Styling */
+.pagination > li > a, .pagination > li > span {
+    color: #475569;
+    border-color: #cbd5e1;
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    margin: 0 2px;
+}
+.pagination > .active > a, .pagination > .active > span {
+    background-color: #3b82f6 !important;
+    border-color: #3b82f6 !important;
+    color: #fff !important;
+}
+.pagination > li > a:hover {
+    background-color: #f1f5f9;
+    border-color: #94a3b8;
+    color: #1e293b;
+}
+
+/* Loading Overlay Styles */
+#report_loading_overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.82);
+    z-index: 50;
+    display: none;
+    border-radius: 6px;
+    backdrop-filter: blur(1px);
+}
+.loading-box {
+    position: sticky;
+    top: 220px;
+    text-align: center;
+    padding: 30px 20px;
+}
+
 /* Print Styles */
 @media print {
     body, .wrapper, .content-wrapper, .content, #content {
@@ -213,7 +259,7 @@
                                id="filter_medicine_name" 
                                value="<?= !empty($medicine_name) ? htmlspecialchars($medicine_name) : '' ?>" 
                                class="form-control" 
-                               placeholder="Search medicine..." 
+                               placeholder="Search medicine name..." 
                                autocomplete="off"
                                style="border-color: #cbd5e1;" />
                     </div>
@@ -271,7 +317,8 @@
                             <option value="25" <?= (!isset($per_page) || $per_page == 25) ? 'selected' : '' ?>>25</option>
                             <option value="50" <?= (isset($per_page) && $per_page == 50) ? 'selected' : '' ?>>50</option>
                             <option value="100" <?= (isset($per_page) && $per_page == 100) ? 'selected' : '' ?>>100</option>
-                            <option value="all" <?= (isset($per_page) && $per_page == 0) ? 'selected' : '' ?>>All</option>
+                            <option value="250" <?= (isset($per_page) && $per_page == 250) ? 'selected' : '' ?>>250</option>
+                            <option value="all" <?= (isset($per_page) && ($per_page === 'all' || $per_page == 0)) ? 'selected' : '' ?>>All</option>
                         </select>
                     </div>
                 </div>
@@ -292,9 +339,21 @@
         </form>
     </div>
 
-    <!-- Results Container (Table & KPIs) -->
-    <div id="report_results_container" style="position: relative; min-height: 200px;">
-        <?php $this->load->view('console/medicine_stock/stock_ajax_amount_tpl'); ?>
+    <!-- Results Wrapper with Smart UI Loading Overlay -->
+    <div id="report_results_wrapper" style="position: relative; min-height: 250px;">
+        <!-- Loading Overlay (Visible during data fetch) -->
+        <div id="report_loading_overlay">
+            <div class="loading-box">
+                <i class="fa fa-spinner fa-spin text-primary" style="font-size: 38px; color: #3b82f6;"></i>
+                <h4 style="font-size: 14px; font-weight: 700; color: #1e293b; margin: 12px 0 4px 0;">Calculating Stock Valuation...</h4>
+                <p style="font-size: 12px; color: #64748b; margin: 0;">Updating live stock quantities, rates, and valuation ledger.</p>
+            </div>
+        </div>
+
+        <!-- Target AJAX Container -->
+        <div id="report_results_container">
+            <?php $this->load->view('console/medicine_stock/stock_ajax_amount_tpl'); ?>
+        </div>
     </div>
 </div>
 
@@ -312,9 +371,12 @@ $(document).ready(function() {
         var form = $('#stockAmountFilterForm');
         var formData = form.serialize() + '&ajax_resp=1';
         var container = $('#report_results_container');
+        var overlay = $('#report_loading_overlay');
+        var btnFilter = $('#btn_apply_filter');
 
-        // Loading overlay
-        container.css('opacity', '0.5');
+        // Show prominent smart UI loading overlay
+        overlay.fadeIn(150);
+        btnFilter.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Filtering...');
 
         $.ajax({
             url: form.attr('action'),
@@ -322,16 +384,22 @@ $(document).ready(function() {
             data: formData,
             success: function(resp) {
                 container.html(resp);
-                container.css('opacity', '1');
+                overlay.hide();
+                btnFilter.prop('disabled', false).html('<i class="fa fa-filter"></i> Filter');
                 updateExportUrl();
 
-                // Update print header
+                // Keep bottom per-page dropdown synced with top selector
+                var currentPerPage = $('#filter_per_page').val();
+                $('.bottom-per-page-select').val(currentPerPage);
+
+                // Update print header status
                 var stockFilter = $('#filter_stock_filter option:selected').text();
                 $('.print-filter-status').text(stockFilter);
             },
             error: function(xhr, status, error) {
-                container.css('opacity', '1');
-                alert("Failed to load report data. Please try again.");
+                overlay.hide();
+                btnFilter.prop('disabled', false).html('<i class="fa fa-filter"></i> Filter');
+                alert("Failed to load stock valuation data. Please try again.");
             }
         });
     }
@@ -343,14 +411,29 @@ $(document).ready(function() {
         fetchReportData();
     });
 
-    // Auto reload on stock_filter or per_page change
+    // Auto reload on stock_filter or top per_page change
     $('#filter_stock_filter, #filter_per_page').on('change', function() {
+        var selectedPerPage = $('#filter_per_page').val();
+        $('.bottom-per-page-select').val(selectedPerPage);
         $('#filter_page').val('1');
         fetchReportData();
     });
 
+    // Bottom Per-Page dropdown change handler (niche paginate used)
+    $(document).on('change', '.bottom-per-page-select', function() {
+        var newPerPage = $(this).val();
+        $('#filter_per_page').val(newPerPage);
+        $('#filter_page').val('1');
+        fetchReportData();
+        $('html, body').animate({
+            scrollTop: $("#report_results_wrapper").offset().top - 70
+        }, 200);
+    });
+
     // Debounced search on typing
-    $('#filter_medicine_name, #filter_medicine_manufacturer, #filter_storage').on('keyup input', function() {
+    $('#filter_medicine_name, #filter_medicine_manufacturer, #filter_storage').on('keyup input', function(e) {
+        // If user pressed enter, ignore debounce (submit handler catches it)
+        if (e.which === 13) return;
         clearTimeout(searchTimer);
         searchTimer = setTimeout(function() {
             $('#filter_page').val('1');
@@ -358,7 +441,7 @@ $(document).ready(function() {
         }, 350);
     });
 
-    // Pagination link click handler
+    // Bottom Pagination link click handler (niche paginate used)
     $(document).on('click', '#stock_amount_pagination .page-link', function(e) {
         e.preventDefault();
         var parentLi = $(this).parent();
@@ -370,7 +453,7 @@ $(document).ready(function() {
             $('#filter_page').val(targetPage);
             fetchReportData();
             $('html, body').animate({
-                scrollTop: $("#report_results_container").offset().top - 70
+                scrollTop: $("#report_results_wrapper").offset().top - 70
             }, 200);
         }
     });
@@ -382,11 +465,12 @@ $(document).ready(function() {
         $('#filter_storage').val('');
         $('#filter_stock_filter').val('in_stock');
         $('#filter_per_page').val('25');
+        $('.bottom-per-page-select').val('25');
         $('#filter_page').val('1');
         fetchReportData();
     });
 
-    // Initial sync
+    // Initial sync of export URL
     updateExportUrl();
 });
 </script>

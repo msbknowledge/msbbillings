@@ -1,4 +1,8 @@
 <?php
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+
 $total_mrp_valuation  = isset($total_mrp_valuation) ? (float)$total_mrp_valuation : 0;
 $total_cost_valuation = isset($total_cost_valuation) ? (float)$total_cost_valuation : 0;
 $total_in_stock_items = isset($total_in_stock_items) ? (int)$total_in_stock_items : 0;
@@ -7,6 +11,7 @@ $total_loose          = isset($total_loose) ? (float)$total_loose : 0;
 $total_records        = isset($total_records) ? (int)$total_records : 0;
 $total_pages          = isset($total_pages) ? (int)$total_pages : 1;
 $page                 = isset($page) ? (int)$page : 1;
+$per_page             = isset($per_page) ? $per_page : 25;
 $start_record         = isset($start_record) ? (int)$start_record : 0;
 $end_record           = isset($end_record) ? (int)$end_record : 0;
 ?>
@@ -15,7 +20,7 @@ $end_record           = isset($end_record) ? (int)$end_record : 0;
 <div class="row" style="margin-left: -6px; margin-right: -6px;">
     <!-- Total MRP Valuation -->
     <div class="col-md-3 col-sm-6" style="padding-left: 6px; padding-right: 6px;">
-        <div class="kpi-card">
+        <div class="kpi-card" style="border-left: 4px solid #059669;">
             <div class="kpi-icon" style="background: #ecfdf5; color: #059669;">
                 <i class="fa fa-inr"></i>
             </div>
@@ -31,7 +36,7 @@ $end_record           = isset($end_record) ? (int)$end_record : 0;
 
     <!-- Total Cost Valuation -->
     <div class="col-md-3 col-sm-6" style="padding-left: 6px; padding-right: 6px;">
-        <div class="kpi-card">
+        <div class="kpi-card" style="border-left: 4px solid #2563eb;">
             <div class="kpi-icon" style="background: #eff6ff; color: #2563eb;">
                 <i class="fa fa-tag"></i>
             </div>
@@ -47,7 +52,7 @@ $end_record           = isset($end_record) ? (int)$end_record : 0;
 
     <!-- In-Stock Medicines Count -->
     <div class="col-md-3 col-sm-6" style="padding-left: 6px; padding-right: 6px;">
-        <div class="kpi-card">
+        <div class="kpi-card" style="border-left: 4px solid #7c3aed;">
             <div class="kpi-icon" style="background: #f5f3ff; color: #7c3aed;">
                 <i class="fa fa-cubes"></i>
             </div>
@@ -56,21 +61,21 @@ $end_record           = isset($end_record) ? (int)$end_record : 0;
                 <div class="kpi-value" style="color: #7c3aed;">
                     <?= number_format($total_in_stock_items) ?>
                 </div>
-                <small style="font-size: 11px; color: #64748b;">Medicines with stock</small>
+                <small style="font-size: 11px; color: #64748b;">Medicines with live stock</small>
             </div>
         </div>
     </div>
 
     <!-- Total Stock Quantities -->
     <div class="col-md-3 col-sm-6" style="padding-left: 6px; padding-right: 6px;">
-        <div class="kpi-card">
+        <div class="kpi-card" style="border-left: 4px solid #d97706;">
             <div class="kpi-icon" style="background: #fffbeb; color: #d97706;">
                 <i class="fa fa-medkit"></i>
             </div>
             <div>
                 <div class="kpi-title">Total Available Quantity</div>
                 <div class="kpi-value" style="color: #d97706; font-size: 16px;">
-                    <?= number_format($total_strips) ?> <span style="font-size: 12px; font-weight: normal; color: #64748b;">Strips</span> / <?= number_format($total_loose) ?> <span style="font-size: 12px; font-weight: normal; color: #64748b;">Loose</span>
+                    <?= number_format($total_strips) ?> <span style="font-size: 11px; font-weight: normal; color: #64748b;">Strips</span> / <?= number_format($total_loose) ?> <span style="font-size: 11px; font-weight: normal; color: #64748b;">Loose</span>
                 </div>
                 <small style="font-size: 11px; color: #64748b;">Physical stock on hand</small>
             </div>
@@ -89,7 +94,7 @@ $end_record           = isset($end_record) ? (int)$end_record : 0;
             </span>
         </h3>
         <div class="no-print" style="font-size: 12px; color: #64748b;">
-            Page <?= $page ?> of <?= $total_pages ?>
+            Page <strong><?= $page ?></strong> of <strong><?= $total_pages ?></strong>
         </div>
     </div>
 
@@ -113,9 +118,6 @@ $end_record           = isset($end_record) ? (int)$end_record : 0;
                 <?php if (!empty($alldata)): ?>
                     <?php
                     $counter = $start_record;
-                    $page_strips = 0;
-                    $page_loose  = 0;
-                    $page_val    = 0;
                     ?>
                     <?php foreach ($alldata as $item): ?>
                         <?php
@@ -123,10 +125,6 @@ $end_record           = isset($end_record) ? (int)$end_record : 0;
                         $loose_val = (float)$item['left_loose'];
                         $mrp_val   = (float)$item['mrp'];
                         $val_amt   = (float)$item['valuation_amount'];
-
-                        if ($strip_val > 0) $page_strips += $strip_val;
-                        if ($loose_val > 0) $page_loose  += $loose_val;
-                        $page_val += $val_amt;
                         ?>
                         <tr>
                             <td style="text-align: center; color: #64748b; font-weight: 600;"><?= $counter++ ?></td>
@@ -169,7 +167,7 @@ $end_record           = isset($end_record) ? (int)$end_record : 0;
                                     <span class="text-muted">0</span>
                                 <?php endif; ?>
                             </td>
-                            <td style="text-align: right; color: #334155;">
+                            <td style="text-align: right; color: #334155; font-weight: 500;">
                                 &#8377; <?= number_format($mrp_val, 2) ?>
                             </td>
                             <td style="text-align: right;">
@@ -189,11 +187,11 @@ $end_record           = isset($end_record) ? (int)$end_record : 0;
                     <?php endforeach; ?>
                 <?php else: ?>
                     <tr>
-                        <td colspan="10" style="text-align: center; padding: 36px 12px; color: #64748b;">
-                            <div style="font-size: 28px; margin-bottom: 8px; color: #94a3b8;"><i class="fa fa-search"></i></div>
+                        <td colspan="10" style="text-align: center; padding: 40px 15px; color: #64748b;">
+                            <div style="font-size: 32px; margin-bottom: 8px; color: #94a3b8;"><i class="fa fa-search"></i></div>
                             <h4 style="font-weight: 600; color: #334155; margin-bottom: 4px;">No Medicine Stock Valuation Records Found</h4>
-                            <p style="font-size: 12px; margin-bottom: 12px;">There are no medicine records matching your current filter criteria.</p>
-                            <button type="button" onclick="$('#btn_reset_filter').click();" class="btn btn-default btn-sm" style="border-radius: 4px; border-color: #cbd5e1;">
+                            <p style="font-size: 12px; margin-bottom: 14px;">There are no medicine records matching your current filter criteria.</p>
+                            <button type="button" onclick="$('#btn_reset_filter').click();" class="btn btn-default btn-sm" style="border-radius: 4px; border-color: #cbd5e1; font-weight: 600;">
                                 <i class="fa fa-refresh"></i> Clear Filters
                             </button>
                         </td>
@@ -225,59 +223,83 @@ $end_record           = isset($end_record) ? (int)$end_record : 0;
         </table>
     </div>
 
-    <!-- Pagination Controls -->
-    <?php if ($total_pages > 1): ?>
-        <div class="no-print" style="padding: 12px 16px; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-            <div style="font-size: 12px; color: #64748b;">
-                Showing <strong><?= $start_record ?></strong> to <strong><?= $end_record ?></strong> of <strong><?= number_format($total_records) ?></strong> records
+    <!-- Bottom Pagination & Controls Footer Bar -->
+    <div id="stock_amount_pagination_container" class="no-print" style="padding: 12px 16px; background: #fafbfc; border-top: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+        <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+            <div style="font-size: 12px; color: #64748b; font-weight: 500;">
+                <?php if ($total_records > 0): ?>
+                    Showing <strong style="color: #0f172a;"><?= $start_record ?></strong> to <strong style="color: #0f172a;"><?= $end_record ?></strong> of <strong style="color: #0f172a;"><?= number_format($total_records) ?></strong> records
+                    <?php if ($total_pages > 1): ?>
+                        <span style="color: #94a3b8; margin-left: 4px;">(Page <strong style="color: #0f172a;"><?= $page ?></strong> of <strong><?= $total_pages ?></strong>)</span>
+                    <?php endif; ?>
+                <?php else: ?>
+                    Showing <strong style="color: #0f172a;">0</strong> records
+                <?php endif; ?>
             </div>
-            <ul class="pagination pagination-sm" id="stock_amount_pagination" style="margin: 0;">
-                <!-- First Page -->
-                <li class="<?= ($page <= 1) ? 'disabled' : '' ?>">
-                    <a href="#" class="page-link" data-page="1" title="First Page">&laquo; First</a>
-                </li>
 
-                <!-- Previous Page -->
-                <li class="<?= ($page <= 1) ? 'disabled' : '' ?>">
-                    <a href="#" class="page-link" data-page="<?= max(1, $page - 1) ?>" title="Previous Page">&lsaquo; Prev</a>
-                </li>
-
-                <!-- Page Window -->
-                <?php
-                $range = 2;
-                $start_p = max(1, $page - $range);
-                $end_p   = min($total_pages, $page + $range);
-
-                if ($start_p > 1) {
-                    echo '<li><a href="#" class="page-link" data-page="1">1</a></li>';
-                    if ($start_p > 2) {
-                        echo '<li class="disabled"><span style="border-color: #cbd5e1;">...</span></li>';
-                    }
-                }
-
-                for ($p = $start_p; $p <= $end_p; $p++) {
-                    $active = ($p == $page) ? 'active' : '';
-                    echo '<li class="' . $active . '"><a href="#" class="page-link" data-page="' . $p . '">' . $p . '</a></li>';
-                }
-
-                if ($end_p < $total_pages) {
-                    if ($end_p < $total_pages - 1) {
-                        echo '<li class="disabled"><span style="border-color: #cbd5e1;">...</span></li>';
-                    }
-                    echo '<li><a href="#" class="page-link" data-page="' . $total_pages . '">' . $total_pages . '</a></li>';
-                }
-                ?>
-
-                <!-- Next Page -->
-                <li class="<?= ($page >= $total_pages) ? 'disabled' : '' ?>">
-                    <a href="#" class="page-link" data-page="<?= min($total_pages, $page + 1) ?>" title="Next Page">Next &rsaquo;</a>
-                </li>
-
-                <!-- Last Page -->
-                <li class="<?= ($page >= $total_pages) ? 'disabled' : '' ?>">
-                    <a href="#" class="page-link" data-page="<?= $total_pages ?>" title="Last Page">Last &raquo;</a>
-                </li>
-            </ul>
+            <!-- Per-Page Selector at Bottom -->
+            <div style="display: inline-flex; align-items: center; gap: 6px;">
+                <label style="font-size: 11px; color: #64748b; margin: 0; font-weight: 600;">Show:</label>
+                <select class="form-control input-sm bottom-per-page-select" style="width: 80px; height: 28px; padding: 2px 6px; font-size: 12px; border-radius: 4px; border-color: #cbd5e1; display: inline-block;">
+                    <option value="25" <?= ($per_page == 25) ? 'selected' : '' ?>>25</option>
+                    <option value="50" <?= ($per_page == 50) ? 'selected' : '' ?>>50</option>
+                    <option value="100" <?= ($per_page == 100) ? 'selected' : '' ?>>100</option>
+                    <option value="250" <?= ($per_page == 250) ? 'selected' : '' ?>>250</option>
+                    <option value="all" <?= ($per_page === 'all' || $per_page == 0) ? 'selected' : '' ?>>All</option>
+                </select>
+            </div>
         </div>
-    <?php endif; ?>
+
+        <?php if ($total_pages > 1): ?>
+            <div>
+                <ul class="pagination pagination-sm" id="stock_amount_pagination" style="margin: 0;">
+                    <!-- First Page -->
+                    <li class="<?= ($page <= 1) ? 'disabled' : '' ?>">
+                        <a href="#" class="page-link" data-page="1" title="First Page">&laquo; First</a>
+                    </li>
+
+                    <!-- Previous Page -->
+                    <li class="<?= ($page <= 1) ? 'disabled' : '' ?>">
+                        <a href="#" class="page-link" data-page="<?= max(1, $page - 1) ?>" title="Previous Page">&lsaquo; Prev</a>
+                    </li>
+
+                    <!-- Page Window -->
+                    <?php
+                    $range = 2;
+                    $start_p = max(1, $page - $range);
+                    $end_p   = min($total_pages, $page + $range);
+
+                    if ($start_p > 1) {
+                        echo '<li><a href="#" class="page-link" data-page="1">1</a></li>';
+                        if ($start_p > 2) {
+                            echo '<li class="disabled"><span>...</span></li>';
+                        }
+                    }
+
+                    for ($p = $start_p; $p <= $end_p; $p++) {
+                        $active = ($p == $page) ? 'active' : '';
+                        echo '<li class="' . $active . '"><a href="#" class="page-link" data-page="' . $p . '">' . $p . '</a></li>';
+                    }
+
+                    if ($end_p < $total_pages) {
+                        if ($end_p < $total_pages - 1) {
+                            echo '<li class="disabled"><span>...</span></li>';
+                        }
+                        echo '<li><a href="#" class="page-link" data-page="' . $total_pages . '">' . $total_pages . '</a></li>';
+                    }
+                    ?>
+
+                    <!-- Next Page -->
+                    <li class="<?= ($page >= $total_pages) ? 'disabled' : '' ?>">
+                        <a href="#" class="page-link" data-page="<?= min($total_pages, $page + 1) ?>" title="Next Page">Next &rsaquo;</a>
+                    </li>
+
+                    <!-- Last Page -->
+                    <li class="<?= ($page >= $total_pages) ? 'disabled' : '' ?>">
+                        <a href="#" class="page-link" data-page="<?= $total_pages ?>" title="Last Page">Last &raquo;</a>
+                    </li>
+                </ul>
+            </div>
+        <?php endif; ?>
+    </div>
 </div>
